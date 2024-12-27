@@ -53,10 +53,9 @@ final List<GoRoute> mainRouter = [
               }),
           GoRoute(path: 'userSearch', builder: (_, $) => UserSearchScreen()),
           GoRoute(
-              path: 'index/:path',
+              path: 'index',
               builder: (context, state) {
-                final String path = state.pathParameters['path'] ?? '';
-                return IndexScreen(path: path);
+                return IndexScreen();
               }),
           GoRoute(path: 'introduce_foundation', builder: (_, $) => IntroduceFoundationScreen()),
           GoRoute(path: 'gallery', builder: (_, $) => GalleryScreen()),

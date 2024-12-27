@@ -14,7 +14,7 @@ import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
 import 'package:rotary_flutter/data/model/account_model.dart';
-import '../../util/common.dart';
+import '../../util/common/common.dart';
 import '../../util/logger.dart';
 import '../../util/model/state.dart';
 import 'package:webview_flutter/webview_flutter.dart';

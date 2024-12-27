@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 class ProgramingTableScreen extends ConsumerStatefulWidget {
   const ProgramingTableScreen({super.key});
 
   @override
-  ConsumerState<ProgramingTableScreen> createState() =>
-      _ProgramingTableScreen();
+  ConsumerState<ProgramingTableScreen> createState() => _ProgramingTableScreen();
 }
 
 class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
@@ -97,41 +95,54 @@ class DataTableExample extends StatelessWidget {
       ],
     ];
 
-    final screenWidth = MediaQuery.of(context).size.width; // 화면 너비 가져오기
+    final screenWidth = MediaQuery.of(context).size.width;
 
-    return ScrollablePinchView(
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: DataTable(
-        columnSpacing: screenWidth * 0.02, // 화면 크기에 비례한 열 간 간격
-        columns: const <DataColumn>[
+        // 수정: 헤더 행에 배경색 추가
+        headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+        columnSpacing: screenWidth * 0.02,
+        columns: <DataColumn>[
+          // 수정: 각 DataColumn에 alignment 속성 추가하여 정렬 조정
           DataColumn(
-            label: Center(
-              child: Text(
-                '지역',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
+            label: Container(
+              width: screenWidth * 0.06,
+              child: const Center( // 중앙 정렬 유지
+                child: Text(
+                  '지역',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
           ),
           DataColumn(
-            label: Center(
-              child: Text(
-                '총재지역대표',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
+            label: Container(
+              width: screenWidth * 0.18,
+              child: const Center( // 중앙 정렬 유지
+                child: Text(
+                  '총재지역대표',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
           ),
           DataColumn(
-            label: Center(
-              child: Text(
-                '클럽명',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
+            label: Container(
+              width: screenWidth * 0.65,
+              child: const Center( // 수정: 클럽명 헤더 중앙 정렬
+                child: Text(
+                  '클럽명',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
@@ -142,7 +153,7 @@ class DataTableExample extends StatelessWidget {
             cells: [
               DataCell(
                 Container(
-                  width: screenWidth * 0.05, // 지역 열의 크기
+                  width: screenWidth * 0.06, // 지역 열
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     row[0],
@@ -153,7 +164,7 @@ class DataTableExample extends StatelessWidget {
               ),
               DataCell(
                 Container(
-                  width: screenWidth * 0.3, // 총재지역대표 열의 크기
+                  width: screenWidth * 0.18, // 총재지역대표 열
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     row[1],
@@ -163,25 +174,17 @@ class DataTableExample extends StatelessWidget {
                 ),
               ),
               DataCell(
-                Flexible(
+                Container(
+                  width: screenWidth * 0.65, // 클럽명 열
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     row[2],
-                    softWrap: true, // 줄바꿈 활성화
-                    maxLines: null, // 줄 수 제한 없음
-                    overflow: TextOverflow.visible, // 텍스트 잘림 방지
+                    softWrap: true,
+                    maxLines: null,
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               ),
-              // DataCell(
-              //   Flexible(
-              //     child: Text(
-              //       row[2],
-              //       softWrap: true, // 줄바꿈 활성화
-              //       maxLines: null, // 줄 수 제한 없음
-              //       overflow: TextOverflow.visible, // 텍스트 잘림 방지
-              //     ),
-              //   ),
-              // ),
             ],
           );
         }).toList(),

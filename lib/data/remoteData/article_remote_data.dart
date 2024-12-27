@@ -2,7 +2,7 @@ import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:rotary_flutter/data/repostitory/article_repository.dart';
 import '../../util/model/state.dart';
-import '../../util/common.dart';
+import '../../util/common/common.dart';
 import '../model/account_model.dart';
 
 class ArticleAPI {

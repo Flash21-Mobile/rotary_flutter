@@ -2,20 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rotary_flutter/feature/home/menu/advertise/advertise_screen.dart';
+import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import '../../util/model/menu_items.dart';
 
-class HomeMainScreen extends StatefulWidget {
+class HomeMainScreen extends ConsumerStatefulWidget {
   const HomeMainScreen({super.key});
 
   @override
-  State<HomeMainScreen> createState() => _HomeMainScreenState();
+  ConsumerState<HomeMainScreen> createState() => _HomeMainScreenState();
 }
 
-class _HomeMainScreenState extends State<HomeMainScreen> {
+class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
   final PageController _pageController =
       PageController(initialPage: 0); // 초기 페이지는 0으로 설정
   Timer? _timer;
@@ -58,13 +61,15 @@ class _HomeMainScreenState extends State<HomeMainScreen> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return Container(child: CustomScrollView(
+    final homeProvider =ref.read(HomeProvider);
+
+    return Container(color: GlobalColor.primaryColor, child: CustomScrollView(
             physics: ClampingScrollPhysics(),
             slivers: [
           SliverToBoxAdapter(
               child:InkWell(
                   onTap: (){
-                    context.push('/menu/advertise');
+                    ref.read(HomeProvider).pushCurrentWidget = AdvertiseScreen();
                   },
                   child:Container(
                   width: double.infinity,
@@ -94,8 +99,9 @@ class _HomeMainScreenState extends State<HomeMainScreen> {
               // return Container(width: 50, height: 50,color: Colors.black,);
               return InkWell(
                   onTap: (){
-                    menuItems[index].onTap();
-                  },
+                    homeProvider.pushCurrentWidget =menuItems[index].widget;
+                    if(menuItems[index].onTap != null) menuItems[index].onTap!();
+                    },
                   child:Container(
                 decoration: BoxDecoration(
                   color: GlobalColor.primaryColor,

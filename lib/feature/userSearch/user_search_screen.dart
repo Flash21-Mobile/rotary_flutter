@@ -22,6 +22,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
         final maxHeight = constraints.maxHeight;
 
         return Scaffold(
+          appBar: AppBar(
+            title: Text('회원검색'),
+            centerTitle: true,
+          ),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Padding(

@@ -4,6 +4,7 @@ import 'package:rotary_flutter/data/model/article_model.dart';
 import 'package:rotary_flutter/feature/announcement/announcement_view_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
+import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -30,6 +31,16 @@ class _AnnouncementScreen extends ConsumerState<AnnouncementScreen> {
   var announcementProvider = ref.watch(AnnouncementProvider);
 
     return LoadStateScaffold(
+        appBar: AppBar(
+          title: Text('공지사항'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
+          centerTitle: true,
+        ),
       backgroundColor: GlobalColor.white,
       loadState: announcementProvider.announcementState,
       successBody:(data) { data as List<Article>;

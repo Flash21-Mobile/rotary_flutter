@@ -1,23 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/data/model/schedule_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 import '../../../util/fontSize.dart';
+import '../../home_provider.dart';
 
-class EventScreen extends StatefulWidget {
+class EventScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic>? args;
 
   const EventScreen({super.key, this.args});
 
   @override
-  State<EventScreen> createState() => _EventScreenState();
+  ConsumerState<EventScreen> createState() => _EventScreenState();
 }
 
-class _EventScreenState extends State<EventScreen> {
+class _EventScreenState extends ConsumerState<EventScreen> {
   bool isLoaded = true;
 
   // 추가: EventTile 리스트 생성 (예시 데이터)
@@ -136,6 +138,12 @@ class _EventScreenState extends State<EventScreen> {
       appBar: AppBar(
         title: Text('행사일정'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

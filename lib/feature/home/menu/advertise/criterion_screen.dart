@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
@@ -22,10 +21,8 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
         centerTitle: true,
       ),
 
-      body: ScrollablePinchView(
-        // padding: const EdgeInsets.all(16.0),
-
-        child:Padding(padding: EdgeInsets.symmetric(horizontal: 15),child:Column(
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
           // 제목 Section
           const Text(
@@ -92,41 +89,44 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
               columnSpacing: 16.0,
               headingRowColor: MaterialStateColor.resolveWith((states)=>Colors.grey[200]!,),
               columns: const <DataColumn>[
-                DataColumn(label: Center(child: Text('시상종류', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
-                DataColumn(label: Center(child: Text('대상', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
-                DataColumn(label: Center(child: Text('내용', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
+                DataColumn(label: Expanded(child: Center(child: Text('시상종류', style: TextStyle(fontWeight: FontWeight.bold),),),),),
+                DataColumn(label: Expanded(child: Center(child: Text('대상', style: TextStyle(fontWeight: FontWeight.bold),),),),),
+                DataColumn(label: Expanded(child: Center(child: Text('내용', style: TextStyle(fontWeight: FontWeight.bold),),),),),
+                //DataColumn(label: Center(child: Text('시상종류', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
+                //DataColumn(label: Center(child: Text('대상', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
+                //DataColumn(label: Center(child: Text('내용', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),),),
               ],
 
               rows: const <DataRow>[
                 DataRow(
                   cells: <DataCell>[
-                    DataCell(Text('최우수클럽')),
-                    DataCell(Text('1개 클럽')),
-                    DataCell(Text('클럽 종합평가점수\n최고점 클럽')),
+                    DataCell(Center(child: Text('최우수클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('1개 클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('클럽 종합평가점수\n최고점 클럽', textAlign: TextAlign.center,),),),
                   ],),
                 DataRow(
                   cells: <DataCell>[
-                    DataCell(Text('우수클럽')),
-                    DataCell(Text('12개 클럽')),
-                    DataCell(Text('최우수 클럽을 제외한\n차순위 클럽')),
+                    DataCell(Center(child: Text('우수클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('12개 클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('최우수 클럽을 제외한\n차순위 클럽', textAlign: TextAlign.center,),),),
                   ],),
                 DataRow(
                   cells: <DataCell>[
-                    DataCell(Text('여성 우수클럽')),
-                    DataCell(Text('1개 클럽')),
-                    DataCell(Text('여성클럽종합평가점수\n최고클럽')),
+                    DataCell(Center(child: Text('여성 우수클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('1개 클럽', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('여성클럽종합평가점수\n최고클럽', textAlign: TextAlign.center,),),),
                   ],),
                 DataRow(
                   cells: <DataCell>[
-                    DataCell(Text('신클럽 우수클럽\n(창립 3년 미만)')),
-                    DataCell(Text('1개 클럽')),
-                    DataCell(Text('신생클럽 종합평가점수\n최고클럽')),
+                    DataCell(Center(child: Text('신클럽 우수클럽\n(창립 3년 미만)', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('1개 클럽)', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('신생클럽 종합평가점수\n최고클럽)', textAlign: TextAlign.center,),),),
                   ],),
                 DataRow(
                   cells: <DataCell>[
-                    DataCell(Text('총재클럽특별상')),
-                    DataCell(Text('')),
-                    DataCell(Text('지구발전에 현저한 공로가\n있는 클럽')),
+                    DataCell(Center(child: Text('총재클럽특별상', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('', textAlign: TextAlign.center,),),),
+                    DataCell(Center(child: Text('지구발전에 현저한 공로가\n있는 클럽', textAlign: TextAlign.center,),),),
                   ],
                 ),
               ],
@@ -147,7 +147,7 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
           ),
           const SizedBox(height: 10.0),
         ],
-      )),
-    ));
+      ),
+    );
   }
 }

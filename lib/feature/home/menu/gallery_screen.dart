@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class GalleryScreen extends StatefulWidget {
+import '../../home_provider.dart';
+
+class GalleryScreen extends ConsumerStatefulWidget {
   const GalleryScreen({super.key});
 
   @override
-  State<GalleryScreen> createState() => GalleryScreenState();
+  ConsumerState<GalleryScreen> createState() => GalleryScreenState();
 }
 
-class GalleryScreenState extends State<GalleryScreen> {
+class GalleryScreenState extends ConsumerState<GalleryScreen> {
   late WebViewController _controller = WebViewController();
 
   @override
@@ -42,6 +45,12 @@ class GalleryScreenState extends State<GalleryScreen> {
       child: Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
           title: Text('지구갤러리'),
           centerTitle: true,
         ),

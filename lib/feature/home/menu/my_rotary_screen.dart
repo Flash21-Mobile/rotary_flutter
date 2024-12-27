@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../util/global_color.dart';
+import '../../home_provider.dart';
 
-class MyRotaryScreen extends StatefulWidget {
+class MyRotaryScreen extends ConsumerStatefulWidget {
   const MyRotaryScreen({super.key});
 
   @override
-  State<MyRotaryScreen> createState() => _MyRotaryScreen();
+  ConsumerState<MyRotaryScreen> createState() => _MyRotaryScreen();
 }
 
-class _MyRotaryScreen extends State<MyRotaryScreen> {
+class _MyRotaryScreen extends ConsumerState<MyRotaryScreen> {
   late WebViewController _controller = WebViewController();
 
   @override
@@ -46,6 +48,12 @@ class _MyRotaryScreen extends State<MyRotaryScreen> {
         appBar: AppBar(
           title: Text('내 로타리'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: WebViewWidget(controller: _controller),
       ),

@@ -22,19 +22,19 @@ class Log {
     }
   }
 
-  static void d(String message, {bool isSuper = false}) {
+  static void d(String message,{String? tag,bool isSuper = false}) {
     _log('logd', message, isSuper);
   }
 
-  static void e(String message, {bool isSuper = false}) {
+  static void e(String message, {String? tag,bool isSuper = false}) {
     _log('loge', message, isSuper);
   }
 
-  static void w(String message, {bool isSuper = false}) {
+  static void w(String message, {String? tag,bool isSuper = false}) {
     _log('logw', message, isSuper);
   }
 
-  static void wtf(String message, {bool isSuper = false}) {
+  static void wtf(String message, {String? tag,bool isSuper = false}) {
     _log('logwtf', message, isSuper);
   }
 }
