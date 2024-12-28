@@ -2,8 +2,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
+import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/util/model/menu_items.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_component.dart';
@@ -104,7 +104,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                   var response =  await AccountAPI().putAccount(data);
 
                   if(response is Success){
-                    context.pop();
+                    ref.read(HomeProvider).popCurrentWidget();
                   }
                 },
                 child: Container(

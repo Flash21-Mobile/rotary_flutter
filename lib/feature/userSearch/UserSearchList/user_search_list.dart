@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/userSearch/UserSearchList/user_search_list_view_model.dart';
+import 'package:rotary_flutter/feature/userSearch/userInfo/user_info_screen.dart';
 import 'package:rotary_flutter/util/model/cardinal_location.dart';
 import 'package:rotary_flutter/util/model/cardinal_r_c.dart';
 
 import '../../../data/model/account_model.dart';
 import '../../../util/global_color.dart';
 import '../../home/home_main_component.dart';
+import '../../home_provider.dart';
 
 class UserListWidget extends ConsumerStatefulWidget {
   final int initialLocation;
@@ -116,8 +117,7 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                   onTap: () {
-                                    context.push(
-                                        '/menu/userInfo/${accounts[index].id}');
+                                    ref.read(HomeProvider).pushCurrentWidget = UserInfoScreen(id: accounts[index].id??0);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

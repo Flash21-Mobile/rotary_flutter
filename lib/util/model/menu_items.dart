@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rotary_flutter/feature/announcement/Announcement_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/advertise/advertise_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/advertise/criterion_screen.dart';
@@ -8,7 +7,6 @@ import 'package:rotary_flutter/feature/home/menu/allocation_table_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/event_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/gallery_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/homepage_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/index_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/introduce_foundation_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/k_rotary_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/magazine_screen.dart';
@@ -18,11 +16,8 @@ import 'package:rotary_flutter/feature/home/menu/policy_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/president_record_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/president_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/rotary_korea_screen.dart';
-import 'package:rotary_flutter/feature/home_screen.dart';
 import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
-import 'package:rotary_flutter/main.dart';
-import 'package:rotary_flutter/util/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MenuItem {

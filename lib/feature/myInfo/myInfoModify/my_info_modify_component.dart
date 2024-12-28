@@ -6,13 +6,15 @@ import '../../../util/global_color.dart';
 
 class MyInfoModifyTextField extends ConsumerStatefulWidget {
   final String indexTitle;
-  final TextEditingController indexController;
+  final TextEditingController? indexController;
   final bool? multilineEnable;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
+  final bool? obscureText;
+
 
   const MyInfoModifyTextField(
-      {super.key, required this.indexTitle, required this.indexController, this.multilineEnable, this.inputFormatters, this.keyboardType});
+      {super.key, required this.indexTitle, this.indexController, this.multilineEnable, this.inputFormatters, this.keyboardType, this.obscureText});
 
   @override
   ConsumerState<MyInfoModifyTextField> createState() =>
@@ -26,6 +28,7 @@ class _MyInfoModifyTextField extends ConsumerState<MyInfoModifyTextField> {
       Text(widget.indexTitle, style: TextStyle(color: GlobalColor.darkGreyFontColor),),
       SizedBox(height: 5,),
       TextFormField(
+        obscureText: widget.obscureText??false,
         inputFormatters: widget.inputFormatters,
         canRequestFocus: true,
           maxLines: (widget.multilineEnable?? false) ? null: 1,

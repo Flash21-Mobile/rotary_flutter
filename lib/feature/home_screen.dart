@@ -1,36 +1,24 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:go_router/go_router.dart';
 import "package:permission_handler/permission_handler.dart";
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
-import 'package:rotary_flutter/feature/announcement/announcement_screen.dart';
-import 'package:rotary_flutter/feature/home/home_main_component.dart';
-import 'package:rotary_flutter/feature/home/menu/index_screen.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_provider.dart';
-import 'package:rotary_flutter/feature/myInfo/login_screen.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_screen.dart';
-import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
 import 'package:rotary_flutter/util/common/phone_input_formatter.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/state.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
-
 import '../data/model/account_model.dart';
-import '../main.dart';
-import '../util/fontSize.dart';
 import 'home/home_main_screen.dart';
-import 'myInfo/myInfoModify/my_info_modify_component.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {     //todo r: 전화번호 받아오는 동안 로딩
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreen();
 }
@@ -43,18 +31,21 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
   late TextEditingController phoneController;
   late TextEditingController authenticateController;
+  late TextEditingController idController;
+  late TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid)
-      androidLogin();
+    if (Platform.isAndroid) androidLogin();
     else if (Platform.isIOS) iOSLogin();
 
     globalRef = ref;
 
     phoneController = TextEditingController();
     authenticateController = TextEditingController();
+    idController = TextEditingController();
+    passwordController = TextEditingController();
   }
 
   Future<void> androidLogin() async {
@@ -72,11 +63,10 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                 isLogin = true;
                 globalStorage.write(key: 'phone', value: phone);
               },
-              onError: (e) => showPhone(context));
+              onError: (e) => showLoginDialog());
         }
       } catch (e) {
-        Fluttertoast.showToast(msg: '휴대폰 번호를 가져오는 중 오류가 발생했습니다.');
-        WidgetsBinding.instance.addPostFrameCallback((_) {});
+        showLoginDialog();
       }
     }
   }
@@ -84,152 +74,72 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   void iOSLogin() async {
     if ((await globalStorage.read(key: 'phone')) == null)
       Future.delayed(Duration(milliseconds: 300))
-          .then((onValue) => showPhone(context));
+          .then((onValue) => showPhoneDialog());
   }
 
-  void showPhone(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) {
-            // BackKey 누르면 앱 종료
-            if(ref.read(HomeProvider).phoneState is Success) {
-
-            }else {
-              ref.read(HomeProvider).popCurrentWidget();
-            }
-          },
-          child: Dialog(
-            elevation: 0,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    height: 20,
-                    'asset/images/main_logo.svg',
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  MyInfoModifyTextField(
-                    indexTitle: '전화번호',
-                    indexController: phoneController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      // FilteringTextInputFormatter.allow(
-                      //   RegExp(r'^(010.*|.{0,2})$'), // 정규식 적용
-                      // ),
-                      PhoneInputFormatter()
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(mainAxisSize: MainAxisSize.max, children: [
-                    Expanded(
-                        child: InkWell(
-                            onTap: () {
-                              if (phoneController.text.isNotEmpty) {
-                                FocusNode().unfocus();
-                                ref
-                                    .read(HomeProvider)
-                                    .postPhone(phoneController.text);
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: GlobalColor.primaryColor,
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              alignment: Alignment.center,
-                              child: IndexTitle(
-                                '문자 인증',
-                                textColor: GlobalColor.white,
-                              ),
-                            )))
-                  ]),
-                ],
-              ),
-            ),
-          ),
-        );
+  void showPhoneDialog() {
+    var homeProvider = ref.read(HomeProvider);
+    
+    showDismissDialog(context,
+      onPopInvokedWithResult: (didPop, result) {
+        if (homeProvider.phoneState is! Success)
+          homeProvider.popCurrentWidget();
       },
-    );
+      controller: phoneController,
+      textInputFormatter: [
+        FilteringTextInputFormatter.digitsOnly,
+        PhoneInputFormatter()
+      ],
+        keyboardType: TextInputType.number,
+      hint: '전화번호',
+      onTap: () {
+        if (phoneController.text.isNotEmpty) {
+          FocusNode().unfocus();
+          homeProvider.postPhone(phoneController.text);
+        }
+      },
+      buttonText: '인증하기');
   }
 
-  void showAuthenticate(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // 외부 클릭으로 다이얼로그 닫힘 방지
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async {
-            SystemNavigator.pop();
-            return false;
-          },
-          child: Dialog(
-            elevation: 0,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    height: 20,
-                    'asset/images/main_logo.svg',
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  MyInfoModifyTextField(
-                    indexTitle: '인증번호',
-                    indexController: authenticateController,
-                    keyboardType: TextInputType.number,
-                  ),
-                  SizedBox(height: 20),
-                  Row(mainAxisSize: MainAxisSize.max, children: [
-                    Expanded(
-                        child: InkWell(
-                            onTap: () {
-                              if (authenticateController.text.isNotEmpty) {
-                                FocusNode().unfocus();
-                                ref.read(HomeProvider).postAuthenticate(
-                                    authenticateController.text);
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: GlobalColor.primaryColor,
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              alignment: Alignment.center,
-                              child: IndexTitle(
-                                '인증하기',
-                                textColor: GlobalColor.white,
-                              ),
-                            )))
-                  ]),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
+  void showAuthenticateDialog() {
+    var homeProvider = ref.read(HomeProvider);
+    
+    showDismissDialog(
+        context, 
+        controller: authenticateController, 
+        hint: '인증번호',
+        onTap: (){
+          if (authenticateController.text.isNotEmpty) {
+            FocusNode().unfocus();
+            homeProvider.postAuthenticate(
+                authenticateController.text);
+          }},
+        keyboardType: TextInputType.number,
+    buttonText: '인증하기');
+  }
+  
+  void showLoginDialog(){
+    showDismissDialog(
+        context,
+        hint: '아이디',
+        controller: idController,
+        subHint: '비밀번호',
+        subController: passwordController,
+        buttonText: '로그인',
+    onTap: (){
+          if (idController.text == 'flash21' && passwordController.text == 'flash2121'){
+            Navigator.of(context, rootNavigator: true).pop();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: Duration(milliseconds: 1500),
+              content: Text('로그인에 성공하였습니다'),
+            ));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: Duration(milliseconds: 1500),
+              content: Text('로그인에 실패하였습니다'),
+            ));
+          }
+    });
   }
 
   @override
@@ -239,7 +149,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     loadStateFunction(homeProvider.phoneState, onSuccess: (data) {
       Future.delayed(Duration(milliseconds: 300)).then((onValue) {
         Navigator.of(context, rootNavigator: true).pop();
-        showAuthenticate(context);
+        showAuthenticateDialog();
 
         homeProvider.phoneState = End();
       });
@@ -262,6 +172,67 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
 
-    return Scaffold(body: const IndexScreen());
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          var widget = homeProvider.popCurrentWidget();
+          if(widget == null) SystemNavigator.pop();
+        },
+        child: Scaffold(
+            backgroundColor: GlobalColor.white,
+            appBar: AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: GlobalColor.white,
+                title:InkWell(
+                    onTap: (){
+                      homeProvider.pushCurrentWidget = HomeMainScreen();
+                    },
+                    child:  Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: GlobalColor.indexBoxColor,
+                        ),
+                        child: Row(children: [
+                          SvgPicture.asset(
+                            height: 20,
+                            'asset/images/main_logo.svg',
+                            fit: BoxFit.contain,
+                          ),
+                          Spacer(),
+                          InkWell(
+                            onTap: (){
+                              homeProvider.pushCurrentWidget = MyInfoScreen();
+                            },
+                            child: SvgPicture.asset('asset/icons/router/my_info_filled_icon.svg',width: 24, height: 24,),
+                          )
+                        ])))),
+            body: homeProvider.currentWidget??currentWidgetIsNull())
+
+
+    );
+  }
+
+  HomeMainScreen currentWidgetIsNull(){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1500),
+          content: Text('뒤로 가기 버튼을 한 번 더 누르면 앱이 종료됩니다.'),
+        ),
+      );
+    });
+    addHomeScreen();
+    return const HomeMainScreen();
+  }
+
+  Future addHomeScreen()async{
+    await Future.delayed(const Duration(milliseconds: 1500)).then((onValue){
+      Log.d('NavigateScope: Add HomeMainScreen');
+      ref.read(HomeProvider).setCurrentWidget = const HomeMainScreen();
+    });
+    return;
   }
 }

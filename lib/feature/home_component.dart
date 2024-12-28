@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
 import '../util/global_color.dart';
 import '../util/model/state.dart';
+import 'home/home_main_component.dart';
+import 'myInfo/myInfoModify/my_info_modify_component.dart';
 
 class LoadStateScaffold extends ConsumerStatefulWidget {
   final Color? backgroundColor;
@@ -43,7 +47,7 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
           Loading() => widget.loadingBody ?? placeHolder,
           Success() => widget.successBody((widget.loadState as Success).data),
           Error() => widget.errorBody ?? widget.loadingBody ?? placeHolder,
-          _=> const Placeholder()
+          _ => const Placeholder()
         });
   }
 }
@@ -73,12 +77,93 @@ class LoadStateWidget extends StatelessWidget {
       Loading() => loadingWidget ?? placeHolder,
       Success() => successWidget((loadState as Success).data),
       Error() => errorWidget ?? loadingWidget ?? placeHolder,
-    _=> const Placeholder()
+      _ => const Placeholder()
     };
   }
 }
 
-void loadStateFunction(LoadState loadState, {required Function(dynamic) onSuccess,Function(Object)? onError}) {
+void showDismissDialog(
+  BuildContext context, {
+  Function(bool, Object?)? onPopInvokedWithResult,
+  required TextEditingController controller,
+  required String hint,
+  TextInputType? keyboardType,
+  List<TextInputFormatter>? textInputFormatter,
+  Function()? onTap,
+  required String buttonText,
+  TextEditingController? subController,
+  String? subHint,
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: onPopInvokedWithResult,
+        child: Dialog(
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  height: 20,
+                  'asset/images/main_logo.svg',
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                MyInfoModifyTextField(
+                    indexTitle: hint,
+                    indexController: controller,
+                    keyboardType: keyboardType,
+                    inputFormatters: textInputFormatter),
+                SizedBox(height: 20),
+                ...(subController != null && subHint != null)
+                    ? [
+                        MyInfoModifyTextField(
+                            indexTitle: subHint,
+                            indexController: subController,
+                            keyboardType: keyboardType,
+                            obscureText: true,
+                            inputFormatters: textInputFormatter),
+                        SizedBox(height: 20),
+                      ]
+                    : [],
+                Row(mainAxisSize: MainAxisSize.max, children: [
+                  Expanded(
+                      child: InkWell(
+                          onTap: onTap,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: GlobalColor.primaryColor,
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            alignment: Alignment.center,
+                            child: IndexTitle(
+                              buttonText,
+                              textColor: GlobalColor.white,
+                            ),
+                          )))
+                ]),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void loadStateFunction(LoadState loadState,
+    {required Function(dynamic) onSuccess, Function(Object)? onError}) {
   if (loadState is Success) {
     Log.d('success on', isSuper: true);
     onSuccess(loadState.data);

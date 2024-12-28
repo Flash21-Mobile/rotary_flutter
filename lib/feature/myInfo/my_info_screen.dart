@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
+import 'package:rotary_flutter/data/model/account_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_screen.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_view_model.dart';
-import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
-import 'package:rotary_flutter/util/secure_storage.dart';
-import 'package:rotary_flutter/data/model/account_model.dart';
+
 import '../../util/common/common.dart';
-import '../../util/logger.dart';
-import '../../util/model/state.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class MyInfoScreen extends ConsumerStatefulWidget {
   const MyInfoScreen({super.key});
