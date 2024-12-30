@@ -7,8 +7,14 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../util/global_color.dart';
+import '../../home_provider.dart';
 
-class RotaryKoreaScreen extends StatelessWidget {
+class RotaryKoreaScreen extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<RotaryKoreaScreen> createState() => _RotaryKoreaScreen();
+}
+
+class _RotaryKoreaScreen extends ConsumerState<RotaryKoreaScreen> {
   final androidUrl =Uri.parse('https://play.google.com/store/apps/details?id=kr.co.pksoft.rotarykorea');
   final iOSUrl = Uri.parse('https://apps.apple.com/kr/app/%EB%A1%9C%ED%83%80%EB%A6%AC%EC%BD%94%EB%A6%AC%EC%95%84/id6499181112');
 
@@ -19,6 +25,12 @@ class RotaryKoreaScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('로타리 코리아 앱'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body:Column(
           crossAxisAlignment: CrossAxisAlignment.center,

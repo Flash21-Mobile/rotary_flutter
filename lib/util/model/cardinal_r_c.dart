@@ -1,13 +1,13 @@
 enum CardinalRC {
   rc(name: "RC", id: null),
-  chungDo(name: "청도", id: 16),
-  yungNam(name: "대구 영남", id: 17),
-  chungUn(name: "대구 청운", id: 18),
-  taeYang(name: "대구 태양", id: 19),
-  wanHwa(name: "청도원화 RC", id: 20),
-  useong(name: "대구유성 RC", id: 21),
-  daesung(name: "대구대성 RC", id: 22),
-  songWon(name: "대구송원 RC", id: 23);
+  chungDo(name: "청도", id: 9),
+  yungNam(name: "대구 영남", id: 10),
+  chungUn(name: "대구 청운", id: 11),
+  taeYang(name: "대구 태양", id: 12),
+  wanHwa(name: "청도원화 RC", id: 13),
+  useong(name: "대구유성 RC", id: 14),
+  daesung(name: "대구대성 RC", id: 15),
+  songWon(name: "대구송원 RC", id: 16);
 
 
   const CardinalRC({required this.name, required this.id});

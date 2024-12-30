@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class MagazineScreen extends StatefulWidget {
+import '../../home_provider.dart';
+
+class MagazineScreen extends ConsumerStatefulWidget {
   const MagazineScreen({super.key});
 
   @override
-  State<MagazineScreen> createState() => MagazineScreenState();
+  ConsumerState<MagazineScreen> createState() => MagazineScreenState();
 }
 
-class MagazineScreenState extends State<MagazineScreen> {
+class MagazineScreenState extends ConsumerState<MagazineScreen> {
   late WebViewController _controller = WebViewController();
 
   @override
@@ -42,6 +45,12 @@ class MagazineScreenState extends State<MagazineScreen> {
       child: Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
           title: Text('총재월신'),
           centerTitle: true,
         ),

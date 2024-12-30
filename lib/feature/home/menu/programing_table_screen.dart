@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class ProgramingTableScreen extends ConsumerStatefulWidget {
   const ProgramingTableScreen({super.key});
 
@@ -20,6 +22,12 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
       appBar: AppBar(
         title: const Text('편성표'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
       ),
       body: const SingleChildScrollView(
         child: DataTableExample(),

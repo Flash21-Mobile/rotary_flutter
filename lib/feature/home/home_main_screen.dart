@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/feature/home/menu/advertise/advertise_screen.dart';
 import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import '../../util/model/menu_items.dart';
+import 'menu/advertise/advertise_screen.dart';
 
 class HomeMainScreen extends ConsumerStatefulWidget {
   const HomeMainScreen({super.key});

@@ -5,6 +5,8 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class OrganizationScreen extends ConsumerStatefulWidget {
   const OrganizationScreen({super.key});
 
@@ -21,6 +23,12 @@ class _OrganizationScreen extends ConsumerState<OrganizationScreen> {
         appBar: AppBar(
           title: Text('지구임원'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body:ScrollablePinchView(
     child: Image.asset(

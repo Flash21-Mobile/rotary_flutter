@@ -6,6 +6,8 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class PresidentScreen extends ConsumerStatefulWidget {
   const PresidentScreen({super.key});
 
@@ -22,6 +24,12 @@ class _PresidentScreen extends ConsumerState<PresidentScreen> {
         appBar: AppBar(
           title: Text('RI 회장'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: ScrollablePinchView(
             child: Column(

@@ -5,6 +5,8 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class AllocationTableScreen extends ConsumerStatefulWidget {
   const AllocationTableScreen({super.key});
 
@@ -24,6 +26,12 @@ class _AllocationTableScreen extends ConsumerState<AllocationTableScreen> {
         appBar: AppBar(
           title: Text('배점표'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: ScrollablePinchView(
             child: Stack(children: [

@@ -87,6 +87,12 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
       appBar: AppBar(
         title: Text('회원정보 수정'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
         actions: [
           Container(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

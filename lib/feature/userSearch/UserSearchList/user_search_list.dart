@@ -54,6 +54,12 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
         appBar: AppBar(
           title: Text('회원검색'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: Column(children: [
           SizedBox(

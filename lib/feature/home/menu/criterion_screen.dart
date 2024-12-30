@@ -5,6 +5,8 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class CriterionScreen extends ConsumerStatefulWidget {
   const CriterionScreen({super.key});
 
@@ -20,6 +22,12 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
       appBar: AppBar(
         title: const Text('표창기준'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
       ),
 
       body: ScrollablePinchView(

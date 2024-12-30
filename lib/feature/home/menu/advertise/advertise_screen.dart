@@ -7,6 +7,7 @@ import 'package:rotary_flutter/util/fontSize.dart';
 
 import '../../../../data/model/article_model.dart';
 import '../../../../util/global_color.dart';
+import '../../../home_provider.dart';
 import '../../home_main_component.dart';
 
 class AdvertiseScreen extends ConsumerStatefulWidget {
@@ -46,6 +47,12 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
         appBar: AppBar(
           title: Text('광고협찬'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         successBody: (data) {
           data as List<Article>;

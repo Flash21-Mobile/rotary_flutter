@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../util/global_color.dart';
+import '../../home_provider.dart';
 
-class HomepageScreen extends StatefulWidget {
+class HomepageScreen extends ConsumerStatefulWidget {
   const HomepageScreen({super.key});
 
   @override
-  State<HomepageScreen> createState() => _HomepageScreenState();
+  ConsumerState<HomepageScreen> createState() => _HomepageScreenState();
 }
 
-class _HomepageScreenState extends State<HomepageScreen> {
+class _HomepageScreenState extends ConsumerState<HomepageScreen> {
   late WebViewController _controller = WebViewController();
 
   @override
@@ -45,6 +47,12 @@ class _HomepageScreenState extends State<HomepageScreen> {
         appBar: AppBar(
           title: Text('지구홈페이지'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: WebViewWidget(controller: _controller),
       ),

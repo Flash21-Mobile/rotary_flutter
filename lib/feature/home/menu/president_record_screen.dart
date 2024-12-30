@@ -5,6 +5,8 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class PresidentRecordScreen extends ConsumerStatefulWidget {
   const PresidentRecordScreen({super.key});
 
@@ -21,6 +23,12 @@ class _PresidentRecordScreen extends ConsumerState<PresidentRecordScreen> {
       appBar: AppBar(
         title: const Text('총재 약력'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
       ),
       body: ScrollablePinchView(
         child: Column(

@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:rotary_flutter/feature/announcement/Announcement_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/advertise/advertise_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/advertise/criterion_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/advertise/programing_table_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/allocation_table_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/event_screen.dart';
 import 'package:rotary_flutter/feature/home/menu/gallery_screen.dart';
@@ -19,6 +17,9 @@ import 'package:rotary_flutter/feature/home/menu/rotary_korea_screen.dart';
 import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../feature/home/menu/criterion_screen.dart';
+import '../../feature/home/menu/programing_table_screen.dart';
 
 class MenuItem {
   final String? iconPath;

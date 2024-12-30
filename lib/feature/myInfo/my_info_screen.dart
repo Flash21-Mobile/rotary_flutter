@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/data/model/account_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
+import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_screen.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_view_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
@@ -78,10 +79,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                           Spacer(),
                           InkWell(
                               onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return MyInfoModifyScreen();
-                                }));
+                                ref.read(HomeProvider).pushCurrentWidget = MyInfoModifyScreen();
                               },
                               child: Container(
                                   decoration: BoxDecoration(

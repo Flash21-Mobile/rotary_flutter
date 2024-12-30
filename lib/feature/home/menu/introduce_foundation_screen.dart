@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class IntroduceFoundationScreen extends StatefulWidget {
+import '../../home_provider.dart';
+
+class IntroduceFoundationScreen extends ConsumerStatefulWidget {
   const IntroduceFoundationScreen({super.key});
 
   @override
-  State<IntroduceFoundationScreen> createState() => IntroduceFoundationScreenState();
+  ConsumerState<IntroduceFoundationScreen> createState() => IntroduceFoundationScreenState();
 }
 
-class IntroduceFoundationScreenState extends State<IntroduceFoundationScreen> {
+class IntroduceFoundationScreenState extends ConsumerState<IntroduceFoundationScreen> {
   late WebViewController _controller = WebViewController();
 
   @override
@@ -44,6 +47,12 @@ class IntroduceFoundationScreenState extends State<IntroduceFoundationScreen> {
         appBar: AppBar(
           title: Text('총재단소개'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         body: WebViewWidget(controller: _controller),
       ),

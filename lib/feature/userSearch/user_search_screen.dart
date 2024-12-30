@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
+import 'package:rotary_flutter/feature/home_provider.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import 'UserSearchList/user_search_list.dart';
 
-class UserSearchScreen extends StatefulWidget {
+class UserSearchScreen extends ConsumerStatefulWidget {
   const UserSearchScreen({
     super.key,
   });
 
   @override
-  State<UserSearchScreen> createState() => _UserSearchScreenState();
+  ConsumerState<UserSearchScreen> createState() => _UserSearchScreenState();
 }
 
-class _UserSearchScreenState extends State<UserSearchScreen> {
+class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
   @override
   Widget build(BuildContext context) {
+    var homeProvider = ref.read(HomeProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -26,6 +29,12 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
           appBar: AppBar(
             title: Text('회원검색'),
             centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                ref.read(HomeProvider).popCurrentWidget();
+              },
+            ),
           ),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
@@ -64,9 +73,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const UserListWidget(initialLocation: 0)));
+                              homeProvider.pushCurrentWidget = UserListWidget(initialLocation: 0);
                             },
                             child: Container(
                               padding: EdgeInsets.only(
@@ -91,11 +98,8 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                   onTap: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const UserListWidget(
-                                initialLocation: 1)));
+
+                        homeProvider.pushCurrentWidget = UserListWidget(initialLocation: 1);
                   },
                     child: Container(
                     height: 95,
@@ -156,12 +160,8 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                     IndexText('${index+1}지역',)
                                   ]),
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => UserListWidget(
-                                            initialLocation: index+2)));
-                              }));
+                      homeProvider.pushCurrentWidget = UserListWidget(initialLocation: index +2);
+                      }));
                     },
                   )
                 ],

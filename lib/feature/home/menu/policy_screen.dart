@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../home_provider.dart';
+
 class PolicyScreen extends ConsumerStatefulWidget {
   const PolicyScreen({super.key});
 
@@ -19,6 +21,12 @@ class _PolicyScreen extends ConsumerState<PolicyScreen> {
       appBar: AppBar(
         title: const Text('운영방침'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
       ),
       body: ScrollablePinchView(
         child: Padding(padding: EdgeInsets.symmetric(horizontal: 15),
