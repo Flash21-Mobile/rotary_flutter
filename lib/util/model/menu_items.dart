@@ -1,25 +1,26 @@
 import 'package:flutter/cupertino.dart';
-import 'package:rotary_flutter/feature/announcement/Announcement_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/advertise/advertise_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/allocation_table_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/event_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/gallery_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/homepage_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/introduce_foundation_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/k_rotary_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/magazine_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/my_rotary_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/organization_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/policy_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/president_record_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/president_screen.dart';
-import 'package:rotary_flutter/feature/home/menu/rotary_korea_screen.dart';
-import 'package:rotary_flutter/feature/myInfo/myInfoModify/my_info_modify_screen.dart';
+import 'package:rotary_flutter/feature/advertise/advertise_screen.dart';
+import 'package:rotary_flutter/feature/etc/allocation_table_screen.dart';
+import 'package:rotary_flutter/feature/event/event_screen.dart';
+import 'package:rotary_flutter/feature/etc/gallery_screen.dart';
+import 'package:rotary_flutter/feature/etc/homepage_screen.dart';
+import 'package:rotary_flutter/feature/etc/introduce_foundation_screen.dart';
+import 'package:rotary_flutter/feature/etc/k_rotary_screen.dart';
+import 'package:rotary_flutter/feature/etc/magazine_screen.dart';
+import 'package:rotary_flutter/feature/etc/my_rotary_screen.dart';
+import 'package:rotary_flutter/feature/etc/organization_screen.dart';
+import 'package:rotary_flutter/feature/etc/policy_screen.dart';
+import 'package:rotary_flutter/feature/etc/president_record_screen.dart';
+import 'package:rotary_flutter/feature/etc/president_screen.dart';
+import 'package:rotary_flutter/feature/etc/rotary_korea_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
+import 'package:rotary_flutter/feature/criterion/criterion_screen.dart';
+import 'package:rotary_flutter/feature/etc/programing_table_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../feature/home/menu/criterion_screen.dart';
-import '../../feature/home/menu/programing_table_screen.dart';
+import '../../feature/etc/announcement_screen.dart';
+import '../../feature/myInfo/modify/my_info_modify_screen.dart';
+
 
 class MenuItem {
   final String? iconPath;
@@ -32,85 +33,85 @@ class MenuItem {
 
 final List<MenuItem> menuItems = [
   MenuItem(
-      iconPath: 'asset/icons/notice.png',
+      iconPath: 'asset/icons/menu/announcement_icon.svg',
       label: '공지사항',
       widget: const AnnouncementScreen()),
   MenuItem(
-      iconPath: 'asset/icons/calender.png',
+      iconPath: 'asset/icons/menu/event_icon.svg',
       label: '행사일정',
       widget: const EventScreen()),
   MenuItem(
-      iconPath: 'asset/icons/gallery.png',
+      iconPath: 'asset/icons/menu/gallery_icon.svg',
       label: '지구갤러리',
       widget: const GalleryScreen()),
   MenuItem(
-      iconPath: 'asset/icons/my_rotary.png',
+iconPath: 'asset/icons/menu/my_rotary_icon.svg',
       label: '내 로타리',
       widget: const MyRotaryScreen()),
   MenuItem(
-      iconPath: 'asset/icons/homepage.png',
+      iconPath: 'asset/icons/menu/homepage_icon.svg',
       label: '지구홈페이지',
       widget: const HomepageScreen()),
   MenuItem(
-      iconPath: 'asset/icons/band.png',
+      iconPath: 'asset/icons/menu/band_icon.svg',
       label: '3700밴드',
       onTap: () {
         launchUrl(Uri.parse('https://band.us/band/50079452'));
       }),
   MenuItem(
-      iconPath: 'asset/icons/write.png',
+      iconPath: 'asset/icons/menu/magazine_icon.svg',
       label: '총재월신',
       widget: const MagazineScreen()),
   MenuItem(
-      iconPath: 'asset/icons/document.png',
+      iconPath: 'asset/icons/menu/introduce_foundation_icon.svg',
       label: '총재단소개',
       widget: const IntroduceFoundationScreen()),
   MenuItem(
-      iconPath: 'asset/icons/member.png',
+      iconPath: 'asset/icons/menu/organization_icon.svg',
       label: '지구임원',
       widget: const OrganizationScreen()),
   MenuItem(
-      iconPath: 'asset/icons/search.png',
+      iconPath: 'asset/icons/menu/user_search_icon.svg',
       label: '회원검색',
       widget: const UserSearchScreen()),
   MenuItem(
-      iconPath: 'asset/icons/ads.png',
+      iconPath: 'asset/icons/menu/advertise_icon.svg',
       label: '광고협찬',
       widget: const AdvertiseScreen()),
   MenuItem(
-      iconPath: 'asset/icons/myInfo.png',
+      iconPath: 'asset/icons/menu/my_info_modify_icon.svg',
       label: '자기정보수정',
       widget: const MyInfoModifyScreen()),
   MenuItem(
-      iconPath: 'asset/icons/k_rotary.png',
+      iconPath: 'asset/icons/menu/k_rotary_icon.svg',
       label: 'K-로타리',
       widget: KRotaryKoreaScreen()),
   MenuItem(
-      iconPath: 'asset/icons/rotary_kor.png',
+      iconPath: 'asset/icons/menu/rotary_korea_icon.svg',
       label: '로타리코리아',
       widget: RotaryKoreaScreen()),
   MenuItem(
-      iconPath: 'asset/icons/president.png',
+      iconPath: 'asset/icons/menu/president_icon.svg',
       label: 'RI 회장',
       widget: const PresidentScreen()),
   MenuItem(
-      iconPath: 'asset/icons/oper.png',
+      iconPath: 'asset/icons/menu/policy_icon.svg',
       label: '운영방침',
       widget: const PolicyScreen()),
   MenuItem(
-      iconPath: 'asset/icons/history.png',
+      iconPath: 'asset/icons/menu/president_record_icon.svg',
       label: '총재약력',
       widget: const PresidentRecordScreen()),
   MenuItem(
-      iconPath: 'asset/icons/scoring.png',
+      iconPath: 'asset/icons/menu/allocation_icon.svg',
       label: '배점표',
       widget: const AllocationTableScreen()),
   MenuItem(
-      iconPath: 'asset/icons/average.png',
+      iconPath: 'asset/icons/menu/criterion_icon.svg',
       label: '표장기준',
       widget: const CriterionScreen()),
   MenuItem(
-      iconPath: 'asset/icons/form.png',
+      iconPath: 'asset/icons/menu/programing_table_icon.svg',
       label: '편성표',
       widget: const ProgramingTableScreen()),
   MenuItem(

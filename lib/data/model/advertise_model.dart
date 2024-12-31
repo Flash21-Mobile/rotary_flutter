@@ -1,23 +1,28 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'account_model.dart';
+
 part 'advertise_model.g.dart';
 
 @JsonSerializable()
 class AdvertiseModel {
-  String? image;
+  Account? account;
+  Board? board;
   String? title;
+  String? content;
 
-  AdvertiseModel({this.image, this.title});
+  AdvertiseModel({this.account, this.board, this.title, this.content});
 
-  AdvertiseModel.fromJson(Map<String, dynamic> json) {
-    image = json['image'];
-    title = json['title'];
-  }
+  factory AdvertiseModel.fromJson(Map<String, dynamic> json) => _$AdvertiseModelFromJson(json);
+  Map<String, dynamic> toJson() => _$AdvertiseModelToJson(this);
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['image'] = this.image;
-    data['title'] = this.title;
-    return data;
-  }
+@JsonSerializable()
+class Board {
+  String? name;
+
+  Board({this.name});
+
+  factory Board.fromJson(Map<String, dynamic> json) => _$BoardFromJson(json);
+  Map<String, dynamic> toJson()  => _$BoardToJson(this);
 }

@@ -84,10 +84,10 @@ flutter:
   assets:
     - asset/
     - asset/images/
-    - asset/images/menu/
+
     - asset/icons/
-    - asset/icons/userInfo/
-    - asset/icons/router/
+    - asset/icons/menu/
+    - asset/icons/userinfo/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

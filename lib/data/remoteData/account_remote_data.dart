@@ -1,6 +1,6 @@
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
-import '../../util/model/state.dart';
+import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
 import '../model/account_model.dart';
 
@@ -11,7 +11,7 @@ class AccountAPI {
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
     ..options.headers['accept-Type'] = 'application/json'
-    ..options.headers['Authorization'] = 'Bearer showmethemoney';
+    ..options.headers['cheat'] = 'showmethemoney';
 
   late AccountRepository accountRepository;
 

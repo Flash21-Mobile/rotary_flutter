@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/feature/home_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import '../../util/model/menu_items.dart';
-import 'menu/advertise/advertise_screen.dart';
+import '../advertise/advertise_screen.dart';
 
 class HomeMainScreen extends ConsumerStatefulWidget {
   const HomeMainScreen({super.key});
@@ -22,8 +23,8 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
   int _currentPage = 0;
 
   final _banners = [
-    'asset/images/star_logo.jpg',
-    'asset/images/rotary_slide02.png'
+    'asset/images/star_slide.jpg',
+    'asset/images/rotary_slide.png'
   ];
 
   @override
@@ -111,9 +112,8 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                   children: [
                     menuItems[index].iconPath== null
                     ?SizedBox()
-                    :Image.asset(
+                    :SvgPicture.asset(
                       menuItems[index].iconPath!,
-                      color: GlobalColor.indexBoxColor,
                       width: width * 0.08,
                       height: width * 0.08,
                     ),

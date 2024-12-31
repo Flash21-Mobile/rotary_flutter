@@ -8,12 +8,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import "package:permission_handler/permission_handler.dart";
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
-import 'package:rotary_flutter/feature/home_provider.dart';
+import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_screen.dart';
 import 'package:rotary_flutter/util/common/phone_input_formatter.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
-import 'package:rotary_flutter/util/model/state.dart';
+import 'package:rotary_flutter/util/model/loadstate.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
 import '../data/model/account_model.dart';
 import 'home/home_main_screen.dart';
@@ -54,16 +54,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
       try {
         final phone = await androidChannel.invokeMethod('getPhoneNumber');
         if (phone != null) {
-          var dataState = await AccountAPI().getAccount(cellphone: phone);
-
-          loadStateFunction(dataState,
-              onSuccess: (data) {
-                var result = (data as List<Account>)[0].name;
-                Fluttertoast.showToast(msg: '${result}님 로그인에 성공하였습니다.');
-                isLogin = true;
-                globalStorage.write(key: 'phone', value: phone);
-              },
-              onError: (e) => showLoginDialog());
+          final indexPhone = '${phone?.substring(0, 3)}-${phone?.substring(3, 7)}-${phone?.substring(7)}';
+          login(indexPhone);
         }
       } catch (e) {
         showLoginDialog();
@@ -72,9 +64,24 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    if ((await globalStorage.read(key: 'phone')) == null)
-      Future.delayed(Duration(milliseconds: 300))
-          .then((onValue) => showPhoneDialog());
+    if ((await globalStorage.read(key: 'phone')) == null){
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showPhoneDialog();
+      });
+      }
+  }
+
+  void login(String phone) async {
+    var dataState = await AccountAPI().getAccount(cellphone: phone);
+
+    loadStateFunction(dataState,
+        onSuccess: (data) {
+          var result = (data as List<Account>)[0].name;
+          Fluttertoast.showToast(msg: '${result}님 로그인에 성공하였습니다.');
+          isLogin = true;
+          globalStorage.write(key: 'phone', value: phone);
+        },
+        onError: (e) => showLoginDialog());
   }
 
   void showPhoneDialog() {
@@ -129,10 +136,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     onTap: (){
           if (idController.text == 'flash21' && passwordController.text == 'flash2121'){
             Navigator.of(context, rootNavigator: true).pop();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(milliseconds: 1500),
-              content: Text('로그인에 성공하였습니다'),
-            ));
+
+            // login('010-3811-0831');    //todo r: 서버 되면 키기
           } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               duration: Duration(milliseconds: 1500),
@@ -160,7 +165,10 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         Navigator.of(context, rootNavigator: true).pop();
 
         homeProvider.authenticateState = End();
-        globalStorage.write(key: 'phone', value: '01040502111');
+
+        globalStorage.write(key: 'phone', value: '01040502111');    //todo r: 수정
+
+
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),
           content: Text('인증 완료되었습니다'),
@@ -198,7 +206,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                         child: Row(children: [
                           SvgPicture.asset(
                             height: 20,
-                            'asset/images/main_logo.svg',
+                            'asset/icons/logo.svg',
                             fit: BoxFit.contain,
                           ),
                           Spacer(),
@@ -206,7 +214,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                             onTap: (){
                               homeProvider.pushCurrentWidget = MyInfoScreen();
                             },
-                            child: SvgPicture.asset('asset/icons/router/my_info_filled_icon.svg',width: 24, height: 24,),
+                            child: SvgPicture.asset('asset/icons/router/my_info_icon.svg',width: 24, height: 24,),
                           )
                         ])))),
             body: homeProvider.currentWidget??currentWidgetIsNull())

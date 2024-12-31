@@ -6,9 +6,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
 import '../util/global_color.dart';
-import '../util/model/state.dart';
+import '../util/model/loadstate.dart';
 import 'home/home_main_component.dart';
-import 'myInfo/myInfoModify/my_info_modify_component.dart';
+import 'myInfo/modify/my_info_modify_component.dart';
 
 class LoadStateScaffold extends ConsumerStatefulWidget {
   final Color? backgroundColor;
@@ -19,14 +19,13 @@ class LoadStateScaffold extends ConsumerStatefulWidget {
 
   final LoadState loadState;
 
-  const LoadStateScaffold(
-      {super.key,
-      this.backgroundColor,
-      this.appBar,
-      required this.loadState,
-      this.loadingBody,
-      required this.successBody,
-      this.errorBody});
+  const LoadStateScaffold({super.key,
+    this.backgroundColor,
+    this.appBar,
+    required this.loadState,
+    this.loadingBody,
+    required this.successBody,
+    this.errorBody});
 
   @override
   ConsumerState<LoadStateScaffold> createState() => _LoadStateScaffold();
@@ -35,20 +34,22 @@ class LoadStateScaffold extends ConsumerStatefulWidget {
 class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
   @override
   Widget build(BuildContext context) {
-    const placeHolder = Center(
-        child: CircularProgressIndicator(
-      color: GlobalColor.primaryColor,
-    ));
-
     return Scaffold(
         backgroundColor: widget.backgroundColor,
         appBar: widget.appBar,
         body: switch (widget.loadState) {
           Loading() => widget.loadingBody ?? placeHolder,
           Success() => widget.successBody((widget.loadState as Success).data),
-          Error() => widget.errorBody ?? widget.loadingBody ?? placeHolder,
+          Error() => errorWidget(widget.loadState as Error, widget.errorBody),
           _ => const Placeholder()
         });
+  }
+
+  var placeHolder = const Center(child: CircularProgressIndicator(color: GlobalColor.primaryColor,));
+
+  Widget errorWidget(Error error, Widget? errorWidget) {
+    Log.e(error.exception.toString(), isSuper: true);
+    return widget.errorBody ?? widget.loadingBody ?? placeHolder;
   }
 }
 
@@ -59,19 +60,18 @@ class LoadStateWidget extends StatelessWidget {
 
   final LoadState loadState;
 
-  const LoadStateWidget(
-      {super.key,
-      required this.loadState,
-      this.loadingWidget,
-      required this.successWidget,
-      this.errorWidget});
+  const LoadStateWidget({super.key,
+    required this.loadState,
+    this.loadingWidget,
+    required this.successWidget,
+    this.errorWidget});
 
   @override
   Widget build(BuildContext context) {
     const placeHolder = Center(
         child: CircularProgressIndicator(
-      color: GlobalColor.primaryColor,
-    ));
+          color: GlobalColor.primaryColor,
+        ));
 
     return switch (loadState) {
       Loading() => loadingWidget ?? placeHolder,
@@ -82,8 +82,7 @@ class LoadStateWidget extends StatelessWidget {
   }
 }
 
-void showDismissDialog(
-  BuildContext context, {
+void showDismissDialog(BuildContext context, {
   Function(bool, Object?)? onPopInvokedWithResult,
   required TextEditingController controller,
   required String hint,
@@ -104,7 +103,7 @@ void showDismissDialog(
         child: Dialog(
           elevation: 0,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -113,7 +112,7 @@ void showDismissDialog(
               children: [
                 SvgPicture.asset(
                   height: 20,
-                  'asset/images/main_logo.svg',
+                  'asset/icons/logo.svg',
                   fit: BoxFit.contain,
                 ),
                 SizedBox(
@@ -127,14 +126,14 @@ void showDismissDialog(
                 SizedBox(height: 20),
                 ...(subController != null && subHint != null)
                     ? [
-                        MyInfoModifyTextField(
-                            indexTitle: subHint,
-                            indexController: subController,
-                            keyboardType: keyboardType,
-                            obscureText: true,
-                            inputFormatters: textInputFormatter),
-                        SizedBox(height: 20),
-                      ]
+                  MyInfoModifyTextField(
+                      indexTitle: subHint,
+                      indexController: subController,
+                      keyboardType: keyboardType,
+                      obscureText: true,
+                      inputFormatters: textInputFormatter),
+                  SizedBox(height: 20),
+                ]
                     : [],
                 Row(mainAxisSize: MainAxisSize.max, children: [
                   Expanded(

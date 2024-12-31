@@ -19,24 +19,24 @@ enum CardinalLocation {
   final String name;
   final int? id;
 
-  static List<CardinalLocation> all =[
+  static List<CardinalLocation> all = [
     CardinalLocation.global,
-      CardinalLocation.head,
-      CardinalLocation.first,
-      CardinalLocation.second,
-      CardinalLocation.third,
-      CardinalLocation.forth,
-      CardinalLocation.fifth,
-      CardinalLocation.sixth,
-      CardinalLocation.seventh,
-      CardinalLocation.eighth,
-      CardinalLocation.ninth,
-      CardinalLocation.tenth,
-      CardinalLocation.eleventh,
-      CardinalLocation.twelfth,
-    ];
+    CardinalLocation.head,
+    CardinalLocation.first,
+    CardinalLocation.second,
+    CardinalLocation.third,
+    CardinalLocation.forth,
+    CardinalLocation.fifth,
+    CardinalLocation.sixth,
+    CardinalLocation.seventh,
+    CardinalLocation.eighth,
+    CardinalLocation.ninth,
+    CardinalLocation.tenth,
+    CardinalLocation.eleventh,
+    CardinalLocation.twelfth,
+  ];
 
-  static CardinalLocation getByIndex(int index){
+  static CardinalLocation getByIndex(int index) {
     return all[index];
   }
 }
