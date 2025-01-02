@@ -34,21 +34,28 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
             },
           ),
         ),
-        body: Padding(
+        body:Column(children:[Expanded(child: Column(children: [ScrollablePinchView(child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: SingleChildScrollView(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IndexThumbTitle(widget.event.title),
+                    SizedBox(
+                      height: 5,
+                    ),
                     IndexText(widget.event.content),
                     SizedBox(
-                      height: 30,
+                      height: 15,
                     ),
                     Divider(height: 0.5,thickness: 0.5,color: GlobalColor.greyFontColor,),
                     SizedBox(height: 5,),
-                    IndexMinText('2023-02-24 업데이트',textColor: GlobalColor.greyFontColor,)
+                    IndexMinText('${formatDateTime(widget.event.time)} 업데이트',textColor: GlobalColor.greyFontColor,)
                   ])),
-        ));
+        )],) )]));
+  }
+
+  String formatDateTime(String? dateTime) {
+    DateTime parsedDate = DateTime.parse(dateTime??'');
+    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
   }
 }

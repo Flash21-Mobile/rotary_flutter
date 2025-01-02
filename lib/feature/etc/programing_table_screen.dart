@@ -29,18 +29,12 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
           },
         ),
       ),
-      body: const SingleChildScrollView(
-        child: DataTableExample(),
-      ),
+      body:ScrollablePinchView(child: Padding(padding: EdgeInsets.symmetric(horizontal: 15),child:  dataWidget())),
     );
   }
-}
 
-class DataTableExample extends StatelessWidget {
-  const DataTableExample({super.key});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget dataWidget() {
     // 데이터 정의
     final List<List<String>> data = [
       [
@@ -105,95 +99,50 @@ class DataTableExample extends StatelessWidget {
       ],
     ];
 
-    final screenWidth = MediaQuery.of(context).size.width; // 화면 너비 가져오기
-
-    return ScrollablePinchView(
-      child: DataTable(
-        columnSpacing: screenWidth * 0.02, // 화면 크기에 비례한 열 간 간격
-        columns: const <DataColumn>[
-          DataColumn(
-            label: Center(
-              child: Text(
-                '지역',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: Center(
-              child: Text(
-                '총재지역대표',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: Center(
-              child: Text(
-                '클럽명',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
-        ],
-        rows: data.map((row) {
-          return DataRow(
-            cells: [
-              DataCell(
-                Container(
-                  width: screenWidth * 0.05, // 지역 열의 크기
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    row[0],
-                    softWrap: true,
-                    maxLines: null,
+    return Column(
+      children: [
+        ...data.map((indexData) {
+          return Column(
+            children: [
+              Container(height: 0.5, color: GlobalColor.black),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: IndexText(indexData[0]),
                   ),
-                ),
-              ),
-              DataCell(
-                Container(
-                  width: screenWidth * 0.3, // 총재지역대표 열의 크기
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    row[1],
-                    softWrap: true,
-                    maxLines: null,
+                  SizedBox(width: 5),
+                  Container(
+                    color: GlobalColor.black,
+                    width: 0.5,
+                    height: 80,
                   ),
-                ),
-              ),
-              DataCell(
-                Flexible(
-                  child: Text(
-                    row[2],
-                    softWrap: true, // 줄바꿈 활성화
-                    maxLines: null, // 줄 수 제한 없음
-                    overflow: TextOverflow.visible, // 텍스트 잘림 방지
+                  SizedBox(width: 5),
+                  Container(
+                    width: 100,
+                    child: IndexText(indexData[1]),
                   ),
-                ),
+                  SizedBox(width: 5),
+                  Container(
+                    color: GlobalColor.black,
+                    height: 80,
+                    width: 0.5,
+                  ),
+                  SizedBox(width: 5),
+                  Flexible(
+                    child: Column(
+                      children: [
+                        IndexText(indexData[2]),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              // DataCell(
-              //   Flexible(
-              //     child: Text(
-              //       row[2],
-              //       softWrap: true, // 줄바꿈 활성화
-              //       maxLines: null, // 줄 수 제한 없음
-              //       overflow: TextOverflow.visible, // 텍스트 잘림 방지
-              //     ),
-              //   ),
-              // ),
             ],
           );
-        }).toList(),
-      ),
+        }),
+      ],
     );
   }
-}
+  }

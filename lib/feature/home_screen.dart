@@ -214,7 +214,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                             onTap: (){
                               homeProvider.pushCurrentWidget = MyInfoScreen();
                             },
-                            child: SvgPicture.asset('asset/icons/router/my_info_icon.svg',width: 24, height: 24,),
+                            child: SvgPicture.asset('asset/icons/my_info_icon.svg',width: 24, height: 24,),
                           )
                         ])))),
             body: homeProvider.currentWidget??currentWidgetIsNull())

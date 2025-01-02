@@ -12,7 +12,7 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return InkWell(onTap: onTap,child:  Container(
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: GlobalColor.indexBoxColor,
@@ -23,6 +23,6 @@ class EventTile extends StatelessWidget {
         Spacer(),
         Icon(Icons.arrow_forward_ios_rounded,size: 15,)
       ],),
-    );
+    ));
   }
 }

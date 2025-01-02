@@ -12,7 +12,7 @@ final EventProvider = ChangeNotifierProvider.autoDispose<_ViewModel>((ref) {
 class _ViewModel with ChangeNotifier {
   LoadState eventState = Loading();
 
-  void getEvent() async{
+  Future getEvent() async{
     eventState  = Loading();
     notifyListeners();
 

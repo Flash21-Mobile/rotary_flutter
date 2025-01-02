@@ -169,10 +169,10 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                color: Colors.red,
-                                width: 100,
-                                height: 100,
+                              child: Icon(
+                                Icons.person_rounded,
+                                size: 100 / 2,
+                                color: GlobalColor.indexColor,
                               ),
                             ),
                             SizedBox(width: 15,),

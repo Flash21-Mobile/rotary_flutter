@@ -11,6 +11,7 @@ import 'package:rotary_flutter/util/global_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../data/model/account_model.dart';
+import '../../home_view_model.dart';
 
 class UserInfoScreen extends ConsumerStatefulWidget {
   const UserInfoScreen({super.key,required this.id});
@@ -36,6 +37,12 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
         appBar: AppBar(
           title: Text('회원정보'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(HomeProvider).popCurrentWidget();
+            },
+          ),
         ),
         loadState: userInfoProvider.userInfoState,
         successBody:(data){
@@ -49,12 +56,18 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                 SliverList(
                     delegate: SliverChildListDelegate([
                   Container(
-                    child: Image.network(
-                        'https://mmate.flash21.com/ecm/bbs/imgLoad.do?path=/home/mmate/webapps/upload/photo/ST0122/&filename=ECM_USR_INFO_MNGTST0122_17289596236890_41&mode=bbsAttachedFile',
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter),
+                    decoration: BoxDecoration(
+                      color: GlobalColor.indexBoxColor,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width,
+
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.person_rounded,size: MediaQuery.of(context).size.width/5,color: GlobalColor.indexColor,)
+                      ],
+                    ),
                   )
                 ]))
               ];
@@ -107,7 +120,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                               assetName:
                                   'asset/icons/info/position_icon.svg',
                               indexName: '직책',
-                              index: 'a'),
+                              index: ''),
                           UserInfoIndex(
                               assetName:
                                   'asset/icons/info/affiliation_icon.svg',
@@ -196,7 +209,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                               assetName:
                                   'asset/icons/info/address_icon.svg',
                               indexName: '주소',
-                              index: '${account.workAddress} ${account.workAddressSub}'),
+                              index: '${account.workAddress??''} ${account.workAddressSub??''}'),
                           UserInfoIndex(
                               assetName: 'asset/icons/info/email_icon.svg',
                               indexName: '이메일',

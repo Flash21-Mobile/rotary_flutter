@@ -72,7 +72,9 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
               child: Row(
                 children: [
                   CustomDropdown(
-                      items: CardinalLocation.all.map((value) => value.name).toList(),
+                      items: CardinalLocation.all
+                          .map((value) => value.name)
+                          .toList(),
                       selectedValue: _selectedLocation,
                       onChanged: (value) {
                         if (value != null && value != _selectedLocation) {
@@ -123,20 +125,30 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                   onTap: () {
-                                    ref.read(HomeProvider).pushCurrentWidget = UserInfoScreen(id: accounts[index].id??0);
+                                    ref.read(HomeProvider).pushCurrentWidget =
+                                        UserInfoScreen(
+                                            id: accounts[index].id ?? 0);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
                                         color: GlobalColor.white,
                                         borderRadius:
                                             BorderRadius.circular(20)),
-                                    padding: EdgeInsets.all(20),
+                                    padding: EdgeInsets.all(15),
                                     child: Row(
                                       children: [
                                         Container(
                                           width: 120,
                                           height: 160,
-                                          color: GlobalColor.primaryColor,
+                                          decoration: BoxDecoration(
+                                          color: GlobalColor.indexBoxColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: Icon(
+                                            Icons.person_rounded,
+                                            size: 120 / 2,
+                                            color: GlobalColor.indexColor,
+                                          ),
                                         ),
                                         SizedBox(
                                           width: 15,
@@ -152,7 +164,9 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
                                                 width: 5,
                                               ),
                                               IndexText(
-                                                accounts[index].groupCardinal?.name,
+                                                accounts[index]
+                                                    .groupCardinal
+                                                    ?.name,
                                                 overFlowFade: true,
                                               )
                                             ]),
@@ -190,8 +204,9 @@ class _UserListWidgetState extends ConsumerState<UserListWidget> {
                             },
                           );
                         });
-                  },errorWidget: Expanded(
-                  child: Column(
+                  },
+                  errorWidget: Expanded(
+                      child: Column(
                     children: [
                       SizedBox(
                         height: 150,

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/data/model/advertise_model.dart';
-import 'package:rotary_flutter/data/remoteData/article_remote_data.dart';
+import 'package:rotary_flutter/data/remoteData/advertise_remote_data.dart';
 
 import '../../../../util/model/loadstate.dart';
 
