@@ -14,8 +14,10 @@ abstract class AccountRepository {
     @Query('cellphone') String? cellphone,
     @Query('id') int? id,
     @Query('name') String? name,
-    @Query('cardinal') int? cardinal,
-    @Query('groupCardinal') int? groupCardinal,
+    @Query('grade') String? grade,
+    @Query('region') String? region,
+    @Query('page') int? page,
+    @Query('size') int? size,
   );
 
   @PUT("/account/{id}")

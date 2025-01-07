@@ -112,6 +112,29 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                         ))
                 ],
               ));
-        });
+        },
+        errorBody: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Column(children: [
+              SearchBox(
+                hint: '검색어를 입력해주세요',
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Expanded(
+                  child: Column(
+                children: [
+                  SizedBox(
+                    height: 150,
+                  ),
+                  Text(
+                    'ⓘ',
+                    style: TextStyle(fontSize: 40),
+                  ),
+                  IndexText('조회된 데이터가 없습니다.'),
+                ],
+              )),
+            ])));
   }
 }

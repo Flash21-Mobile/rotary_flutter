@@ -1,19 +1,18 @@
 enum CardinalRC {
-  rc(name: "RC", id: null),
-  chungDo(name: "청도", id: 9),
-  yungNam(name: "대구 영남", id: 10),
-  chungUn(name: "대구 청운", id: 11),
-  taeYang(name: "대구 태양", id: 12),
-  wanHwa(name: "청도원화 RC", id: 13),
-  useong(name: "대구유성 RC", id: 14),
-  daesung(name: "대구대성 RC", id: 15),
-  songWon(name: "대구송원 RC", id: 16);
+  rc(name: "RC"),
+  chungDo(name: "대구청도 RC",),
+  yungNam(name: "대구영남 RC", ),
+  chungUn(name: "대구청운 RC", ),
+  taeYang(name: "대구태양 RC", ),
+  wanHwa(name: "청도원화 RC", ),
+  useong(name: "대구유성 RC", ),
+  daesung(name: "대구대성 RC", ),
+  songWon(name: "대구송원 RC", );
 
 
-  const CardinalRC({required this.name, required this.id});
+  const CardinalRC({required this.name});
 
   final String name;
-  final int? id;
 
   static List<CardinalRC> all =[
     CardinalRC.rc,

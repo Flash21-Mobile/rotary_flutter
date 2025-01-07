@@ -14,6 +14,7 @@ import '../myInfo/modify/my_info_modify_screen.dart';
 class MyInfoScreen extends ConsumerStatefulWidget {
   const MyInfoScreen({super.key});
 
+  @override
   ConsumerState<MyInfoScreen> createState() => _MyInfoScreen();
 }
 
@@ -33,6 +34,16 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
     var myInfoProvider = ref.watch(MyInfoProvider);
 
     return LoadStateScaffold(
+      appBar: AppBar(
+        title: Text('내 정보'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(HomeProvider).popCurrentWidget();
+          },
+        ),
+      ),
       loadState: myInfoProvider.accountState,
       backgroundColor: GlobalColor.white,
       successBody: (data) {
@@ -42,15 +53,16 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Column(children: [
               SizedBox(
-                height: 50,
+                height: 30,
               ),
               account.cellphone != null
                   ? Image.network(
                       '${BASE_URL}/qr?size=10&data=tel:+${account.cellphone}',
-                      width: 150, height: 150)
+                      width: 150,
+                      height: 150)
                   : SizedBox(),
               SizedBox(
-                height: 15,
+                height: 30,
               ),
               Container(
                   padding: EdgeInsets.all(20),
@@ -73,13 +85,14 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                           SvgPicture.asset(
                             width: 25,
                             height: 25,
-                            'asset/icons/router/search_icon.svg',
+                            'asset/icons/search_icon.svg',
                           ),
                           IndexTitle(account.name),
                           Spacer(),
                           InkWell(
                               onTap: () {
-                                ref.read(HomeProvider).pushCurrentWidget = MyInfoModifyScreen();
+                                ref.read(HomeProvider).pushCurrentWidget =
+                                    MyInfoModifyScreen();
                               },
                               child: Container(
                                   decoration: BoxDecoration(

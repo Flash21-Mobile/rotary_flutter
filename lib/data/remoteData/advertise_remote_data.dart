@@ -16,7 +16,7 @@ class AdvertiseAPI {
 
   late AdvertiseRepository repository;
 
-  ArticleAPI() {
+  AdvertiseAPI() {
     // dio.interceptors.add(LogInterceptor(
     //   request: true, // 요청 데이터 로깅
     //   requestHeader: true, // 요청 헤더 로깅
@@ -30,7 +30,7 @@ class AdvertiseAPI {
 
   Future<LoadState> getAdvertiseAll() async {
     try {
-      final result = await repository.getArticle();
+      final result = await repository.getArticle(1);
       return Success(result);
     } catch (e) {
       return Error(e);

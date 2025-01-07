@@ -8,12 +8,12 @@ part of 'account_model.dart';
 
 Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       id: (json['id'] as num?)?.toInt(),
-      userId: json['userId'] as String?,
-      userPassword: json['userPassword'] as String?,
+      permission: json['permission'] as bool?,
       name: json['name'] as String?,
       email: json['email'] as String?,
       telephone: json['telephone'] as String?,
       cellphone: json['cellphone'] as String?,
+      faxNumber: json['faxNumber'] as String?,
       signupYear: (json['signupYear'] as num?)?.toInt(),
       graduationYear: (json['graduationYear'] as num?)?.toInt(),
       birthDate: json['birthDate'] as String?,
@@ -25,28 +25,44 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       homeAddress: json['homeAddress'] as String?,
       homeAddressSub: json['homeAddressSub'] as String?,
       homeAddressZipCode: json['homeAddressZipCode'] as String?,
-      cardinal: json['cardinal'] == null
+      grade: json['grade'] == null
           ? null
-          : Cardinal.fromJson(json['cardinal'] as Map<String, dynamic>),
-      groupCardinal: json['groupCardinal'] == null
+          : Grade.fromJson(json['grade'] as Map<String, dynamic>),
+      groupGrade: json['groupGrade'] == null
           ? null
-          : Cardinal.fromJson(json['groupCardinal'] as Map<String, dynamic>),
-      pastCardinal: json['pastCardinal'] == null
+          : Grade.fromJson(json['groupGrade'] as Map<String, dynamic>),
+      pastGrade: json['pastGrade'] == null
           ? null
-          : Cardinal.fromJson(json['pastCardinal'] as Map<String, dynamic>),
+          : Grade.fromJson(json['pastGrade'] as Map<String, dynamic>),
       android: json['android'] as bool?,
       ios: json['ios'] as bool?,
       active: json['active'] as bool?,
+      clubRI: (json['clubRI'] as num?)?.toInt(),
+      memberRI: (json['memberRI'] as num?)?.toInt(),
+      nickname: json['nickname'] as String?,
+      englishName: json['englishName'] as String?,
+      memo: json['memo'] as String?,
+      job: json['job'] as String?,
+      region: json['region'] == null
+          ? null
+          : Grade.fromJson(json['region'] as Map<String, dynamic>),
+      team: json['team'] == null
+          ? null
+          : Grade.fromJson(json['team'] as Map<String, dynamic>),
+      childTeam: json['childTeam'] == null
+          ? null
+          : Grade.fromJson(json['childTeam'] as Map<String, dynamic>),
+      time: json['time'] as String?,
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'id': instance.id,
-      'userId': instance.userId,
-      'userPassword': instance.userPassword,
+      'permission': instance.permission,
       'name': instance.name,
       'email': instance.email,
       'telephone': instance.telephone,
       'cellphone': instance.cellphone,
+      'faxNumber': instance.faxNumber,
       'signupYear': instance.signupYear,
       'graduationYear': instance.graduationYear,
       'birthDate': instance.birthDate,
@@ -58,15 +74,25 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'homeAddress': instance.homeAddress,
       'homeAddressSub': instance.homeAddressSub,
       'homeAddressZipCode': instance.homeAddressZipCode,
-      'cardinal': instance.cardinal,
-      'groupCardinal': instance.groupCardinal,
-      'pastCardinal': instance.pastCardinal,
+      'grade': instance.grade,
+      'groupGrade': instance.groupGrade,
+      'pastGrade': instance.pastGrade,
       'android': instance.android,
       'ios': instance.ios,
       'active': instance.active,
+      'clubRI': instance.clubRI,
+      'memberRI': instance.memberRI,
+      'nickname': instance.nickname,
+      'englishName': instance.englishName,
+      'memo': instance.memo,
+      'job': instance.job,
+      'region': instance.region,
+      'team': instance.team,
+      'childTeam': instance.childTeam,
+      'time': instance.time,
     };
 
-Cardinal _$CardinalFromJson(Map<String, dynamic> json) => Cardinal(
+Grade _$GradeFromJson(Map<String, dynamic> json) => Grade(
       id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       positionName: json['positionName'] as String?,
@@ -75,7 +101,7 @@ Cardinal _$CardinalFromJson(Map<String, dynamic> json) => Cardinal(
       active: json['active'] as bool?,
     );
 
-Map<String, dynamic> _$CardinalToJson(Cardinal instance) => <String, dynamic>{
+Map<String, dynamic> _$GradeToJson(Grade instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'positionName': instance.positionName,

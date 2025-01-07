@@ -218,8 +218,6 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                           )
                         ])))),
             body: homeProvider.currentWidget??currentWidgetIsNull())
-
-
     );
   }
 

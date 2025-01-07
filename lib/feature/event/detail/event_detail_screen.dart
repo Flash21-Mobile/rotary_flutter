@@ -49,7 +49,7 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
                     ),
                     Divider(height: 0.5,thickness: 0.5,color: GlobalColor.greyFontColor,),
                     SizedBox(height: 5,),
-                    IndexMinText('${formatDateTime(widget.event.time)} 업데이트',textColor: GlobalColor.greyFontColor,)
+                    IndexMinText('${formatDateTime(widget.event.time)}',textColor: GlobalColor.greyFontColor,)
                   ])),
         )],) )]));
   }

@@ -11,5 +11,7 @@ abstract class AdvertiseRepository {
   factory AdvertiseRepository(Dio dio, {String baseUrl}) = _AdvertiseRepository;
 
   @GET("/article")
-  Future<List<AdvertiseModel>> getArticle();
+  Future<List<AdvertiseModel>> getArticle(
+      @Query('board') int? board,
+      );
 }

@@ -44,7 +44,9 @@ class HomeViewmodel with ChangeNotifier {
     }
   }
   set pushCurrentWidget(Widget? widget) {
-    if(widget != null){
+    Log.d('print: $currentWidget $widget');
+
+    if(widget != null && currentWidget.runtimeType != widget.runtimeType){
       _currentWidget.add(widget);
       notifyListeners();
     }

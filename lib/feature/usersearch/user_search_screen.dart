@@ -5,7 +5,7 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
-import 'list/user_search_list.dart';
+import 'list/user_search_list_screen.dart';
 
 
 class UserSearchScreen extends ConsumerStatefulWidget {
@@ -75,7 +75,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: () {
-                              homeProvider.pushCurrentWidget = UserListWidget(initialLocation: 0);
+                              homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: 0);
                             },
                             child: Container(
                               padding: EdgeInsets.only(
@@ -101,7 +101,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                     highlightColor: Colors.transparent,
                   onTap: (){
 
-                        homeProvider.pushCurrentWidget = UserListWidget(initialLocation: 1);
+                        homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: 1);
                   },
                     child: Container(
                     height: 95,
@@ -162,7 +162,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                                     IndexText('${index+1}지역',)
                                   ]),
                               onTap: () {
-                      homeProvider.pushCurrentWidget = UserListWidget(initialLocation: index +2);
+                      homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: index +2);
                       }));
                     },
                   )

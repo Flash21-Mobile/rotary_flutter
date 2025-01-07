@@ -14,14 +14,13 @@ class IndexText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text??'',
+      text ?? '',
       style: TextStyle(
           fontSize: DynamicFontSize.font21(context),
           color: textColor ?? GlobalColor.black),
-
-      overflow: overFlowFade??false ? TextOverflow.fade: null,
-      maxLines: overFlowFade??false ? 1: null,
-      softWrap: overFlowFade??false? false:null,
+      overflow: overFlowFade ?? false ? TextOverflow.fade : null,
+      maxLines: overFlowFade ?? false ? 1 : null,
+      softWrap: overFlowFade ?? false ? false : null,
     );
   }
 }
@@ -76,11 +75,9 @@ class IndexMinText extends StatelessWidget {
       style: TextStyle(
           fontSize: DynamicFontSize.font17(context),
           color: textColor ?? GlobalColor.black),
-
-
-      overflow: overFlowFade??false ? TextOverflow.fade: null,
-      maxLines: overFlowFade??false ? 1: null,
-      softWrap: overFlowFade??false? false:null,
+      overflow: overFlowFade ?? false ? TextOverflow.fade : null,
+      maxLines: overFlowFade ?? false ? 1 : null,
+      softWrap: overFlowFade ?? false ? false : null,
     );
   }
 }
@@ -140,7 +137,12 @@ class SearchBox extends StatelessWidget {
   final Color? backgroundColor;
   final Color? borderColor;
 
-  const SearchBox({super.key, required this.hint, this.onSearch, this.backgroundColor, this.borderColor});
+  const SearchBox(
+      {super.key,
+      required this.hint,
+      this.onSearch,
+      this.backgroundColor,
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -148,17 +150,19 @@ class SearchBox extends StatelessWidget {
       onFieldSubmitted: onSearch,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
-        filled: backgroundColor == null ? false : true,
-        fillColor: backgroundColor,
+          filled: backgroundColor == null ? false : true,
+          fillColor: backgroundColor,
           contentPadding: EdgeInsets.symmetric(horizontal: 20),
           hintText: hint,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(color: borderColor??GlobalColor.primaryColor),
+            borderSide:
+                BorderSide(color: borderColor ?? GlobalColor.primaryColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(color:borderColor?? GlobalColor.primaryColor),
+            borderSide:
+                BorderSide(color: borderColor ?? GlobalColor.primaryColor),
           ),
           suffixIcon: Icon(
             Icons.search,
@@ -201,39 +205,40 @@ class CustomDropdown extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                height: 450,
-                child: Scrollbar(
-                  thumbVisibility: true, // 항상 보이도록 설정
-                  thickness: 2,
-                  radius: Radius.circular(10),
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(vertical: 16,horizontal: 6),
-                    shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
-                    children: items.asMap().entries.map((entry) {
-                      return InkWell(
-                        child: Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Text(
-                            entry.value,
-                            style: TextStyle(
-                              fontSize: DynamicFontSize.font20(context),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: 450,
+                    child: Scrollbar(
+                      thumbVisibility: true, // 항상 보이도록 설정
+                      thickness: 2,
+                      radius: Radius.circular(10),
+                      child: ListView(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 16, horizontal: 6),
+                        shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
+                        children: items.asMap().entries.map((entry) {
+                          return InkWell(
+                            child: Padding(
+                              padding: EdgeInsets.all(15),
+                              child: Text(
+                                entry.value,
+                                style: TextStyle(
+                                  fontSize: DynamicFontSize.font20(context),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        onTap: () {
-                          print('바꿀 값 ${entry.key}');
-                          // ref.read(statusProvider.notifier).setStatus(entry.key);
-                          onChanged(entry.key);
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
-                      );
-                    }).toList(),
+                            onTap: () {
+                              print('바꿀 값 ${entry.key}');
+                              // ref.read(statusProvider.notifier).setStatus(entry.key);
+                              onChanged(entry.key);
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ));
+                ));
           },
         );
       },

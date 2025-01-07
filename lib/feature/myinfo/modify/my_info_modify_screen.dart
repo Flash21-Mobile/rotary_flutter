@@ -46,18 +46,17 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     loadStateFunction(myInfoProvider.accountState,onSuccess: (data){
       var account = (data as List<Account>).first;
 
-      nickNameController.text = null ?? '';
+      nickNameController.text = account.nickname ?? '';
       birthDateController.text =account.birthDate ?? '';
-      enNameController.text = null ?? '';
-      memoController.text = null ?? '';
+      enNameController.text = account.englishName ?? '';
+      memoController.text = account.memo ?? '';
 
       workNameController.text = account.workName ?? '';
       workPositionNameController.text = account.workPositionName ?? '';
       workAddressZipCodeController.text = account.workAddressZipCode ?? '';
       workAddressController.text = account.workAddress ?? '';
       workAddressSubController.text = account.workAddressSub ?? '';
-      typeController.text = null ?? '';
-
+      typeController.text = account.job ?? '';
     });
   }
 
@@ -85,7 +84,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
       loadState: myInfoProvider.accountState,
       backgroundColor: GlobalColor.white,
       appBar: AppBar(
-        title: Text('회원정보 수정'),
+        title: Text('내 정보 수정'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -136,12 +135,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           children: [
             TabBar(
               tabs: [
-                Tab(
-                  text: '개인정보',
-                ),
-                Tab(
-                  text: '회사정보',
-                ),
+                Tab(text: '개인정보',),
+                Tab(text: '회사정보',),
               ],
               labelStyle: TextStyle(
                   fontWeight: FontWeight.bold,

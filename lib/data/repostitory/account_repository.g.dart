@@ -26,16 +26,20 @@ class _AccountRepository implements AccountRepository {
     String? cellphone,
     int? id,
     String? name,
-    int? cardinal,
-    int? groupCardinal,
+    String? grade,
+    String? region,
+    int? page,
+    int? size,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'cellphone': cellphone,
       r'id': id,
       r'name': name,
-      r'cardinal': cardinal,
-      r'groupCardinal': groupCardinal,
+      r'grade': grade,
+      r'region': region,
+      r'page': page,
+      r'size': size,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
