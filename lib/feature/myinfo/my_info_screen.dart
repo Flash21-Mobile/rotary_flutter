@@ -49,7 +49,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
       successBody: (data) {
         var account = (data as List<Account>).first;
 
-        return Container(
+        return  SingleChildScrollView(child: Container(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Column(children: [
               SizedBox(
@@ -107,7 +107,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                       )
                     ],
                   ))
-            ]));
+            ])));
       },
     );
   }

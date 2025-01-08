@@ -1,3 +1,4 @@
+import 'package:rotary_flutter/data/model/advertise_model.dart';
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:rotary_flutter/data/repostitory/advertise_repository.dart';
@@ -28,12 +29,12 @@ class AdvertiseAPI {
     repository = AdvertiseRepository(dio, baseUrl: serverUrl);
   }
 
-  Future<LoadState> getAdvertiseAll() async {
+  Future<List<AdvertiseModel>?> getAdvertiseAll() async {
     try {
       final result = await repository.getArticle(1);
-      return Success(result);
+      return result;
     } catch (e) {
-      return Error(e);
+      return null;
     }
   }
 }

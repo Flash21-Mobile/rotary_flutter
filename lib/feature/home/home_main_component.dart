@@ -62,7 +62,7 @@ class IndexThumbTitle extends StatelessWidget {
 }
 
 class IndexMinText extends StatelessWidget {
-  final String text;
+  final String? text;
   final Color? textColor;
   final bool? overFlowFade;
 
@@ -71,7 +71,7 @@ class IndexMinText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      text??'',
       style: TextStyle(
           fontSize: DynamicFontSize.font17(context),
           color: textColor ?? GlobalColor.black),
@@ -181,22 +181,26 @@ class CustomDropdown extends ConsumerWidget {
   final double? height;
   final Color? bgColor;
   final String title; // 제목을 추가
+  final bool isLoading;
 
   const CustomDropdown({
-    Key? key,
+    super.key,
     required this.items,
     required this.selectedValue,
     required this.onChanged,
     this.width,
     this.height = 40,
     this.bgColor,
-    this.title = '', // 제목 기본값을 빈 문자열로 설정
-  }) : super(key: key);
+    this.title = '',
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('isLoading $isLoading');
+
     return GestureDetector(
-      onTap: () {
+      onTap:!isLoading ?(){
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -238,9 +242,9 @@ class CustomDropdown extends ConsumerWidget {
                       ),
                     ),
                   ),
-                ));
-          },
-        );
+                ));});
+          }:(){
+        print('you cannot touch');
       },
       child: Container(
         padding: EdgeInsets.only(right: 5, left: 15),

@@ -13,3 +13,5 @@ abstract class EventRepository {
   @GET("/schedule")
   Future<List<EventModel>> getEvent();
 }
+//todo r: 사진 추가
+//todo r: 날짜 기간 추가

@@ -19,13 +19,12 @@ class EventDetailScreen extends ConsumerStatefulWidget {
 
 class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('행사일정'),
+          title: Text('행사 일정'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

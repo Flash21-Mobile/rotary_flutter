@@ -16,6 +16,7 @@ class LoadStateScaffold extends ConsumerStatefulWidget {
   final Widget? loadingBody;
   final Widget Function(dynamic) successBody;
   final Widget? errorBody;
+  final Widget? floatingActionButton;
 
   final LoadState loadState;
 
@@ -25,7 +26,8 @@ class LoadStateScaffold extends ConsumerStatefulWidget {
     required this.loadState,
     this.loadingBody,
     required this.successBody,
-    this.errorBody});
+    this.errorBody,
+    this.floatingActionButton});
 
   @override
   ConsumerState<LoadStateScaffold> createState() => _LoadStateScaffold();
@@ -42,7 +44,8 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
           Success() => widget.successBody((widget.loadState as Success).data),
           Error() => errorWidget(widget.loadState as Error, widget.errorBody),
           _ => const Placeholder()
-        });
+        },
+        floatingActionButton: widget.floatingActionButton,);
   }
 
   var placeHolder = const Center(child: CircularProgressIndicator(color: GlobalColor.primaryColor,));

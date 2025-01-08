@@ -5,6 +5,8 @@ part 'account_model.g.dart';
 @JsonSerializable()
 class Account {
   int? id;
+  int? userId;
+  int? userPassword;
   bool? permission;
   String? name;
   String? email;
@@ -41,6 +43,8 @@ class Account {
 
   Account(
       {this.id,
+        this.userId,
+        this.userPassword,
         this.permission,
         this.name,
         this.email,

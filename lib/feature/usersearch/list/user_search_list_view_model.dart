@@ -14,17 +14,15 @@ final UserSearchListProvider =
 class UserSearchListViewModel with ChangeNotifier {
   LoadState userListState = Loading();
 
-  Future<LoadState> getAccountList({String? grade, String? region, int? page}) async {
-      Log.d('message getAccountList: $userListState');
+  Future<LoadState> getAccountList({String? grade, String? region, int? page, String? name}) async {
+    userListState = Loading();
+    notifyListeners();
 
-      userListState = Loading();
-      notifyListeners();
+    userListState = await AccountAPI()
+        .getAccount(grade: grade, region: region, page: page, name: name);
+    notifyListeners();
 
-      userListState = await AccountAPI()
-          .getAccount(grade: grade, region: region, page: page);
-      notifyListeners();
-
-      return userListState;
+    return userListState;
   }
 
   Future<int?> getAccountFile(int? fileApiPK) async {

@@ -7,8 +7,11 @@ import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
+import '../../util/common/common.dart';
 import '../../util/model/menu_items.dart';
+import '../advertise/advertise_component.dart';
 import '../advertise/advertise_screen.dart';
+import '../advertise/advertise_view_model.dart';
 
 class HomeMainScreen extends ConsumerStatefulWidget {
   const HomeMainScreen({super.key});
@@ -23,15 +26,18 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
   Timer? _timer;
   int _currentPage = 0;
 
-  final _banners = [
-    'asset/images/star_slide.jpg',
-    'asset/images/rotary_slide.png'
-  ];
-
   @override
   void initState() {
     super.initState();
-    _startAutoSlider();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBanners();
+      _startAutoSlider();
+    });
+  }
+
+  Future<void> getBanners() async {
+    await ref.read(AdvertiseProvider).getAdvertiseRandom();
   }
 
   @override
@@ -42,10 +48,13 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
   }
 
   void _startAutoSlider() {
+    final viewModel = ref.watch(AdvertiseProvider);
+
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_pageController.hasClients) {
         // 페이지를 한 단계씩 넘기도록 설정
-        int nextPage = (_currentPage + 1) % _banners.length; // 무한 순환을 위한 계산
+        int nextPage =
+            (_currentPage + 1) % viewModel.banners.length; // 무한 순환을 위한 계산
         _pageController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 350),
@@ -61,35 +70,44 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     final width = MediaQuery.of(context).size.width;
 
     final homeProvider = ref.read(HomeProvider);
+    final viewModel = ref.watch(AdvertiseProvider);
 
     return Container(
         color: GlobalColor.primaryColor,
         child: CustomScrollView(physics: ClampingScrollPhysics(), slivers: [
           SliverToBoxAdapter(
-              child: InkWell(
-                  onTap: () {
-                    ref.read(HomeProvider).pushCurrentWidget =
-                        AdvertiseScreen();
-                  },
-                  child: Container(
-                      width: double.infinity,
-                      height: (MediaQuery.of(context).size.width) * 6 / 16,
-                      child: PageView.builder(
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentPage = index; // 페이지 변경 시 currentPage 갱신
-                          });
-                        },
-                        controller: _pageController,
-                        itemCount: _banners.length,
-                        itemBuilder: (context, index) {
-                          final bannerIndex = index % _banners.length;
-                          return Image.asset(
-                            _banners[bannerIndex],
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )))),
+              child:Container(
+                  color: GlobalColor.white,
+                  width: double.infinity,
+                  height: (MediaQuery.of(context).size.width) * 6 / 16,
+                  child: Stack(children: [
+                  Stack(children: [
+                  Center(child: CircularProgressIndicator(),),
+
+                    PageView.builder(
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index; // 페이지 변경 시 currentPage 갱신
+                      });
+                    },
+                    controller: _pageController,
+                    itemCount: viewModel.banners.length,
+                    itemBuilder: (context, index) {
+                      final bannerIndex = index % viewModel.banners.length;
+                      return InkWell(
+                          onTap: () {
+                            ref.read(HomeProvider).pushCurrentWidget =
+                                AdvertiseDetailScreen(
+                                    imagePath:
+                                        '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.first ?? ' '}');
+                          },
+                          child: Image.network(
+                            '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.last ?? ' '}',
+                            headers: const {'cheat': 'showmethemoney'},
+                            fit: BoxFit.cover
+                          ));
+                    },
+                  )]),])) ),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, childAspectRatio: 1.5),
@@ -145,7 +163,6 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
               color: Colors.white24,
             ),
           ),
-
           SliverToBoxAdapter(
               child: Padding(
                   padding: EdgeInsets.all(15),
@@ -157,14 +174,36 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                         'asset/icons/logo_index.svg',
                         width: 70,
                       ),
-                      SizedBox(width: 15,),
+                      SizedBox(
+                        width: 15,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('국제로타리 3700지구', style: TextStyle(color: GlobalColor.indexColor,fontSize: DynamicFontSize.font12(context)),),
-                          Text('대구광역시 중구 동덕로 115 진석타워 5층 501호',style: TextStyle(color: GlobalColor.indexColor,fontSize: DynamicFontSize.font12(context)),),
-                          Text('TEL 053-473-3700. FAX 053-429-7901~2',style: TextStyle(color: GlobalColor.indexColor,fontSize: DynamicFontSize.font12(context)),),
-                          Text('',style: TextStyle(color: GlobalColor.indexColor,fontSize: DynamicFontSize.font12(context)),),
+                          Text(
+                            '국제로타리 3700지구',
+                            style: TextStyle(
+                                color: GlobalColor.indexColor,
+                                fontSize: DynamicFontSize.font12(context)),
+                          ),
+                          Text(
+                            '대구광역시 중구 동덕로 115 진석타워 5층 501호',
+                            style: TextStyle(
+                                color: GlobalColor.indexColor,
+                                fontSize: DynamicFontSize.font12(context)),
+                          ),
+                          Text(
+                            'TEL 053-473-3700. FAX 053-429-7901~2',
+                            style: TextStyle(
+                                color: GlobalColor.indexColor,
+                                fontSize: DynamicFontSize.font12(context)),
+                          ),
+                          Text(
+                            '',
+                            style: TextStyle(
+                                color: GlobalColor.indexColor,
+                                fontSize: DynamicFontSize.font12(context)),
+                          ),
                         ],
                       ),
                     ],

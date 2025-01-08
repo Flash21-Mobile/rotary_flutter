@@ -23,7 +23,7 @@ class _KRotaryKoreaScreen extends ConsumerState<KRotaryKoreaScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('K-로타리 앱'),
+          title: Text('홍보'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

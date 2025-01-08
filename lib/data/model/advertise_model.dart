@@ -6,23 +6,17 @@ part 'advertise_model.g.dart';
 
 @JsonSerializable()
 class AdvertiseModel {
-  Account? account;
-  Board? board;
-  String? title;
   String? content;
 
-  AdvertiseModel({this.account, this.board, this.title, this.content});
+  AdvertiseModel({this.content});
 
-  factory AdvertiseModel.fromJson(Map<String, dynamic> json) => _$AdvertiseModelFromJson(json);
-  Map<String, dynamic> toJson() => _$AdvertiseModelToJson(this);
-}
+  AdvertiseModel.fromJson(Map<String, dynamic> json) {
+    content = json['content'];
+  }
 
-@JsonSerializable()
-class Board {
-  String? name;
-
-  Board({this.name});
-
-  factory Board.fromJson(Map<String, dynamic> json) => _$BoardFromJson(json);
-  Map<String, dynamic> toJson()  => _$BoardToJson(this);
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['content'] = this.content;
+    return data;
+  }
 }

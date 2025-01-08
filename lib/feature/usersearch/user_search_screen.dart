@@ -162,7 +162,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                                     IndexText('${index+1}지역',)
                                   ]),
                               onTap: () {
-                      homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: index +2);
+                      homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: index +1);
                       }));
                     },
                   )

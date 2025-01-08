@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:rotary_flutter/data/model/file_model.dart';
@@ -15,4 +17,12 @@ abstract class FileRepository {
       @Query('fileApiName') String? fileApiName,
       @Query('fileApiPK') int? fileApiPK,
   );
+
+  @POST("/file")
+  @MultiPart()
+  Future postFile(
+      @Query('apiName') String? fileApiName,
+      @Query('fileApiPK') int? fileApiPK,
+      @Part(name: 'image') File file
+      );
 }

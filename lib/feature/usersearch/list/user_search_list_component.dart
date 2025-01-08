@@ -38,7 +38,7 @@ class _NetworkImage extends ConsumerState<FutureImage> {
   void getFile() async {
     var data = await widget.futureId;
     setState(() {
-      imagePK = data;
+      if(context.mounted) imagePK = data;
     });
   }
 
@@ -104,12 +104,14 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(children: [
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
                     IndexThumbTitle(widget.account.name),
                     SizedBox(
                       width: 5,
                     ),
-                    IndexText(
+                    IndexMinText(
                       widget.account.grade?.name,
                       overFlowFade: true,
                     )

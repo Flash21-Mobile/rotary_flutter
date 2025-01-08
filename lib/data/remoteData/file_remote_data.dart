@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import '../../util/common/common.dart';
@@ -33,9 +35,18 @@ class FileAPI {
   Future<FileModel?> getAccountFile(int? fileApiPK) async {
     try {
       final result = await repository.getFile('account', fileApiPK);
-      return result?.first;
+      return result?.last;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future postAccountFile(int? fileApiPK, File image) async {
+    try {
+      await repository.postFile('account', fileApiPK, image);
+      return Success('success');
+    } catch (e) {
+      return Error(e);
     }
   }
 }

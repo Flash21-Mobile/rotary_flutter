@@ -8,6 +8,8 @@ part of 'account_model.dart';
 
 Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       id: (json['id'] as num?)?.toInt(),
+      userId: (json['userId'] as num?)?.toInt(),
+      userPassword: (json['userPassword'] as num?)?.toInt(),
       permission: json['permission'] as bool?,
       name: json['name'] as String?,
       email: json['email'] as String?,
@@ -57,6 +59,8 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'id': instance.id,
+      'userId': instance.userId,
+      'userPassword': instance.userPassword,
       'permission': instance.permission,
       'name': instance.name,
       'email': instance.email,

@@ -76,8 +76,15 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
     loadStateFunction(dataState,
         onSuccess: (data) {
-          var result = (data as List<Account>)[0].name;
-          Fluttertoast.showToast(msg: '${result}님 로그인에 성공하였습니다.');
+          var result = (data as List<Account>)[0];
+          Fluttertoast.showToast(msg: '${result.name}님 로그인에 성공하였습니다.');
+
+          if(result.permission == true ){
+            globalStorage.write(key: 'admin', value: 'admin');
+          }else {
+            globalStorage.write(key: 'admin', value: null);
+          }
+
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
         },
@@ -141,7 +148,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               duration: Duration(milliseconds: 1500),
-              content: Text('로그인에 실패하였습니다'),
+              content: Text('로그인에 실패하였습니다.'),
             ));
           }
     });
@@ -171,7 +178,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),
-          content: Text('인증 완료되었습니다'),
+          content: Text('인증 완료되었습니다.'),
         ));
       });
     });

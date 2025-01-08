@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rotary_flutter/feature/event/modify/event_modify_screen.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
+import 'package:rotary_flutter/util/secure_storage.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../data/model/event_model.dart';
 import '../../util/fontSize.dart';
@@ -23,14 +25,23 @@ class _EventScreenState extends ConsumerState<EventScreen> {
   DateTime _selectedDate = DateTime.now();
   List<EventModel> _selectedEvents = [];
 
+  var isAdmin = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(EventProvider).getEvent().then((onValue) {
         _loadEventsForDate(_selectedDate);
+        checkAdmin();
       });
     });
+  }
+
+  void checkAdmin() async {
+    var data = (await globalStorage.read(key: 'admin')) == 'admin';
+
+    setState(() => isAdmin = data);
   }
 
   Future<void> _selectYear(BuildContext context) async {
@@ -132,43 +143,60 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: LoadStateScaffold(
-            backgroundColor: GlobalColor.white,
-            loadState: eventProvider.eventState,
-            appBar: AppBar(
-              title: const Text('행사 일정'),
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  ref.read(HomeProvider).popCurrentWidget();
-                },
-              ),
+          backgroundColor: GlobalColor.white,
+          loadState: eventProvider.eventState,
+          appBar: AppBar(
+            title: const Text('행사 일정'),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                ref.read(HomeProvider).popCurrentWidget();
+              },
             ),
-            successBody: (data) {
-              return CustomScrollView(
-                slivers: [
-                  _buildHeader(context),
-                  _buildCalendar(),
-                  _buildEventList(),
-                ],
-              );
-            }));
+          ),
+          successBody: (data) {
+            return CustomScrollView(
+              slivers: [
+                _buildHeader(context),
+                _buildCalendar(),
+                _buildEventList(),
+              ],
+            );
+          },
+          floatingActionButton: isAdmin
+              ? FloatingActionButton(
+                  onPressed: () {
+                    ref.read(HomeProvider).pushCurrentWidget = EventModifyScreen();
+                  },
+                  backgroundColor: GlobalColor.primaryColor,
+                  child: const Icon(
+                    Icons.add_rounded,
+                  ))
+              : null,
+        ));
   }
 
   Widget _buildCalendar() {
     return SliverToBoxAdapter(
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.only(top: 15, left: 5, right: 5),
-        decoration: BoxDecoration(
-        color: GlobalColor.indexBoxColor,
-          borderRadius: BorderRadius.circular(15)
-    ),
+        child: Container(
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(top: 15, left: 5, right: 5),
+      decoration: BoxDecoration(
+          color: GlobalColor.indexBoxColor,
+          borderRadius: BorderRadius.circular(15)),
       child: TableCalendar(
+        locale: 'ko_KR',
+        onPageChanged: (focusedDay) {
+          setState(() {
+            _selectedDate = focusedDay;
+          });
+        },
+        // daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
         eventLoader: _eventLoader,
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(
-            color: GlobalColor.primaryColor,
+            color: GlobalColor.lightPrimaryColor,
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(
@@ -195,55 +223,69 @@ class _EventScreenState extends ConsumerState<EventScreen> {
         firstDay: DateTime(2000),
         lastDay: DateTime(2050),
         headerVisible: false,
-      ),)
-    );
+      ),
+    ));
   }
 
   Widget _buildHeader(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: EdgeInsets.all(5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            InkWell(
-              onTap: () => _selectYear(context),
-              child: Text(
-                '${_selectedDate.year}년',
-                style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: DynamicFontSize.font22(context)),
-              ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () => _selectYear(context),
+                  child: Text(
+                    '${_selectedDate.year}년',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: DynamicFontSize.font22(context)),
+                  ),
+                )
+              ],
             ),
-            const Spacer(),
-            InkWell(
-              child: Icon(Icons.arrow_back_ios, size: 20),
-              onTap: () {
-                setState(() {
-                  _selectedDate = DateTime(_selectedDate.year,
-                      _selectedDate.month - 1, _selectedDate.day);
-                });
-                _loadEventsForDate(_selectedDate);
-              },
-            ),
-            InkWell(
-              onTap: () => _selectMonth(context),
-              child: Text(
-                '${_selectedDate.month}월',
-                style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: DynamicFontSize.font22(context)),
-              ),
-            ),
-            SizedBox(width: 5,),
-            InkWell(
-              child: Icon(Icons.arrow_forward_ios, size: 20,),
-              onTap: () {
-                setState(() {
-                  _selectedDate = DateTime(_selectedDate.year,
-                      _selectedDate.month + 1, _selectedDate.day);
-                });
-                _loadEventsForDate(_selectedDate);
-              },
+            Container(
+                width: 80,
+                child: InkWell(
+                  onTap: () => _selectMonth(context),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    '${_selectedDate.month}월',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: DynamicFontSize.font22(context)),
+                  ),
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  child: Icon(Icons.arrow_left, size: 40),
+                  onTap: () {
+                    setState(() {
+                      _selectedDate = DateTime(_selectedDate.year,
+                          _selectedDate.month - 1, _selectedDate.day);
+                    });
+                    _loadEventsForDate(_selectedDate);
+                  },
+                ),
+                SizedBox(
+                  width: 80,
+                ),
+                InkWell(
+                  child: Icon(Icons.arrow_right, size: 40),
+                  onTap: () {
+                    setState(() {
+                      _selectedDate = DateTime(_selectedDate.year,
+                          _selectedDate.month + 1, _selectedDate.day);
+                    });
+                    _loadEventsForDate(_selectedDate);
+                  },
+                ),
+              ],
             )
           ],
         ),

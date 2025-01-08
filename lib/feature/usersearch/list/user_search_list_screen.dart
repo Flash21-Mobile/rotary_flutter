@@ -8,8 +8,8 @@ import 'package:rotary_flutter/feature/usersearch/list/user_search_list_componen
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
 import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/logger.dart';
-import 'package:rotary_flutter/util/model/cardinal_location.dart';
-import 'package:rotary_flutter/util/model/cardinal_r_c.dart';
+import 'package:rotary_flutter/util/model/account_region.dart';
+import 'package:rotary_flutter/util/model/account_grade.dart';
 
 import '../../../data/model/account_model.dart';
 import '../../../util/global_color.dart';
@@ -33,6 +33,7 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   List<Account> items = [];
+  String query = '';
   bool isLoading = false;
   bool hasMore = true;
   int currentPage = 0;
@@ -41,13 +42,11 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   void initState() {
     super.initState();
     _selectedGrade = 0;
-    // _selectedRegion = widget.initialLocation;
-    _selectedRegion = 0; //todo r: 고치기
+    _selectedRegion = widget.initialRegion??0;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchData();
     });
-    // getAccountList();
   }
 
   // 서버에서 데이터를 페이징으로 받아오는 함수
@@ -55,11 +54,18 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
     var userSearchListProvider = ref.read(UserSearchListProvider);
     if (userSearchListProvider.userListState is Loading && !hasMore) return;
 
+
     var loadState = await userSearchListProvider.getAccountList(
-        page: currentPage, grade: CardinalRC.all[ _selectedGrade].name, region: null);    //todo r: 고치기
+        page: currentPage,
+        grade: AccountGrade.all[_selectedGrade] == 'RC' ? null: AccountGrade.all[_selectedGrade],
+        region: AccountRegion.all[_selectedRegion] == '전체' ? null: AccountRegion.all[_selectedRegion],
+        name: query);
+
+    print('hello: ${loadState}');
 
     if (loadState is Success) {
       final List<Account> data = loadState.data;
+      print('hello: ioio ${loadState.data}');
 
       if (data.isNotEmpty) {
         setState(() {
@@ -72,12 +78,25 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
         });
       }
     } else {
-      throw Exception('Failed to load data');
+      setState(() {
+        hasMore = false;
+      });
+      print('hello: else $hasMore');
     }
+  }
+
+  Future<void> initData() async {
+    Log.d('hello: initData');
+    var userSearchListProvider = ref.read(UserSearchListProvider);
+    if (userSearchListProvider.userListState is Loading && !hasMore) return;
 
     setState(() {
-      isLoading = false;
+      currentPage = 0;
+      items = [];
+      hasMore = true;
     });
+
+
   }
 
   // void getAccountList() {
@@ -95,6 +114,8 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   @override
   Widget build(BuildContext context) {
     var viewModel = ref.watch(UserSearchListProvider);
+
+    print('isLoading is ${viewModel.userListState}');
 
     return Scaffold(
         backgroundColor: GlobalColor.indexBoxColor,
@@ -119,25 +140,27 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
               child: Row(
                 children: [
                   CustomDropdown(
-                      items: CardinalLocation.all
-                          .map((value) => value.name)
+                    isLoading: viewModel.userListState is Loading,
+                      items: AccountRegion.all
+                          .map((value) => value)
                           .toList(),
-                      selectedValue: _selectedGrade,
+                      selectedValue: _selectedRegion,
                       onChanged: (value) {
-                        if (value != null && value != _selectedGrade) {
-                          setState(() => _selectedGrade = value);
-                          // fetchData(); //todo r: 이거 구현
+                        if (value != null && value != _selectedRegion) {
+                          setState(() => _selectedRegion = value);
+                          initData();
                         }
                       }),
 
                   SizedBox(width: 10),
                   CustomDropdown(
-                      items: CardinalRC.all.map((value) => value.name).toList(),
-                      selectedValue: _selectedRegion,
+                    isLoading: viewModel.userListState is Loading,
+                      items: AccountGrade.all.map((value) => value).toList(),
+                      selectedValue: _selectedGrade,
                       onChanged: (value) {
-                        if (value != null && value != _selectedRegion) {
-                          setState(() => _selectedRegion = value);
-                          // fetchData();
+                        if (value != null && value != _selectedGrade) {
+                          setState(() => _selectedGrade = value);
+                          initData();
                         }
                       }),
 
@@ -150,6 +173,10 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                       hint: '회원검색',
                       borderColor: GlobalColor.transparent,
                       backgroundColor: GlobalColor.white,
+                      onSearch: (queryData){
+                        query = queryData;
+                        initData();
+                      },
                     ),
                   )) //
                 ],
@@ -158,10 +185,7 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
             height: 15,
           ),
           Expanded(
-              child: LoadStateWidget(
-            loadState: viewModel.userListState,
-            successWidget: (data) {
-              return ListView.separated(
+              child: ListView.separated(
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 itemCount: items.length + 1,
                 itemBuilder: (context, index) {
@@ -172,14 +196,13 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                       fetchData();
                       return const Center(child: CircularProgressIndicator());
                     } else {
-                      return const SizedBox();
+                      return SizedBox();
                     }
                   }
                   return UserSearchListTile(account: items[index]);
                 },
                 separatorBuilder: (_, $) => const SizedBox(height: 10),
-              );
-            },
+
             // errorWidget: const Expanded(
             //     child: Column(
             //   children: [

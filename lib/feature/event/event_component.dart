@@ -12,17 +12,40 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(onTap: onTap,child:  Container(
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: GlobalColor.indexBoxColor,
-        borderRadius: BorderRadius.circular(15)
-      ),
-      child: Row(children: [
-        IndexText(event.title, textColor: GlobalColor.black,),
-        Spacer(),
-        Icon(Icons.arrow_forward_ios_rounded,size: 15,)
-      ],),
-    ));
+    return InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: GlobalColor.indexBoxColor,
+              borderRadius: BorderRadius.circular(15)),
+          child: Row(
+            children: [
+              Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IndexText(
+                    event.title,
+                    textColor: GlobalColor.black,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width - 100,
+                      child: IndexMinText(
+                        event.content,
+                        overFlowFade: true,
+                      ))
+                ],
+              ),
+              Spacer(),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 15,
+              )
+            ],
+          ),
+        ));
   }
 }
