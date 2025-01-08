@@ -53,8 +53,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_pageController.hasClients) {
         // 페이지를 한 단계씩 넘기도록 설정
-        int nextPage =
-            (_currentPage + 1) % viewModel.banners.length; // 무한 순환을 위한 계산
+        int nextPage = (_currentPage + 1) % viewModel.banners.length; // 무한 순환을 위한 계산
         _pageController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 350),

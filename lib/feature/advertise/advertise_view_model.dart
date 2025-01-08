@@ -26,17 +26,9 @@ class AdvertiseViewModel with ChangeNotifier {
       return;
     } else {
       // 본문과 썸네일 리스트 분리
-      final List<List<String>> advertiseData = temp.expand((value) {
-        final contentList =
-            value.content?.replaceAll('content:', '').split(',') ?? [];
-        if (contentList.isNotEmpty) {
-          final mainImage = contentList.first; // 본문 사진
-          final thumbnails = contentList.sublist(1); // 썸네일 사진들
+      final List<List<String>> advertiseData = temp.map((value) {
+        return value.content?.replaceAll('content:', '').split(',') ?? [];
 
-          // 본문과 각 썸네일을 매핑하여 새로운 리스트 생성
-          return thumbnails.map((thumbnail) => [mainImage, thumbnail]).toList();
-        }
-        return <List<String>>[]; // 빈 리스트 반환
       }).toList();
 
       // 결과를 상태로 설정
@@ -55,17 +47,9 @@ class AdvertiseViewModel with ChangeNotifier {
       return;
     } else {
       // 본문과 썸네일 리스트 분리
-      final List<List<String>> advertiseData = temp.expand((value) {
-        final contentList =
-            value.content?.replaceAll('content:', '').split(',') ?? [];
-        if (contentList.isNotEmpty) {
-          final mainImage = contentList.first; // 본문 사진
-          final thumbnails = contentList.sublist(1); // 썸네일 사진들
+      final List<List<String>> advertiseData = temp.map((value) {
+        return value.content?.replaceAll('content:', '').split(',') ?? [];
 
-          // 본문과 각 썸네일을 매핑하여 새로운 리스트 생성
-          return thumbnails.map((thumbnail) => [mainImage, thumbnail]).toList();
-        }
-        return <List<String>>[]; // 빈 리스트 반환
       }).toList();
 
 
