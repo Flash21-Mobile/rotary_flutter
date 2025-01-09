@@ -11,10 +11,11 @@ class MyInfoModifyTextField extends ConsumerStatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final bool? obscureText;
+  final TextInputAction? textInputAction;
 
 
   const MyInfoModifyTextField(
-      {super.key, required this.indexTitle, this.indexController, this.multilineEnable, this.inputFormatters, this.keyboardType, this.obscureText});
+      {super.key, required this.indexTitle, this.indexController, this.multilineEnable, this.inputFormatters, this.keyboardType, this.obscureText, this.textInputAction});
 
   @override
   ConsumerState<MyInfoModifyTextField> createState() =>
@@ -31,6 +32,7 @@ class _MyInfoModifyTextField extends ConsumerState<MyInfoModifyTextField> {
         obscureText: widget.obscureText??false,
         inputFormatters: widget.inputFormatters,
         canRequestFocus: true,
+          textInputAction: widget.textInputAction,
           maxLines: (widget.multilineEnable?? false) ? null: 1,
           keyboardType: widget.keyboardType ??((widget.multilineEnable?? false) ? TextInputType.multiline:null ),
           controller: widget.indexController,

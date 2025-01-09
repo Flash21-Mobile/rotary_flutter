@@ -44,28 +44,55 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     setState(() => isAdmin = data);
   }
 
-  Future<void> _selectYear(BuildContext context) async {
+  Future<void> _selectYear(BuildContext context, int currentYear) async {
+    final ScrollController scrollController = ScrollController();
+
     final selectedYear = await showDialog<int>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('연도를 선택하세요'),
-        content: SizedBox(
-          height: 300,
-          width: 200,
-          child: ListView.builder(
-            itemCount: 51, // 2000년부터 2050년까지
-            itemBuilder: (_, index) {
-              final year = 2000 + index;
-              return ListTile(
-                title: Text('$year년'),
-                onTap: () => Navigator.of(context).pop(year),
-              );
-            },
+      builder: (context) {
+        // 대화상자 내에서 선택된 연도로 자동 스크롤을 이동
+        Future.delayed(Duration.zero, () {
+          final selectedIndex = currentYear - 2000;
+          scrollController.jumpTo(selectedIndex * 50-50); // 아이템 높이에 맞춰 스크롤 이동
+        });
+
+        return AlertDialog(
+          title: const Text('연도를 선택하세요'),
+          content: SizedBox(
+            height: 300,
+            width: 200,
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: 51, // 2000년부터 2050년까지
+              itemBuilder: (_, index) {
+                final year = 2000 + index;
+                bool isSelected = year == currentYear; // 선택된 연도
+
+                return InkWell(
+                    onTap: () {
+                  Navigator.of(context).pop(year);
+                },
+                child:Container(
+                height: 50,
+                width: double.infinity,
+                    padding: EdgeInsets.only(left: 15),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                    color: isSelected ? GlobalColor.lightPrimaryColor : null,
+                      borderRadius: BorderRadius.circular(15)
+                    ),
+                    // 선택된 항목 배경색
+                      child: Text('$year년'),
+
+                    ));
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
+    // 연도 선택 후 처리
     if (selectedYear != null) {
       setState(() {
         _selectedDate =
@@ -167,7 +194,8 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           floatingActionButton: isAdmin
               ? FloatingActionButton(
                   onPressed: () {
-                    ref.read(HomeProvider).pushCurrentWidget = EventModifyScreen();
+                    ref.read(HomeProvider).pushCurrentWidget =
+                        EventModifyScreen();
                   },
                   backgroundColor: GlobalColor.primaryColor,
                   child: const Icon(
@@ -221,7 +249,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
         selectedDayPredicate: (date) => isSameDay(_selectedDate, date),
         focusedDay: _selectedDate,
         firstDay: DateTime(2000),
-        lastDay: DateTime(2050),
+        lastDay: DateTime(2050, 12, 31),
         headerVisible: false,
       ),
     ));
@@ -237,7 +265,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
             Row(
               children: [
                 InkWell(
-                  onTap: () => _selectYear(context),
+                  onTap: () => _selectYear(context, _selectedDate.year),
                   child: Text(
                     '${_selectedDate.year}년',
                     style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:rotary_flutter/data/model/event_model.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/common/common.dart';
@@ -17,14 +18,14 @@ class EventAPI {
   late EventRepository repository;
 
   EventAPI() {
-    // dio.interceptors.add(LogInterceptor(
-      // request: true, // 요청 데이터 로깅
-      // requestHeader: true, // 요청 헤더 로깅
-      // requestBody: true, // 요청 바디 로깅
-      // responseHeader: true, // 응답 헤더 로깅
-      // responseBody: true, // 응답 바디 로깅
-      // error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true, // 요청 데이터 로깅
+      requestHeader: true, // 요청 헤더 로깅
+      requestBody: true, // 요청 바디 로깅
+      responseHeader: true, // 응답 헤더 로깅
+      responseBody: true, // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
     repository = EventRepository(dio, baseUrl: serverUrl);
   }
 
@@ -32,6 +33,36 @@ class EventAPI {
     try {
       final result = await repository.getEvent();
       return Success(result);
+    } catch (e) {
+      List<EventModel> data = [];
+      return Success(data);
+    }
+  }
+
+  Future<LoadState> postEvent(String title, String content, String date) async {
+    try {
+      final result = await repository.postEvent(
+        EventModel(
+          id: null,
+          calendar: Calendar(
+            id: 1,
+            name: 'event'
+          ),
+          time: date,
+          title: title,
+          content: content
+        )
+      );
+      return Success(result);
+    } catch (e) {
+      return Error(e);
+    }
+  }
+
+  Future<LoadState> deleteEvent(int id) async {
+    try {
+      await repository.deleteEvent(id);
+      return Success('success');
     } catch (e) {
       return Error(e);
     }

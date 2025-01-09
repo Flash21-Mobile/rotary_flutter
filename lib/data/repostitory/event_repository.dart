@@ -12,6 +12,12 @@ abstract class EventRepository {
 
   @GET("/schedule")
   Future<List<EventModel>> getEvent();
+
+  @POST("/schedule")
+  Future postEvent(@Body() EventModel data);
+
+  @DELETE("/schedule/{id}")
+  Future deleteEvent(@Path("id") int id);
 }
 //todo r: 사진 추가
 //todo r: 날짜 기간 추가

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
+import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
@@ -12,6 +13,8 @@ import '../../util/model/menu_items.dart';
 import '../advertise/advertise_component.dart';
 import '../advertise/advertise_screen.dart';
 import '../advertise/advertise_view_model.dart';
+import '../userSearch/list/user_search_list_screen.dart';
+import 'home_main_component.dart';
 
 class HomeMainScreen extends ConsumerStatefulWidget {
   const HomeMainScreen({super.key});
@@ -53,7 +56,8 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_pageController.hasClients) {
         // 페이지를 한 단계씩 넘기도록 설정
-        int nextPage = (_currentPage + 1) % viewModel.banners.length; // 무한 순환을 위한 계산
+        int nextPage =
+            (_currentPage + 1) % viewModel.banners.length; // 무한 순환을 위한 계산
         _pageController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 350),
@@ -75,38 +79,99 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
         color: GlobalColor.primaryColor,
         child: CustomScrollView(physics: ClampingScrollPhysics(), slivers: [
           SliverToBoxAdapter(
-              child:Container(
+              child: Container(
                   color: GlobalColor.white,
                   width: double.infinity,
                   height: (MediaQuery.of(context).size.width) * 6 / 16,
+                        alignment: Alignment.center,
                   child: Stack(children: [
-                  Stack(children: [
-                  Center(child: CircularProgressIndicator(),),
-
-                    PageView.builder(
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index; // 페이지 변경 시 currentPage 갱신
-                      });
-                    },
-                    controller: _pageController,
-                    itemCount: viewModel.banners.length,
-                    itemBuilder: (context, index) {
-                      final bannerIndex = index % viewModel.banners.length;
-                      return InkWell(
-                          onTap: () {
-                            ref.read(HomeProvider).pushCurrentWidget =
-                                AdvertiseDetailScreen(
-                                    imagePath:
-                                        '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.first ?? ' '}');
-                          },
-                          child: Image.network(
-                            '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.last ?? ' '}',
-                            headers: const {'cheat': 'showmethemoney'},
-                            fit: BoxFit.cover
-                          ));
-                    },
-                  )]),])) ),
+                    InkWell(
+                        onTap: (){
+                          ref.read(HomeProvider).pushCurrentWidget = const UserSearchScreen();
+                        },
+                        child:
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              height: (MediaQuery.of(context).size.width) * 6 / 24,
+                              width: (MediaQuery.of(context).size.width) * 6 / 24,
+                              'asset/icons/logo_star.svg',
+                            ),
+                            SizedBox(width: 15,),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IndexThumbTitle(
+                                  '로타리 3700지구',
+                                ),
+                                Text(
+                                  '전체인원 ${2707}',
+                                  style: TextStyle(
+                                      fontSize: DynamicFontSize.font22(context),
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    homeProvider.pushCurrentWidget =
+                                        UserSearchListScreen(initialRegion: 0);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 5, top: 5, bottom: 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: GlobalColor.indexBoxColor),
+                                    child: Row(
+                                      children: [
+                                        Text('전체보기'),
+                                        Icon(Icons.arrow_right_rounded)
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ))
+                      // Center(
+                      //   child: CircularProgressIndicator(),
+                      // ),
+                      //   PageView.builder(
+                      //   onPageChanged: (index) {
+                      //     setState(() {
+                      //       _currentPage = index; // 페이지 변경 시 currentPage 갱신
+                      //     });
+                      //   },
+                      //   controller: _pageController,
+                      //   itemCount: viewModel.banners.length,
+                      //   itemBuilder: (context, index) {
+                      //     final bannerIndex = index % viewModel.banners.length;
+                      //     return InkWell(
+                      //         onTap: () {
+                      //           ref.read(HomeProvider).pushCurrentWidget =
+                      //               AdvertiseDetailScreen(
+                      //                   imagePath:
+                      //                       '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.first ?? ' '}');
+                      //         },
+                      //         child: Image.network(
+                      //           '${BASE_URL}/file/${viewModel.banners[bannerIndex]?.last ?? ' '}',
+                      //           headers: const {'cheat': 'showmethemoney'},
+                      //           fit: BoxFit.cover
+                      //         ));
+                      //   },
+                      // )
+                  ]))),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, childAspectRatio: 1.5),

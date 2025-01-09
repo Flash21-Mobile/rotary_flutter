@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,12 +13,20 @@ final EventProvider = ChangeNotifierProvider.autoDispose<_ViewModel>((ref) {
 class _ViewModel with ChangeNotifier {
   LoadState eventState = Loading();
 
-  Future getEvent() async{
-    eventState  = Loading();
+  Future getEvent() async {
+    eventState = Loading();
     notifyListeners();
 
     var data = await EventAPI().getEvent();
     eventState = data;
     notifyListeners();
+  }
+
+  Future<LoadState> postEvent(String title, String content, String date) async {
+    return await EventAPI().postEvent(title, content, date);
+  }
+
+  Future<LoadState> deleteEvent(int id) async {
+    return await EventAPI().deleteEvent(id);
   }
 }

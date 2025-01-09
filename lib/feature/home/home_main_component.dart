@@ -71,7 +71,7 @@ class IndexMinText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text??'',
+      text ?? '',
       style: TextStyle(
           fontSize: DynamicFontSize.font17(context),
           color: textColor ?? GlobalColor.black),
@@ -131,7 +131,7 @@ class PinchView extends StatelessWidget {
   }
 }
 
-class SearchBox extends StatelessWidget {
+class SearchBox extends ConsumerStatefulWidget {
   final String hint;
   final Function(String)? onSearch;
   final Color? backgroundColor;
@@ -145,30 +145,50 @@ class SearchBox extends StatelessWidget {
       this.borderColor});
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _SearchBox();
+}
+
+class _SearchBox extends ConsumerState<SearchBox> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onFieldSubmitted: onSearch,
+      controller: _controller,
+      onFieldSubmitted: widget.onSearch,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
-          filled: backgroundColor == null ? false : true,
-          fillColor: backgroundColor,
+          filled: widget.backgroundColor == null ? false : true,
+          fillColor: widget.backgroundColor,
           contentPadding: EdgeInsets.symmetric(horizontal: 20),
-          hintText: hint,
+          hintText: widget.hint,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
-            borderSide:
-                BorderSide(color: borderColor ?? GlobalColor.primaryColor),
+            borderSide: BorderSide(
+                color: widget.borderColor ?? GlobalColor.primaryColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
-            borderSide:
-                BorderSide(color: borderColor ?? GlobalColor.primaryColor),
+            borderSide: BorderSide(
+                color: widget.borderColor ?? GlobalColor.primaryColor),
           ),
-          suffixIcon: Icon(
-            Icons.search,
-            color: GlobalColor.primaryColor,
-            size: 30,
-          )),
+          suffixIcon: InkWell(
+              onTap: () {
+                widget.onSearch != null
+                    ? widget.onSearch!(_controller.text)
+                    : () {};
+              },
+              child: Icon(
+                Icons.search,
+                color: GlobalColor.primaryColor,
+                size: 30,
+              ))),
     );
   }
 }
@@ -200,52 +220,57 @@ class CustomDropdown extends ConsumerWidget {
     print('isLoading $isLoading');
 
     return GestureDetector(
-      onTap:!isLoading ?(){
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    height: 450,
-                    child: Scrollbar(
-                      thumbVisibility: true, // 항상 보이도록 설정
-                      thickness: 2,
-                      radius: Radius.circular(10),
-                      child: ListView(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 6),
-                        shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
-                        children: items.asMap().entries.map((entry) {
-                          return InkWell(
-                            child: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Text(
-                                entry.value,
-                                style: TextStyle(
-                                  fontSize: DynamicFontSize.font20(context),
-                                ),
+      onTap: !isLoading
+          ? () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            height: 450,
+                            child: Scrollbar(
+                              thumbVisibility: true, // 항상 보이도록 설정
+                              thickness: 2,
+                              radius: Radius.circular(10),
+                              child: ListView(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 6),
+                                shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
+                                children: items.asMap().entries.map((entry) {
+                                  return InkWell(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(15),
+                                      child: Text(
+                                        entry.value,
+                                        style: TextStyle(
+                                          fontSize:
+                                              DynamicFontSize.font20(context),
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      print('바꿀 값 ${entry.key}');
+                                      // ref.read(statusProvider.notifier).setStatus(entry.key);
+                                      onChanged(entry.key);
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                    },
+                                  );
+                                }).toList(),
                               ),
                             ),
-                            onTap: () {
-                              print('바꿀 값 ${entry.key}');
-                              // ref.read(statusProvider.notifier).setStatus(entry.key);
-                              onChanged(entry.key);
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ));});
-          }:(){
-        print('you cannot touch');
-      },
+                          ),
+                        ));
+                  });
+            }
+          : () {
+              print('you cannot touch');
+            },
       child: Container(
         padding: EdgeInsets.only(right: 5, left: 15),
         height: height,
