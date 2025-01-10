@@ -47,7 +47,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                 children: [
                   SizedBox(
                     height: 10,
-                  ),    //todo r: 인원수
+                  ),    //todo r: 인원수 rc 추가하기
                   Row(
                     children: [
                       Container(
