@@ -41,13 +41,13 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.only(left: 15,right: 15, bottom: 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     height: 10,
-                  ),
+                  ),    //todo r: 인원수
                   Row(
                     children: [
                       Container(
@@ -143,6 +143,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                     itemCount: 12,
                     itemBuilder: (context, index) {
                       return Container(
+
                           decoration: BoxDecoration(
                               color: GlobalColor.indexBoxColor,
                               borderRadius: BorderRadius.circular(20)),

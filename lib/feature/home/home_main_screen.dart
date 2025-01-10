@@ -44,6 +44,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     });
   }
 
+
   Future<LoadState> getBanners() async {
     return await ref.read(HomeMainProvider).getAdvertiseRandom();
   }
@@ -90,144 +91,144 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                   height: (MediaQuery.of(context).size.width) * 6 / 16,
                   alignment: Alignment.center,
                   child: Stack(alignment: Alignment.bottomRight, children: [
-                    // InkWell(
-                    //     onTap: (){
-                    //       ref.read(HomeProvider).pushCurrentWidget = const UserSearchScreen();
-                    //     },
-                    //     child:
-                    //   Container(
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       crossAxisAlignment: CrossAxisAlignment.center,
-                    //       children: [
-                    //         SvgPicture.asset(
-                    //           height: (MediaQuery.of(context).size.width) * 6 / 24,
-                    //           width: (MediaQuery.of(context).size.width) * 6 / 24,
-                    //           'asset/icons/logo_star.svg',
-                    //         ),
-                    //         SizedBox(width: 15,),
-                    //         Column(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             IndexThumbTitle(
-                    //               '로타리 3700지구',
-                    //             ),
-                    //             Text(
-                    //               '전체인원 ${2707}',
-                    //               style: TextStyle(
-                    //                   fontSize: DynamicFontSize.font22(context),
-                    //                   fontWeight: FontWeight.w500),
-                    //             ),
-                    //             SizedBox(
-                    //               height: 16,
-                    //             ),
-                    //             InkWell(
-                    //               splashColor: Colors.transparent,
-                    //               highlightColor: Colors.transparent,
-                    //               onTap: () {
-                    //                 homeProvider.pushCurrentWidget =
-                    //                     UserSearchListScreen(initialRegion: 0);
-                    //               },
-                    //               child: Container(
-                    //                 padding: EdgeInsets.only(
-                    //                     left: 15, right: 5, top: 5, bottom: 5),
-                    //                 decoration: BoxDecoration(
-                    //                     borderRadius:
-                    //                         BorderRadius.circular(100),
-                    //                     color: GlobalColor.indexBoxColor),
-                    //                 child: Row(
-                    //                   children: [
-                    //                     Text('전체보기'),
-                    //                     Icon(Icons.arrow_right_rounded)
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             )
-                    //           ],
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ))
-                    PageView.builder(
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentPage = index; // 페이지 변경 시 currentPage 갱신
-                        });
-                      },
-                      controller: _pageController,
-                      itemCount: viewModel.futureBanners.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                            onTap: () {
-                              Log.d('${viewModel.futureBanners[index]}');
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                                return AdvertiseDetailScreen(data: viewModel.advertises[index]);
-                              }));
-                            },
-                            child: Row(
+                    InkWell(
+                        onTap: (){
+                          ref.read(HomeProvider).pushCurrentWidget = const UserSearchScreen();
+                        },
+                        child:
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              height: (MediaQuery.of(context).size.width) * 6 / 24,
+                              width: (MediaQuery.of(context).size.width) * 6 / 24,
+                              'asset/icons/logo_star.svg',
+                            ),
+                            SizedBox(width: 15,),
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: FutureImage(
-                                        viewModel.futureBanners[index],
-                                        width: 100,
-                                        height: 100,
-                                        onError: SizedBox())),
-                                SizedBox(
-                                  width: 15,
+                                IndexThumbTitle(
+                                  '로타리 3700지구',
                                 ),
-                                Container(
-                                    width:
-                                        MediaQuery.of(context).size.width - 145,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                Text(
+                                  '전체인원 ${2707}',
+                                  style: TextStyle(
+                                      fontSize: DynamicFontSize.font22(context),
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    homeProvider.pushCurrentWidget =
+                                        UserSearchListScreen(initialRegion: 0);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 5, top: 5, bottom: 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: GlobalColor.indexBoxColor),
+                                    child: Row(
                                       children: [
-                                        IndexTitle(
-                                            '${viewModel.advertises[index].title}'),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        ...viewModel.advertises[index]
-                                                    .content !=
-                                                '설명없음'
-                                            ? [
-                                                Container(
-                                                    child: IndexMinText(
-                                                  '${viewModel.advertises[index].content}',
-                                                  maxLength: 2,
-                                                  textColor:
-                                                      GlobalColor.indexColor,
-                                                )),
-                                                SizedBox(
-                                                  height: 5,
-                                                )
-                                              ]
-                                            : [SizedBox()],
-                                        IndexMinText(
-                                            '${viewModel.advertises[index].account?.grade?.name} / ${viewModel.advertises[index].account?.name}')
+                                        Text('전체보기'),
+                                        Icon(Icons.arrow_right_rounded)
                                       ],
-                                    ))
+                                    ),
+                                  ),
+                                )
                               ],
-                            ));
-                      },
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                          color: GlobalColor.black.withAlpha(900),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: IndexMinText(
-                        '${_currentPage + 1} / 5',
-                        textColor: GlobalColor.white,
-                      ),
-                    ),
+                            )
+                          ],
+                        ),
+                      )),
+                    // PageView.builder(
+                    //   onPageChanged: (index) {
+                    //     setState(() {
+                    //       _currentPage = index; // 페이지 변경 시 currentPage 갱신
+                    //     });
+                    //   },
+                    //   controller: _pageController,
+                    //   itemCount: viewModel.futureBanners.length,
+                    //   itemBuilder: (context, index) {
+                    //     return InkWell(
+                    //         onTap: () {
+                    //           Log.d('${viewModel.futureBanners[index]}');
+                    //           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    //             return AdvertiseDetailScreen(data: viewModel.advertises[index]);
+                    //           }));
+                    //         },
+                    //         child: Row(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             ClipRRect(
+                    //                 borderRadius: BorderRadius.circular(10),
+                    //                 child: FutureImage(
+                    //                     viewModel.futureBanners[index],
+                    //                     width: 100,
+                    //                     height: 100,
+                    //                     onError: SizedBox())),
+                    //             SizedBox(
+                    //               width: 15,
+                    //             ),
+                    //             Container(
+                    //                 width:
+                    //                     MediaQuery.of(context).size.width - 145,
+                    //                 child: Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   mainAxisAlignment:
+                    //                       MainAxisAlignment.center,
+                    //                   children: [
+                    //                     IndexTitle(
+                    //                         '${viewModel.advertises[index].title}'),
+                    //                     SizedBox(
+                    //                       height: 8,
+                    //                     ),
+                    //                     ...viewModel.advertises[index]
+                    //                                 .content !=
+                    //                             '설명없음'
+                    //                         ? [
+                    //                             Container(
+                    //                                 child: IndexMinText(
+                    //                               '${viewModel.advertises[index].content}',
+                    //                               maxLength: 2,
+                    //                               textColor:
+                    //                                   GlobalColor.indexColor,
+                    //                             )),
+                    //                             SizedBox(
+                    //                               height: 5,
+                    //                             )
+                    //                           ]
+                    //                         : [SizedBox()],
+                    //                     IndexMinText(
+                    //                         '${viewModel.advertises[index].account?.grade?.name} / ${viewModel.advertises[index].account?.name}')
+                    //                   ],
+                    //                 ))
+                    //           ],
+                    //         ));
+                    //   },
+                    // ),
+                    // Container(
+                    //   margin: EdgeInsets.all(8),
+                    //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    //   decoration: BoxDecoration(
+                    //       color: GlobalColor.black.withAlpha(900),
+                    //       borderRadius: BorderRadius.circular(100)),
+                    //   child: IndexMinText(
+                    //     '${_currentPage + 1} / 5',
+                    //     textColor: GlobalColor.white,
+                    //   ),
+                    // ),
                   ]))),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

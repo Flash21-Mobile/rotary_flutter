@@ -57,7 +57,7 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
               },
               child:  Container(
                 width: double.infinity,
-              margin: EdgeInsets.only(bottom: 15, left: 15),
+              margin: EdgeInsets.only(bottom: 30, left: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,

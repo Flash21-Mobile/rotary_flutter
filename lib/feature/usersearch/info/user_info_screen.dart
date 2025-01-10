@@ -128,7 +128,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                             UserInfoIndex(
                                 assetName:
                                     'asset/icons/calendar_icon.svg',
-                                indexName: formatDateTime(account.time),
+                                indexName:account.time != null ? formatDateTime(account.time):'',
                                 index: account.time), //todo r: 이거
                             SizedBox(
                               height: 15,

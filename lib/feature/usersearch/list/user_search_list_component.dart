@@ -150,9 +150,9 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                     height: 5,
                   ),
                   Container(width: 165,child:  Row(children: [
-                    IndexText(formatDateTime('입회일')),
+                    IndexText('입회일'),
                     Spacer(),
-                    IndexTitle(widget.account.time),
+                    IndexTitle(widget.account.time != null ? formatDateTime(widget.account.time):'',),
                   ])),
                   SizedBox(
                     height: 5,
