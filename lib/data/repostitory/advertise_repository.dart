@@ -13,5 +13,12 @@ abstract class AdvertiseRepository {
   @GET("/article")
   Future<List<AdvertiseModel>> getArticle(
       @Query('board') int? board,
+      @Query('page') int? page,
+      @Query('size') int? size,
+      @Query('title') String? title,
       );
+
+  @GET("/article/random")
+  Future<List<AdvertiseModel>> getArticleRandom();
+
 }

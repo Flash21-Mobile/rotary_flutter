@@ -15,54 +15,30 @@ final AdvertiseProvider =
 class AdvertiseViewModel with ChangeNotifier {
   LoadState advertiseState = Loading();
 
-  List<List<String>?> banners = [];
+  List<int> banners = [];
 
-  Future getAdvertiseAll() async {
-    var temp = await AdvertiseAPI().getAdvertiseAll();
+  Future<int?> getAdvertiseFile(int? fileApiPK) async {
+    var data = await FileAPI().getAdvertiseFile(fileApiPK);
+    return data?.id;
+  }
+
+  Future<LoadState> getAdvertiseAll({int? page, String? title}) async {
+    var temp = await AdvertiseAPI().getAdvertiseAll(page, title);
 
     if (temp == null) {
       advertiseState = Error('exception');
       notifyListeners();
-      return;
+      return advertiseState;
     } else {
       // 본문과 썸네일 리스트 분리
-      final List<List<String>> advertiseData = temp.map((value) {
-        return value.content?.replaceAll('content:', '').split(',') ?? [];
-
-      }).toList();
+      final List<AdvertiseModel> advertiseData = temp;
 
       // 결과를 상태로 설정
       advertiseState = Success(advertiseData);
-      banners = advertiseData;
+      banners = advertiseData.map((value)=>value.id??0).toList();
       notifyListeners();
-    }
-  }
 
-  Future getAdvertiseRandom() async {
-    var temp = await AdvertiseAPI().getAdvertiseAll();
-
-    if (temp == null) {
-      advertiseState = Error('exception');
-      notifyListeners();
-      return;
-    } else {
-      // 본문과 썸네일 리스트 분리
-      final List<List<String>> advertiseData = temp.map((value) {
-        return value.content?.replaceAll('content:', '').split(',') ?? [];
-
-      }).toList();
-
-
-      // 랜덤으로 5개의 항목 선택
-      final random = Random();
-      const int itemsToSelect = 5;
-      final randomAdvertiseData = (advertiseData.toList()..shuffle(random))
-          .take(itemsToSelect)
-          .toList();
-
-      advertiseState = Success(randomAdvertiseData);
-      banners = randomAdvertiseData;
-      notifyListeners();
+      return advertiseState;
     }
   }
 }

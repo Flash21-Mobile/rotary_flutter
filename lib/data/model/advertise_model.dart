@@ -6,17 +6,54 @@ part 'advertise_model.g.dart';
 
 @JsonSerializable()
 class AdvertiseModel {
+  int? id;
+  Account? account;
+  Board? board;
+  String? title;
   String? content;
 
-  AdvertiseModel({this.content});
+  AdvertiseModel({this.id, this.account, this.board, this.title, this.content});
 
   AdvertiseModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    account =
+    json['account'] != null ? new Account.fromJson(json['account']) : null;
+    board = json['board'] != null ? new Board.fromJson(json['board']) : null;
+    title = json['title'];
     content = json['content'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    if (this.account != null) {
+      data['account'] = this.account!.toJson();
+    }
+    if (this.board != null) {
+      data['board'] = this.board!.toJson();
+    }
+    data['title'] = this.title;
     data['content'] = this.content;
+    return data;
+  }
+}
+
+@JsonSerializable()
+class Board {
+  int? id;
+  String? name;
+
+  Board({this.id, this.name});
+
+  Board.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
     return data;
   }
 }

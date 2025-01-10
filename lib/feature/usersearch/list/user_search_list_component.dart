@@ -10,16 +10,13 @@ import '../../home_view_model.dart';
 import '../../userSearch/info/user_info_screen.dart';
 
 class FutureImage extends ConsumerStatefulWidget {
-  const FutureImage(
-    this.futureId, {
-    super.key,
-    required this.width,
-    required this.height,
-  });
+  const FutureImage(this.futureId,
+      {super.key, this.width, this.height, this.onError});
 
   final Future<int?> futureId;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
+  final Widget? onError;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NetworkImage();
@@ -31,36 +28,52 @@ class _NetworkImage extends ConsumerState<FutureImage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    getFile();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getFile();
+    });
   }
 
   void getFile() async {
     var data = await widget.futureId;
-    setState(() {
-      if(context.mounted) imagePK = data;
-    });
+    if (mounted) {
+      setState(() {
+        imagePK = data;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var placeHolder = Container(
-        width: widget.width,
-        height: widget.height,
-        color: GlobalColor.indexBoxColor,
-        child: const Icon(
-          Icons.person_rounded,
-          color: GlobalColor.indexColor,
-          size: 60,
-        ));
-
-    return imagePK != null
-        ? Image.network('$BASE_URL/file/$imagePK',
-            fit: BoxFit.cover,
-            headers: const {'cheat': 'showmethemoney'},
+    var placeHolder = widget.onError ??
+        Container(
             width: widget.width,
             height: widget.height,
-            errorBuilder: (context, error, stackTrace) => placeHolder)
+            color: GlobalColor.indexBoxColor,
+            child: const Icon(
+              Icons.person_rounded,
+              color: GlobalColor.indexColor,
+              size: 60,
+            ));
+
+    var image = Image.network('$BASE_URL/file/$imagePK',
+        fit: widget.height == null ? BoxFit.fitWidth : BoxFit.cover,
+        headers: const {'cheat': 'showmethemoney'},
+        width: widget.width,
+        height: widget.height,
+        errorBuilder: (context, error, stackTrace) => placeHolder);
+
+    return imagePK != null
+        ? Container(
+            width: widget.width,
+            height: widget.height,
+            child: Stack(children: [
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+              widget.height == null
+                  ? LayoutBuilder(builder: (context, constrains) => image)
+                  : image,
+            ]))
         : placeHolder;
   }
 }
@@ -81,8 +94,12 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
 
     return InkWell(
         onTap: () {
-          ref.read(HomeProvider).pushCurrentWidget =
-              UserInfoScreen(id: widget.account.id ?? 0);
+          // ref.read(HomeProvider).pushCurrentWidget =
+          //     UserInfoScreen(id: widget.account.id ?? 0);
+
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return UserInfoScreen(id: widget.account.id ?? 0);
+          }));
         },
         child: Container(
           decoration: BoxDecoration(
@@ -104,9 +121,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                     IndexThumbTitle(widget.account.name),
                     SizedBox(
                       width: 5,

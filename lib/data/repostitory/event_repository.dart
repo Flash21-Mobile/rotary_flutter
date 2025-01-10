@@ -21,3 +21,5 @@ abstract class EventRepository {
 }
 //todo r: 사진 추가
 //todo r: 날짜 기간 추가
+//todo r: 직책 초대회장 간격 주기
+//todo r: 상세에서 직책 안 나옴

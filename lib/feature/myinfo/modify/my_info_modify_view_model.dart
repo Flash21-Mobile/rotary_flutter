@@ -28,10 +28,4 @@ class _ViewModel with ChangeNotifier {
 
   int? _imagePath;
   int? get imagePath => _imagePath;
-
-  Future getAccountFile(int? fileApiPK) async {
-    var data = await FileAPI().getAccountFile(fileApiPK);
-    _imagePath = data?.id;
-    notifyListeners();
-  }
 }

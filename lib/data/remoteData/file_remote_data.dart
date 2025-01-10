@@ -49,4 +49,13 @@ class FileAPI {
       return Error(e);
     }
   }
+
+  Future<FileModel?> getAdvertiseFile(int? fileApiPK) async {
+    try {
+      final result = await repository.getFile('advertise', fileApiPK);
+      return result?.last;
+    } catch (e) {
+      return null;
+    }
+  }
 }

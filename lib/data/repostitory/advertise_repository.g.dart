@@ -22,9 +22,19 @@ class _AdvertiseRepository implements AdvertiseRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<AdvertiseModel>> getArticle(int? board) async {
+  Future<List<AdvertiseModel>> getArticle(
+    int? board,
+    int? page,
+    int? size,
+    String? title,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'board': board};
+    final queryParameters = <String, dynamic>{
+      r'board': board,
+      r'page': page,
+      r'size': size,
+      r'title': title,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
@@ -36,6 +46,42 @@ class _AdvertiseRepository implements AdvertiseRepository {
         .compose(
           _dio.options,
           '/article',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<AdvertiseModel> _value;
+    try {
+      _value = _result.data!
+          .map(
+              (dynamic i) => AdvertiseModel.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<List<AdvertiseModel>> getArticleRandom() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<AdvertiseModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/article/random',
           queryParameters: queryParameters,
           data: _data,
         )

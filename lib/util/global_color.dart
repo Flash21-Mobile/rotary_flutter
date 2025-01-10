@@ -10,6 +10,7 @@ class GlobalColor {
   static const Color webPrimaryColor = Color(0xFF96A7D5);
   static const Color darkGreyFontColor = Color(0xff515366);
   static const Color greyFontColor = Color(0xff8E8E8E);
+  static const Color dividerColor = Color(0xFFEAEAEA);
 
   static const Color transparent = Color(0x00000000);
   static const Color white = Color(0xFFFFFFFF);

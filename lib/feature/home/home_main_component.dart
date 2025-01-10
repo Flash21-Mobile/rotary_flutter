@@ -65,14 +65,37 @@ class IndexMinText extends StatelessWidget {
   final String? text;
   final Color? textColor;
   final bool? overFlowFade;
+  final int? maxLength;
 
-  const IndexMinText(this.text, {super.key, this.textColor, this.overFlowFade});
+  const IndexMinText(this.text, {super.key, this.textColor, this.overFlowFade, this.maxLength});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
       style: TextStyle(
+          fontSize: DynamicFontSize.font17(context),
+          color: textColor ?? GlobalColor.black),
+      overflow: maxLength == null ? overFlowFade ?? false ? TextOverflow.fade : null: TextOverflow.ellipsis,
+      maxLines: maxLength ?? (overFlowFade ?? false ? 1 : null),
+      softWrap:  overFlowFade ?? false ? false : null,
+    );
+  }
+}
+
+class IndexMinTitle extends StatelessWidget {
+  final String? text;
+  final Color? textColor;
+  final bool? overFlowFade;
+
+  const IndexMinTitle(this.text, {super.key, this.textColor, this.overFlowFade});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text ?? '',
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
           fontSize: DynamicFontSize.font17(context),
           color: textColor ?? GlobalColor.black),
       overflow: overFlowFade ?? false ? TextOverflow.fade : null,
@@ -136,13 +159,15 @@ class SearchBox extends ConsumerStatefulWidget {
   final Function(String)? onSearch;
   final Color? backgroundColor;
   final Color? borderColor;
+  final Function(String)? onChanged;
 
   const SearchBox(
       {super.key,
       required this.hint,
       this.onSearch,
       this.backgroundColor,
-      this.borderColor});
+      this.borderColor,
+      this.onChanged});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SearchBox();
@@ -162,6 +187,7 @@ class _SearchBox extends ConsumerState<SearchBox> {
     return TextFormField(
       controller: _controller,
       onFieldSubmitted: widget.onSearch,
+      onChanged: widget.onChanged,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
           filled: widget.backgroundColor == null ? false : true,
@@ -179,6 +205,8 @@ class _SearchBox extends ConsumerState<SearchBox> {
                 color: widget.borderColor ?? GlobalColor.primaryColor),
           ),
           suffixIcon: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {
                 widget.onSearch != null
                     ? widget.onSearch!(_controller.text)

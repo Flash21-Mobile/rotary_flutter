@@ -34,7 +34,6 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
 
   List<Account> items = [];
   String query = '';
-  bool isLoading = false;
   bool hasMore = true;
   int currentPage = 0;
 
@@ -95,8 +94,6 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
       items = [];
       hasMore = true;
     });
-
-
   }
 
   // void getAccountList() {

@@ -18,7 +18,8 @@ import 'package:rotary_flutter/util/secure_storage.dart';
 import '../data/model/account_model.dart';
 import 'home/home_main_screen.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {     //todo r: 전화번호 받아오는 동안 로딩
+class HomeScreen extends ConsumerStatefulWidget {
+  //todo r: 전화번호 받아오는 동안 로딩
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreen();
 }
@@ -37,7 +38,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) androidLogin();
+    if (Platform.isAndroid)
+      androidLogin();
     else if (Platform.isIOS) iOSLogin();
 
     globalRef = ref;
@@ -54,7 +56,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
       try {
         final phone = await androidChannel.invokeMethod('getPhoneNumber');
         if (phone != null) {
-          final indexPhone = '${phone?.substring(0, 3)}-${phone?.substring(3, 7)}-${phone?.substring(7)}';
+          final indexPhone =
+              '${phone?.substring(0, 3)}-${phone?.substring(3, 7)}-${phone?.substring(7)}';
           login(indexPhone);
         }
       } catch (e) {
@@ -64,26 +67,27 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    if ((await globalStorage.read(key: 'phone')) == null){
+    if ((await globalStorage.read(key: 'phone')) == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showPhoneDialog();
       });
-      }
+    }
   }
 
   void login(String phone) async {
     var dataState = await AccountAPI().getAccount(cellphone: phone);
 
     loadStateFunction(dataState,
-        onSuccess: (data) {
+        onSuccess: (data) async {
           var result = (data as List<Account>)[0];
           Fluttertoast.showToast(msg: '${result.name}님 로그인에 성공하였습니다.');
 
-          if(result.permission == true ){
+          if (result.permission == true) {
             globalStorage.write(key: 'admin', value: 'admin');
-          }else {
+          } else {
             globalStorage.write(key: 'admin', value: null);
           }
+          Log.d('i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
 
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
@@ -93,64 +97,58 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
   void showPhoneDialog() {
     var homeProvider = ref.read(HomeProvider);
-    
+
     showDismissDialog(context,
-      onPopInvokedWithResult: (didPop, result) {
-        if (homeProvider.phoneState is! Success)
-          homeProvider.popCurrentWidget();
-      },
-      controller: phoneController,
-      textInputFormatter: [
-        FilteringTextInputFormatter.digitsOnly,
-        PhoneInputFormatter()
-      ],
+        onPopInvokedWithResult: (didPop, result) {
+          if (homeProvider.phoneState is! Success)
+            homeProvider.popCurrentWidget();
+        },
+        controller: phoneController,
+        textInputFormatter: [
+          FilteringTextInputFormatter.digitsOnly,
+          PhoneInputFormatter()
+        ],
         keyboardType: TextInputType.number,
-      hint: '전화번호',
-      onTap: () {
-        if (phoneController.text.isNotEmpty) {
-          FocusNode().unfocus();
-          homeProvider.postPhone(phoneController.text);
-        }
-      },
-      buttonText: '인증하기');
+        hint: '전화번호',
+        onTap: () {
+          if (phoneController.text.isNotEmpty) {
+            FocusNode().unfocus();
+            homeProvider.postPhone(phoneController.text);
+          }
+        },
+        buttonText: '인증하기');
   }
 
   void showAuthenticateDialog() {
     var homeProvider = ref.read(HomeProvider);
-    
-    showDismissDialog(
-        context, 
-        controller: authenticateController, 
-        hint: '인증번호',
-        onTap: (){
-          if (authenticateController.text.isNotEmpty) {
-            FocusNode().unfocus();
-            homeProvider.postAuthenticate(
-                authenticateController.text);
-          }},
-        keyboardType: TextInputType.number,
-    buttonText: '인증하기');
+
+    showDismissDialog(context, controller: authenticateController, hint: '인증번호',
+        onTap: () {
+      if (authenticateController.text.isNotEmpty) {
+        FocusNode().unfocus();
+        homeProvider.postAuthenticate(authenticateController.text);
+      }
+    }, keyboardType: TextInputType.number, buttonText: '인증하기');
   }
-  
-  void showLoginDialog(){
-    showDismissDialog(
-        context,
+
+  void showLoginDialog() {
+    showDismissDialog(context,
         hint: '아이디',
         controller: idController,
         subHint: '비밀번호',
         subController: passwordController,
-        buttonText: '로그인',
-    onTap: (){
-          if (idController.text == 'flash21' && passwordController.text == 'flash2121'){
-            Navigator.of(context, rootNavigator: true).pop();
+        buttonText: '로그인', onTap: () {
+      if (idController.text == 'flash21' &&
+          passwordController.text == 'flash2121') {
+        Navigator.of(context, rootNavigator: true).pop();
 
-            // login('010-3811-0831');    //todo r: 서버 되면 키기
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(milliseconds: 1500),
-              content: Text('로그인에 실패하였습니다.'),
-            ));
-          }
+        // login('010-3811-0831');    //todo r: 서버 되면 키기
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(milliseconds: 1500),
+          content: Text('로그인에 실패하였습니다.'),
+        ));
+      }
     });
   }
 
@@ -173,8 +171,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
         homeProvider.authenticateState = End();
 
-        globalStorage.write(key: 'phone', value: '01040502111');    //todo r: 수정
-
+        globalStorage.write(key: 'phone', value: '01040502111'); //todo r: 수정
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),
@@ -191,18 +188,18 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
           var widget = homeProvider.popCurrentWidget();
-          if(widget == null) SystemNavigator.pop();
+          if (widget == null) SystemNavigator.pop();
         },
         child: Scaffold(
             backgroundColor: GlobalColor.white,
             appBar: AppBar(
                 automaticallyImplyLeading: false,
                 backgroundColor: GlobalColor.white,
-                title:InkWell(
-                    onTap: (){
+                title: InkWell(
+                    onTap: () {
                       homeProvider.pushCurrentWidget = HomeMainScreen();
                     },
-                    child:  Container(
+                    child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         height: 50,
                         width: double.infinity,
@@ -218,17 +215,20 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                           ),
                           Spacer(),
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               homeProvider.pushCurrentWidget = MyInfoScreen();
                             },
-                            child: SvgPicture.asset('asset/icons/my_info_icon.svg',width: 24, height: 24,),
+                            child: SvgPicture.asset(
+                              'asset/icons/my_info_icon.svg',
+                              width: 24,
+                              height: 24,
+                            ),
                           )
                         ])))),
-            body: homeProvider.currentWidget??currentWidgetIsNull())
-    );
+            body: homeProvider.currentWidget ?? currentWidgetIsNull()));
   }
 
-  HomeMainScreen currentWidgetIsNull(){
+  HomeMainScreen currentWidgetIsNull() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -241,8 +241,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     return const HomeMainScreen();
   }
 
-  Future addHomeScreen()async{
-    await Future.delayed(const Duration(milliseconds: 1500)).then((onValue){
+  Future addHomeScreen() async {
+    await Future.delayed(const Duration(milliseconds: 1500)).then((onValue) {
       Log.d('NavigateScope: Add HomeMainScreen');
       ref.read(HomeProvider).setCurrentWidget = const HomeMainScreen();
     });

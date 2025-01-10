@@ -9,6 +9,8 @@ import 'package:rotary_flutter/util/fontSize.dart';
 
 import '../../../../data/model/advertise_model.dart';
 import '../../../../util/global_color.dart';
+import '../../util/logger.dart';
+import '../../util/model/loadstate.dart';
 import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 import 'advertise_view_model.dart';
@@ -21,18 +23,63 @@ class AdvertiseScreen extends ConsumerStatefulWidget {
 }
 
 class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
+  bool hasMore = true;
+  int currentPage = 0;
+  String query = '';
+  List<AdvertiseModel> items = [];
+
   @override
   void initState() {
-    ref.read(AdvertiseProvider).getAdvertiseAll();
     super.initState();
+
+    fetchData();
   }
 
+  Future<void> fetchData() async {
+    var userSearchListProvider = ref.read(AdvertiseProvider);
+    if (userSearchListProvider.advertiseState is Loading && !hasMore) return;
+
+    var loadState = await userSearchListProvider.getAdvertiseAll(page: currentPage, title: query);
+
+    if (loadState is Success) {
+      final List<AdvertiseModel> data = loadState.data;
+      print('hello: ioio ${loadState.data}');
+
+      if (data.isNotEmpty) {
+        setState(() {
+          items.addAll(data);
+          currentPage++;
+        });
+      } else {
+        setState(() {
+          hasMore = false;
+        });
+      }
+    } else {
+      setState(() {
+        hasMore = false;
+      });
+      print('hello: else $hasMore');
+    }
+  }
+
+  Future<void> initData() async {
+    var userSearchListProvider = ref.read(AdvertiseProvider);
+    if (userSearchListProvider.advertiseState is Loading && !hasMore) return;
+
+    setState(() {
+      currentPage = 0;
+      items = [];
+      hasMore = true;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    var advertiseProvider = ref.watch(AdvertiseProvider);
+    var viewModel = ref.watch(AdvertiseProvider);
 
-    return LoadStateScaffold(
-        loadState: advertiseProvider.advertiseState,
+    Log.d('데이터: ${items}');
+
+    return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
           title: Text('광고협찬'),
@@ -44,103 +91,46 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
             },
           ),
         ),
-        successBody: (data) {
-          data as List<List<String>?>;
-
-
-
-          return Column(children: [
+        body: Column(children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: SearchBox(
-                hint: '검색어를 입력해주세요',
+                hint: '회원검색',
+                onChanged: (data){
+                  query = data;
+                  initData();
+                },
               ),
             ),
             SizedBox(
               height: 15,
             ),
-            data.isNotEmpty
-                ? Expanded(
+            Expanded(
                     child: ListView.separated(
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    physics: ClampingScrollPhysics(),
+                    itemCount: items.length + 1,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: () {
-                            ref.read(HomeProvider).pushCurrentWidget =
-                                AdvertiseDetailScreen(
-                                    imagePath:
-                                        '${BASE_URL}/file/${data[index]?.first ?? ' '}');
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height:
-                                (MediaQuery.of(context).size.width) * 6 / 16,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              // 둥근 모서리 크기
-                              border: Border.all(
-                                color: GlobalColor.indexColor, // 보더 색상
-                                width: 1.0, // 보더 두께
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.network(
-                                '${BASE_URL}/file/${data[index]?.last ?? ' '}',
-                                headers: const {'cheat': 'showmethemoney'},
-                                fit: BoxFit.cover, // 이미지가 영역을 채우도록
-                                errorBuilder: (context, error, stackTrace){
-                                  return SizedBox();
-                                },
-                              ),
-                            ),
-                          ));
+                      if (index == items.length) {
+                        if (viewModel.advertiseState is Loading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (hasMore) {
+                          fetchData();
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          return const SizedBox();
+                        }
+                      }
+                      return AdvertiseListTile(data: items[index]);
                     },
-                    separatorBuilder: (_, $) {
-                      return SizedBox(
-                        height: 10,
-                      );
-                    },
-                    itemCount: data.length,
-                  ))
-                : Expanded(
-                    child: Column(
-                    children: [
-                      SizedBox(
-                        height: 150,
+                    separatorBuilder: (_, $) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        height: 1,
+                        color: GlobalColor.dividerColor
                       ),
-                      Text(
-                        'ⓘ',
-                        style: TextStyle(fontSize: 40),
-                      ),
-                      IndexText('조회된 데이터가 없습니다.'),
-                    ],
-                  ))
-          ]);
-        },
-        errorBody: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Column(children: [
-              SearchBox(
-                hint: '검색어를 입력해주세요',
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                  child: Column(
-                children: [
-                  SizedBox(
-                    height: 150,
-                  ),
-                  Text(
-                    'ⓘ',
-                    style: TextStyle(fontSize: 40),
-                  ),
-                  IndexText('조회된 데이터가 없습니다.'),
-                ],
-              )),
-            ])));
+                    ),
+                  ))]));
   }
 }
