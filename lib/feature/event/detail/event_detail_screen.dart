@@ -46,7 +46,7 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              ref.read(HomeProvider).popCurrentWidget();
+              Navigator.pop(context);
             },
           ),
           actions: [
@@ -72,13 +72,7 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
                                 .read(EventProvider)
                                 .deleteEvent(widget.event.id ?? 0);
                             if (response is Success) {
-                              ref.read(HomeProvider).popCurrentWidget();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('내용을 입력해주세요'),
-                                  duration: Duration(milliseconds: 1500),
-                                ),
-                              );
+                              Navigator.pop(context);
                             }
                           },
                         ))
@@ -124,7 +118,10 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
   }
 
   String formatDateTime(String? dateTime) {
-    DateTime parsedDate = DateTime.parse(dateTime ?? '');
-    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
+    if (dateTime == null || dateTime.isEmpty) return ''; // null이나 빈 값 처리
+    DateTime parsedDate = DateTime.parse(dateTime);
+    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')} - "
+        "${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}";
+
   }
 }

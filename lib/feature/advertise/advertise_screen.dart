@@ -11,6 +11,7 @@ import '../../../../data/model/advertise_model.dart';
 import '../../../../util/global_color.dart';
 import '../../util/logger.dart';
 import '../../util/model/loadstate.dart';
+import '../event/page/advertise_page_screen.dart';
 import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 import 'advertise_view_model.dart';
@@ -33,13 +34,15 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
     super.initState();
 
     fetchData();
+    ref.read(AdvertiseProvider).getAdvertiseCount();
   }
 
   Future<void> fetchData() async {
     var userSearchListProvider = ref.read(AdvertiseProvider);
     if (userSearchListProvider.advertiseState is Loading && !hasMore) return;
 
-    var loadState = await userSearchListProvider.getAdvertiseAll(page: currentPage, title: query);
+    var loadState = await userSearchListProvider.getAdvertiseAll(
+        page: currentPage, title: query);
 
     if (loadState is Success) {
       final List<AdvertiseModel> data = loadState.data;
@@ -73,6 +76,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
       hasMore = true;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     var viewModel = ref.watch(AdvertiseProvider);
@@ -92,45 +96,57 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
           ),
         ),
         body: Column(children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: SearchBox(
-                hint: '회원검색',
-                onChanged: (data){
-                  query = data;
-                  initData();
-                },
-              ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: SearchBox(
+              hint: '회원검색',
+              onChanged: (data) {
+                query = data;
+                initData();
+              },
             ),
-            SizedBox(
-              height: 15,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IndexMinText('전체 광고 수: ${viewModel.advertiseCount}'),
+              SizedBox(
+                width: 15,
+              )
+            ],
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Expanded(
+              child: ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            itemCount: items.length + 1,
+            itemBuilder: (context, index) {
+              if (index == items.length) {
+                if (viewModel.advertiseState is Loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (hasMore) {
+                  fetchData();
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return const SizedBox();
+                }
+              }
+              return AdvertiseListTile(data: items[index], onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  return AdvertiseDetailScreen(data:items[index]);
+                }));
+              },);
+            },
+            separatorBuilder: (_, $) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Container(height: 1, color: GlobalColor.dividerColor),
             ),
-            Expanded(
-                    child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    itemCount: items.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == items.length) {
-                        if (viewModel.advertiseState is Loading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (hasMore) {
-                          fetchData();
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return const SizedBox();
-                        }
-                      }
-                      return AdvertiseListTile(data: items[index]);
-                    },
-                    separatorBuilder: (_, $) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        height: 1,
-                        color: GlobalColor.dividerColor
-                      ),
-                    ),
-                  ))]));
+          ))
+        ]));
   }
 }

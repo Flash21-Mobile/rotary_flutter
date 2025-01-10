@@ -46,4 +46,13 @@ class AdvertiseAPI {
       return null;
     }
   }
+
+  Future<int?> getAdvertiseCount() async {
+    try {
+      final result = await repository.getArticleCount();
+      return result;
+    } catch (e) {
+      return null;
+    }
+  }
 }

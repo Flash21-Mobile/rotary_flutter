@@ -30,18 +30,22 @@ class _EventScreenState extends ConsumerState<EventScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(EventProvider).getEvent().then((onValue) {
-        _loadEventsForDate(_selectedDate);
-        checkAdmin();
-      });
-    });
+    getData();
   }
 
   void checkAdmin() async {
     var data = (await globalStorage.read(key: 'admin')) == 'admin';
 
     setState(() => isAdmin = data);
+  }
+
+  void getData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(EventProvider).getEvent().then((onValue) {
+        _loadEventsForDate(_selectedDate);
+        checkAdmin();
+      });
+    });
   }
 
   Future<void> _selectYear(BuildContext context, int currentYear) async {
@@ -53,7 +57,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
         // 대화상자 내에서 선택된 연도로 자동 스크롤을 이동
         Future.delayed(Duration.zero, () {
           final selectedIndex = currentYear - 2000;
-          scrollController.jumpTo(selectedIndex * 50-50); // 아이템 높이에 맞춰 스크롤 이동
+          scrollController.jumpTo(selectedIndex * 50 - 50); // 아이템 높이에 맞춰 스크롤 이동
         });
 
         return AlertDialog(
@@ -70,20 +74,19 @@ class _EventScreenState extends ConsumerState<EventScreen> {
 
                 return InkWell(
                     onTap: () {
-                  Navigator.of(context).pop(year);
-                },
-                child:Container(
-                height: 50,
-                width: double.infinity,
-                    padding: EdgeInsets.only(left: 15),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                    color: isSelected ? GlobalColor.lightPrimaryColor : null,
-                      borderRadius: BorderRadius.circular(15)
-                    ),
-                    // 선택된 항목 배경색
+                      Navigator.of(context).pop(year);
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(left: 15),
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                          color:
+                              isSelected ? GlobalColor.lightPrimaryColor : null,
+                          borderRadius: BorderRadius.circular(15)),
+                      // 선택된 항목 배경색
                       child: Text('$year년'),
-
                     ));
               },
             ),
@@ -194,8 +197,10 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           floatingActionButton: isAdmin
               ? FloatingActionButton(
                   onPressed: () {
-                    ref.read(HomeProvider).pushCurrentWidget =
-                        EventModifyScreen();
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => EventModifyScreen())).then((value){
+                      getData();
+                    });
                   },
                   backgroundColor: GlobalColor.primaryColor,
                   child: const Icon(
@@ -219,6 +224,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           setState(() {
             _selectedDate = focusedDay;
           });
+          _loadEventsForDate(focusedDay);
         },
         // daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
         eventLoader: _eventLoader,
@@ -335,8 +341,12 @@ class _EventScreenState extends ConsumerState<EventScreen> {
         return EventTile(
           event: event,
           onTap: () {
-            ref.read(HomeProvider).pushCurrentWidget =
-                EventDetailScreen(event: event);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EventDetailScreen(event: event))).then((value){
+                      getData();
+            });
           },
         );
       },

@@ -73,7 +73,7 @@ class _Widget extends ConsumerState<EventModifyScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              ref.read(HomeProvider).popCurrentWidget();
+              Navigator.pop(context);
             },
           ),
           actions: [
@@ -117,7 +117,7 @@ class _Widget extends ConsumerState<EventModifyScreen> {
                           iso8601String);
 
                       if (response is Success) {
-                        ref.read(HomeProvider).popCurrentWidget();
+                        Navigator.pop(context);
                       }
                     }
                   },

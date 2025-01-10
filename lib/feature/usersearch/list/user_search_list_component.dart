@@ -66,7 +66,10 @@ class _NetworkImage extends ConsumerState<FutureImage> {
         ? Container(
             width: widget.width,
             height: widget.height,
-            child: Stack(children: [
+            alignment: Alignment.center,
+            child: Stack(
+                alignment: Alignment.center,
+                children: [
               Center(
                 child: CircularProgressIndicator(),
               ),
@@ -138,16 +141,19 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   SizedBox(
                     height: 5,
                   ),
-                  Row(children: [
+                  Container(width: 165,child:  Row(children: [
                     IndexText('직책'),
-                    IndexText('초대회장'),
-                  ]),
+                    Spacer(),
+                    IndexTitle(widget.account.workPositionName),
+                  ])),
                   SizedBox(
                     height: 5,
                   ),
-                  Row(children: [
-                    IndexText('입회일'),
-                  ]),
+                  Container(width: 165,child:  Row(children: [
+                    IndexText(formatDateTime('입회일')),
+                    Spacer(),
+                    IndexTitle(widget.account.time),
+                  ])),
                   SizedBox(
                     height: 5,
                   ),
@@ -157,5 +163,9 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
             ],
           ),
         ));
+  }
+  String formatDateTime(String? dateTime) {
+    DateTime parsedDate = DateTime.parse(dateTime ?? '');
+    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
   }
 }

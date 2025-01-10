@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/data/model/advertise_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_view_model.dart';
+import 'package:rotary_flutter/feature/event/page/advertise_page_screen.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
+import 'package:rotary_flutter/feature/home_view_model.dart';
+import 'package:rotary_flutter/feature/userSearch/info/user_info_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/list/user_search_list_component.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import '../usersearch/list/user_search_list_view_model.dart';
@@ -31,7 +34,7 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
           ),
         ),
         backgroundColor: GlobalColor.black,
-        body: Stack(children: [
+        body: Stack(alignment: Alignment.bottomLeft, children: [
           InteractiveViewer(
               minScale: 1.0,
               maxScale: 6.0,
@@ -44,27 +47,76 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
                             .getAdvertiseFile(widget.data.id),
                         onError: SizedBox())
                   ])),
-          Container(
+          InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => UserInfoScreen(id: widget.data.account?.id??0))
+                );
+              },
+              child:  Container(
+                width: double.infinity,
+              margin: EdgeInsets.only(bottom: 15, left: 15),
               child: Column(
-            children: [
-              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: FutureImage(ref.read(UserSearchListProvider).getAccountFile(widget.data.id), width: 50, height: 50),
-                  )
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: FutureImage(
+                          ref
+                              .read(UserSearchListProvider)
+                              .getAccountFile(widget.data.account?.id),
+                          width: 30,
+                          height: 30,
+                          onError: Container(
+                              width: 30,
+                              height: 30,
+                              color: GlobalColor.indexBoxColor,
+                              child: const Icon(
+                                Icons.person_rounded,
+                                color: GlobalColor.indexColor,
+                                size: 18,
+                              )),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      IndexText(
+                        widget.data.account?.name,
+                        textColor: GlobalColor.white,
+                      )
+                    ],
+                  ),
+                  ...widget.data.content != '설명없음'
+                      ? [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right:15),
+                              child: IndexMinText(
+                            widget.data.content,
+                            textColor: GlobalColor.white,
+                          ))
+                        ]
+                      : [SizedBox()]
                 ],
-              )
-            ],
-          ))
+              )))
         ]));
   }
 }
 
 class AdvertiseListTile extends ConsumerStatefulWidget {
-  const AdvertiseListTile({super.key, required this.data});
+  const AdvertiseListTile({super.key, required this.data, required this.onTap});
 
   final AdvertiseModel data;
+  final VoidCallback onTap;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -76,41 +128,43 @@ class _AdvertiseListTile extends ConsumerState<AdvertiseListTile> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(AdvertiseProvider);
-    return Row(
-      children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: FutureImage(viewModel.getAdvertiseFile(widget.data.id),
-                width: 100, height: 100)),
-        SizedBox(
-          width: 15,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+        onTap: widget.onTap,
+        child: Row(
           children: [
-            IndexTitle('${widget.data.title}'),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: FutureImage(viewModel.getAdvertiseFile(widget.data.id),
+                    width: 100, height: 100)),
             SizedBox(
-              height: 8,
+              width: 15,
             ),
-            ...widget.data.content != '설명없음'
-                ? [
-                    Container(
-                        width: MediaQuery.of(context).size.width - 145,
-                        child: IndexMinText(
-                          '${widget.data.content}',
-                          maxLength: 2,
-                          textColor: GlobalColor.indexColor,
-                        )),
-                    SizedBox(
-                      height: 5,
-                    )
-                  ]
-                : [SizedBox()],
-            IndexMinText(
-                '${widget.data.account?.grade?.name} / ${widget.data.account?.name}')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IndexTitle('${widget.data.title}'),
+                SizedBox(
+                  height: 8,
+                ),
+                ...widget.data.content != '설명없음'
+                    ? [
+                        Container(
+                            width: MediaQuery.of(context).size.width - 145,
+                            child: IndexMinText(
+                              '${widget.data.content}',
+                              maxLength: 2,
+                              textColor: GlobalColor.indexColor,
+                            )),
+                        SizedBox(
+                          height: 5,
+                        )
+                      ]
+                    : [SizedBox()],
+                IndexMinText(
+                    '${widget.data.account?.grade?.name} / ${widget.data.account?.name}')
+              ],
+            )
           ],
-        )
-      ],
-    );
+        ));
   }
 }

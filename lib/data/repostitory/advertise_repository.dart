@@ -21,4 +21,6 @@ abstract class AdvertiseRepository {
   @GET("/article/random")
   Future<List<AdvertiseModel>> getArticleRandom();
 
+  @GET("/article/count")
+  Future<int> getArticleCount();
 }

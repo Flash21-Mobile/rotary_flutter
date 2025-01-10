@@ -35,10 +35,17 @@ class AdvertiseViewModel with ChangeNotifier {
 
       // 결과를 상태로 설정
       advertiseState = Success(advertiseData);
-      banners = advertiseData.map((value)=>value.id??0).toList();
+      banners = advertiseData.map((value) => value.id ?? 0).toList();
       notifyListeners();
 
       return advertiseState;
     }
+  }
+
+  var advertiseCount = 0;
+
+  Future getAdvertiseCount() async {
+    advertiseCount = await AdvertiseAPI().getAdvertiseCount() ??0;
+    notifyListeners();
   }
 }

@@ -89,10 +89,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                   width: double.infinity,
                   height: (MediaQuery.of(context).size.width) * 6 / 16,
                   alignment: Alignment.center,
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                      children: [
-
+                  child: Stack(alignment: Alignment.bottomRight, children: [
                     // InkWell(
                     //     onTap: (){
                     //       ref.read(HomeProvider).pushCurrentWidget = const UserSearchScreen();
@@ -162,67 +159,75 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                       itemCount: viewModel.futureBanners.length,
                       itemBuilder: (context, index) {
                         return InkWell(
-                            onTap: (){
+                            onTap: () {
                               Log.d('${viewModel.futureBanners[index]}');
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                                 return AdvertiseDetailScreen(data: viewModel.advertises[index]);
                               }));
                             },
                             child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: FutureImage(viewModel.futureBanners[index],
-                                    width: 100,
-                                    height: 100,
-                                    onError: SizedBox())),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Container(
-                                width: MediaQuery.of(context).size.width - 145,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IndexTitle(
-                                        '${viewModel.advertises[index].title}'),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    ...viewModel.advertises[index].content !=
-                                            '설명없음'
-                                        ? [
-                                            Container(
-                                                child: IndexMinText(
-                                              '${viewModel.advertises[index].content}',
-                                              maxLength: 2,
-                                              textColor: GlobalColor.indexColor,
-                                            )),
-                                            SizedBox(
-                                              height: 5,
-                                            )
-                                          ]
-                                        : [SizedBox()],
-                                    IndexMinText(
-                                        '${viewModel.advertises[index].account?.grade?.name} / ${viewModel.advertises[index].account?.name}')
-                                  ],
-                                ))
-                          ],
-                        ));
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: FutureImage(
+                                        viewModel.futureBanners[index],
+                                        width: 100,
+                                        height: 100,
+                                        onError: SizedBox())),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 145,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IndexTitle(
+                                            '${viewModel.advertises[index].title}'),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        ...viewModel.advertises[index]
+                                                    .content !=
+                                                '설명없음'
+                                            ? [
+                                                Container(
+                                                    child: IndexMinText(
+                                                  '${viewModel.advertises[index].content}',
+                                                  maxLength: 2,
+                                                  textColor:
+                                                      GlobalColor.indexColor,
+                                                )),
+                                                SizedBox(
+                                                  height: 5,
+                                                )
+                                              ]
+                                            : [SizedBox()],
+                                        IndexMinText(
+                                            '${viewModel.advertises[index].account?.grade?.name} / ${viewModel.advertises[index].account?.name}')
+                                      ],
+                                    ))
+                              ],
+                            ));
                       },
                     ),
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                              color: GlobalColor.black.withAlpha(900),
-                              borderRadius: BorderRadius.circular(100)
-                          ),
-                          child: IndexMinText('${_currentPage+1} / 5',textColor: GlobalColor.white,),
-                        ),
+                    Container(
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                          color: GlobalColor.black.withAlpha(900),
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IndexMinText(
+                        '${_currentPage + 1} / 5',
+                        textColor: GlobalColor.white,
+                      ),
+                    ),
                   ]))),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
