@@ -58,12 +58,12 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         if (phone != null) {
           phone as String;
 
-          phone = phone.replaceAll('+82', '0');
+          var data = phone.replaceAll('+82', '0');
 
           //todo r: 검색 문구 변경, 전체 회원수 추가, 전체 회원수 위치 변경 상단으로
 
-          final indexPhone = '${phone.substring(0, 3)}-${phone.substring(
-              3, 7)}-${phone.substring(7)}';
+          final indexPhone = '${data.substring(0, 3)}-${data.substring(
+              3, 7)}-${data.substring(7)}';
           login(indexPhone);
         }
       } catch (e) {
