@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rotary_flutter/data/remoteData/sign_remote_data.dart';
 import 'package:rotary_flutter/feature/home/home_main_screen.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 
@@ -20,16 +21,19 @@ class HomeViewmodel with ChangeNotifier {
     phoneState  = Loading();
     notifyListeners();
 
+
+    // phoneState =await SignAPI().postSMS(phone);
     phoneState = Success(null);
     notifyListeners();
   }
 
   LoadState authenticateState = Loading();
 
-  void postAuthenticate(String phone) async{
+  void postAuthenticate(String phone, String code) async{
     authenticateState  = Loading();
     notifyListeners();
 
+    // authenticateState = await SignAPI().postSMSVerify(phone, code);
     authenticateState = Success(null);
     notifyListeners();
   }

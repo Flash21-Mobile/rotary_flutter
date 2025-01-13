@@ -5,9 +5,9 @@ import 'feature/home_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() async{
-  initializeDateFormatting().then((_)=>
-  runApp(ProviderScope(child: const MyApp())));
+void main() async {
+  initializeDateFormatting()
+      .then((_) => runApp(ProviderScope(child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale('ko', 'KR'),
-      supportedLocales: [
+      locale: const Locale('ko', 'KR'),
+      supportedLocales: const [
         Locale('ko', 'KR'),
       ],
       title: 'rotary',
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.linear(1.0),
+          textScaler: const TextScaler.linear(1.0),
         ),
         child: child!,
       ),

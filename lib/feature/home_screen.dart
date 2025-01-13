@@ -100,8 +100,9 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
     showDismissDialog(context,
         onPopInvokedWithResult: (didPop, result) {
-          if (homeProvider.phoneState is! Success)
+          if (homeProvider.phoneState is! Success) {
             homeProvider.popCurrentWidget();
+          }
         },
         controller: phoneController,
         textInputFormatter: [
@@ -126,7 +127,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         onTap: () {
       if (authenticateController.text.isNotEmpty) {
         FocusNode().unfocus();
-        homeProvider.postAuthenticate(authenticateController.text);
+        homeProvider.postAuthenticate(phoneController.text, authenticateController.text);
       }
     }, keyboardType: TextInputType.number, buttonText: '인증하기');
   }
@@ -171,7 +172,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
         homeProvider.authenticateState = End();
 
-        globalStorage.write(key: 'phone', value: '01040502111'); //todo r: 수정
+        globalStorage.write(key: 'phone', value: phoneController.text);
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),

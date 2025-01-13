@@ -137,14 +137,14 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   SizedBox(
                     height: 5,
                   ),
-                  IndexText('정회원'),
+                  IndexText(widget.account.groupGrade?.name),
                   SizedBox(
                     height: 5,
                   ),
                   Container(width: 165,child:  Row(children: [
                     IndexText('직책'),
                     Spacer(),
-                    IndexTitle(widget.account.workPositionName),
+                    IndexTitle(widget.account.pastGrade?.name),
                   ])),
                   SizedBox(
                     height: 5,
