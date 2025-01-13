@@ -1,6 +1,6 @@
 class AccountGrade {
   static List<String> all = [
-    "RC",
+    "전체RC",
     "대구 RC",
     "대구동신 RC",
     "대구동성 RC",

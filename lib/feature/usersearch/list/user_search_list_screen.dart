@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_component.dart';
@@ -56,7 +57,7 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
 
     var loadState = await userSearchListProvider.getAccountList(
         page: currentPage,
-        grade: AccountGrade.all[_selectedGrade] == 'RC' ? null: AccountGrade.all[_selectedGrade],
+        grade: AccountGrade.all[_selectedGrade] == '전체RC' ? null: AccountGrade.all[_selectedGrade],
         region: AccountRegion.all[_selectedRegion] == '전체' ? null: AccountRegion.all[_selectedRegion],
         name: query);
 
@@ -193,7 +194,9 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                       fetchData();
                       return const Center(child: CircularProgressIndicator());
                     } else {
-                      return SizedBox();
+                      return Container(
+                      padding: EdgeInsets.only(bottom: 30,top: 10),
+                          child:Text('더 이상 검색된 회원이 없습니다', textAlign: TextAlign.center,));
                     }
                   }
                   return UserSearchListTile(account: items[index]);

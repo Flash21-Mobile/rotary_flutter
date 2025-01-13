@@ -156,7 +156,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   Container(
                       width: 165,
                       child: Row(children: [
-                        IndexText('직책'),
+                        IndexMinText('직책'),
                         Spacer(),
                         IndexMinTitle(widget.account.pastGrade?.name),
                       ])),
@@ -165,8 +165,8 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   ),
                   Container(
                       width: 165,
-                      child: Row(children: [
-                        IndexText('입회일'),
+                      child: Row(children: [    //todo r: 직책 배경주고 색상
+                        IndexMinText('입회일'),
                         Spacer(),
                         IndexMinTitle(
                           widget.account.time != null
