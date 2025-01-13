@@ -21,13 +21,17 @@ class UserInfoIndex extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
+              flex: 3,
                 child: Row(
               children: [
                 SvgPicture.asset(assetName),
-                SizedBox(width: 5,),
+                SizedBox(width: 8,),
                 IndexTitle(indexName)],
             )),
-            Expanded(child: IndexText(index ?? ''))
+            SizedBox(width: 15,),
+            Expanded(
+                flex: 7,
+                child: IndexText(index ?? ''))
           ],
         ));
   }

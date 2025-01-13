@@ -45,69 +45,73 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
                         ref
                             .read(AdvertiseProvider)
                             .getAdvertiseFile(widget.data.id),
-                        onError: SizedBox())
+                        onError: Center(
+                          child: CircularProgressIndicator(),
+                        ))
                   ])),
           InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onTap: (){
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => UserInfoScreen(id: widget.data.account?.id??0))
-                );
+              onTap: () {
+                widget.data.account != null
+                    ? Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            UserInfoScreen(account: widget.data.account!)))
+                    : () {};
               },
-              child:  Container(
-                width: double.infinity,
-              margin: EdgeInsets.only(bottom: 30, left: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
+              child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: 30, left: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: FutureImage(
-                          ref
-                              .read(UserSearchListProvider)
-                              .getAccountFile(widget.data.account?.id),
-                          width: 30,
-                          height: 30,
-                          onError: Container(
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: FutureImage(
+                              ref
+                                  .read(UserSearchListProvider)
+                                  .getAccountFile(widget.data.account?.id),
                               width: 30,
                               height: 30,
-                              color: GlobalColor.indexBoxColor,
-                              child: const Icon(
-                                Icons.person_rounded,
-                                color: GlobalColor.indexColor,
-                                size: 18,
-                              )),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      IndexText(
-                        widget.data.account?.name,
-                        textColor: GlobalColor.white,
-                      )
-                    ],
-                  ),
-                  ...widget.data.content != '설명없음'
-                      ? [
-                          SizedBox(
-                            height: 10,
+                              onError: Container(
+                                  width: 30,
+                                  height: 30,
+                                  color: GlobalColor.indexBoxColor,
+                                  child: const Icon(
+                                    Icons.person_rounded,
+                                    color: GlobalColor.indexColor,
+                                    size: 18,
+                                  )),
+                            ),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(right:15),
-                              child: IndexMinText(
-                            widget.data.content,
+                          SizedBox(
+                            width: 10,
+                          ),
+                          IndexTitle(
+                            '${widget.data.account?.name} / ${widget.data.account?.grade?.name}',
                             textColor: GlobalColor.white,
-                          ))
-                        ]
-                      : [SizedBox()]
-                ],
-              )))
+                          )
+                        ],
+                      ),
+                      ...widget.data.content != '설명없음'
+                          ? [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                  padding: EdgeInsets.only(right: 15),
+                                  child: IndexMinText(
+                                    widget.data.content,
+                                    textColor: GlobalColor.white,
+                                  ))
+                            ]
+                          : [SizedBox()]
+                    ],
+                  )))
         ]));
   }
 }
@@ -161,7 +165,7 @@ class _AdvertiseListTile extends ConsumerState<AdvertiseListTile> {
                       ]
                     : [SizedBox()],
                 IndexMinText(
-                    '${widget.data.account?.grade?.name} / ${widget.data.account?.name}')
+                    '${widget.data.account?.name} / ${widget.data.account?.grade?.name}')
               ],
             )
           ],

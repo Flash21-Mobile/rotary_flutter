@@ -22,8 +22,8 @@ class HomeViewmodel with ChangeNotifier {
     notifyListeners();
 
 
-    // phoneState =await SignAPI().postSMS(phone);
-    phoneState = Success(null);
+    phoneState =await SignAPI().postSMS(phone);
+    Log.d('phone State: $phoneState');
     notifyListeners();
   }
 
@@ -33,8 +33,7 @@ class HomeViewmodel with ChangeNotifier {
     authenticateState  = Loading();
     notifyListeners();
 
-    // authenticateState = await SignAPI().postSMSVerify(phone, code);
-    authenticateState = Success(null);
+    authenticateState = await SignAPI().postSMSVerify(phone, code);
     notifyListeners();
   }
 

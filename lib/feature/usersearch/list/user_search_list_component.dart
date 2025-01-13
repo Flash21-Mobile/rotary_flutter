@@ -22,8 +22,12 @@ class FutureImage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NetworkImage();
 }
 
-class _NetworkImage extends ConsumerState<FutureImage> {
-  int? imagePK;
+class _NetworkImage extends ConsumerState<FutureImage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  int? imagePK = -3999021222202;
 
   @override
   void didChangeDependencies() {
@@ -44,6 +48,7 @@ class _NetworkImage extends ConsumerState<FutureImage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var placeHolder = widget.onError ??
         Container(
             width: widget.width,
@@ -60,24 +65,31 @@ class _NetworkImage extends ConsumerState<FutureImage> {
         headers: const {'cheat': 'showmethemoney'},
         width: widget.width,
         height: widget.height,
-        errorBuilder: (context, error, stackTrace) => placeHolder);
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) {
+            return child;
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+        errorBuilder: (context, error, stackTrace) => Center(
+              child: CircularProgressIndicator(),
+            ));
 
-    return imagePK != null
-        ? Container(
-            width: widget.width,
-            height: widget.height,
-            alignment: Alignment.center,
-            child: Stack(
+    return imagePK != -3999021222202
+        ? imagePK != null
+            ? Container(
+                width: widget.width,
+                height: widget.height,
                 alignment: Alignment.center,
-                children: [
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-              widget.height == null
-                  ? LayoutBuilder(builder: (context, constrains) => image)
-                  : image,
-            ]))
-        : placeHolder;
+                child: widget.height == null
+                    ? LayoutBuilder(builder: (context, constrains) => image)
+                    : image,
+              )
+            : placeHolder
+        : Container(width: widget.width,height: widget.height,child:  Center(
+            child: CircularProgressIndicator(),
+          ));
   }
 }
 
@@ -101,7 +113,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
           //     UserInfoScreen(id: widget.account.id ?? 0);
 
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return UserInfoScreen(id: widget.account.id ?? 0);
+            return UserInfoScreen(account: widget.account);
           }));
         },
         child: Container(
@@ -141,19 +153,27 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   SizedBox(
                     height: 5,
                   ),
-                  Container(width: 165,child:  Row(children: [
-                    IndexText('직책'),
-                    Spacer(),
-                    IndexTitle(widget.account.pastGrade?.name),
-                  ])),
+                  Container(
+                      width: 165,
+                      child: Row(children: [
+                        IndexText('직책'),
+                        Spacer(),
+                        IndexMinTitle(widget.account.pastGrade?.name),
+                      ])),
                   SizedBox(
                     height: 5,
                   ),
-                  Container(width: 165,child:  Row(children: [
-                    IndexText('입회일'),
-                    Spacer(),
-                    IndexTitle(widget.account.time != null ? formatDateTime(widget.account.time):'',),
-                  ])),
+                  Container(
+                      width: 165,
+                      child: Row(children: [
+                        IndexText('입회일'),
+                        Spacer(),
+                        IndexMinTitle(
+                          widget.account.time != null
+                              ? formatDateTime(widget.account.time)
+                              : '',
+                        ),
+                      ])),
                   SizedBox(
                     height: 5,
                   ),
@@ -164,6 +184,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
           ),
         ));
   }
+
   String formatDateTime(String? dateTime) {
     DateTime parsedDate = DateTime.parse(dateTime ?? '');
     return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";

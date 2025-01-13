@@ -19,12 +19,9 @@ import '../data/model/account_model.dart';
 import 'home/home_main_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  //todo r: 전화번호 받아오는 동안 로딩
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreen();
 }
-
-late WidgetRef globalRef;
 
 class _HomeScreen extends ConsumerState<HomeScreen> {
   int selectedIndex = 0;
@@ -38,11 +35,11 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid)
+    if (Platform.isAndroid) {
       androidLogin();
-    else if (Platform.isIOS) iOSLogin();
-
-    globalRef = ref;
+    } else if (Platform.isIOS) {
+      iOSLogin();
+    }
 
     phoneController = TextEditingController();
     authenticateController = TextEditingController();
@@ -67,11 +64,11 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    if ((await globalStorage.read(key: 'phone')) == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showPhoneDialog();
-      });
-    }
+    // if ((await globalStorage.read(key: 'phone')) == null) {    //todo r: 수정하기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showPhoneDialog();
+    });
+    // }
   }
 
   void login(String phone) async {
@@ -87,7 +84,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           } else {
             globalStorage.write(key: 'admin', value: null);
           }
-          Log.d('i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
+          Log.d(
+              'i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
 
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
@@ -127,7 +125,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         onTap: () {
       if (authenticateController.text.isNotEmpty) {
         FocusNode().unfocus();
-        homeProvider.postAuthenticate(phoneController.text, authenticateController.text);
+        homeProvider.postAuthenticate(
+            phoneController.text, authenticateController.text);
       }
     }, keyboardType: TextInputType.number, buttonText: '인증하기');
   }
@@ -143,7 +142,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           passwordController.text == 'flash2121') {
         Navigator.of(context, rootNavigator: true).pop();
 
-        // login('010-3811-0831');    //todo r: 서버 되면 키기
+        login('010-3811-0831');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),
@@ -164,6 +163,13 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
         homeProvider.phoneState = End();
       });
+    }, onError: (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1500),
+          content: Text('인증에 실패하였습니다.'),
+        ),
+      );
     });
 
     loadStateFunction(homeProvider.authenticateState, onSuccess: (data) {
@@ -171,14 +177,15 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         Navigator.of(context, rootNavigator: true).pop();
 
         homeProvider.authenticateState = End();
-
-        globalStorage.write(key: 'phone', value: phoneController.text);
-
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: Duration(milliseconds: 1500),
-          content: Text('인증 완료되었습니다.'),
-        ));
+        login(phoneController.text);
       });
+    }, onError: (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1500),
+          content: Text('인증번호가 잘못되었습니다.'),
+        ),
+      );
     });
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
