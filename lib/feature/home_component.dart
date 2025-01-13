@@ -20,14 +20,15 @@ class LoadStateScaffold extends ConsumerStatefulWidget {
 
   final LoadState loadState;
 
-  const LoadStateScaffold({super.key,
-    this.backgroundColor,
-    this.appBar,
-    required this.loadState,
-    this.loadingBody,
-    required this.successBody,
-    this.errorBody,
-    this.floatingActionButton});
+  const LoadStateScaffold(
+      {super.key,
+      this.backgroundColor,
+      this.appBar,
+      required this.loadState,
+      this.loadingBody,
+      required this.successBody,
+      this.errorBody,
+      this.floatingActionButton});
 
   @override
   ConsumerState<LoadStateScaffold> createState() => _LoadStateScaffold();
@@ -37,18 +38,22 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: widget.backgroundColor,
-        appBar: widget.appBar,
-        body: switch (widget.loadState) {
-          Loading() => widget.loadingBody ?? placeHolder,
-          Success() => widget.successBody((widget.loadState as Success).data),
-          Error() => errorWidget(widget.loadState as Error, widget.errorBody),
-          _ => const Placeholder()
-        },
-        floatingActionButton: widget.floatingActionButton,);
+      backgroundColor: widget.backgroundColor,
+      appBar: widget.appBar,
+      body: switch (widget.loadState) {
+        Loading() => widget.loadingBody ?? placeHolder,
+        Success() => widget.successBody((widget.loadState as Success).data),
+        Error() => errorWidget(widget.loadState as Error, widget.errorBody),
+        _ => const Placeholder()
+      },
+      floatingActionButton: widget.floatingActionButton,
+    );
   }
 
-  var placeHolder = const Center(child: CircularProgressIndicator(color: GlobalColor.primaryColor,));
+  var placeHolder = const Center(
+      child: CircularProgressIndicator(
+    color: GlobalColor.primaryColor,
+  ));
 
   Widget errorWidget(Error error, Widget? errorWidget) {
     Log.e(error.exception.toString(), isSuper: true);
@@ -63,18 +68,19 @@ class LoadStateWidget extends StatelessWidget {
 
   final LoadState loadState;
 
-  const LoadStateWidget({super.key,
-    required this.loadState,
-    this.loadingWidget,
-    required this.successWidget,
-    this.errorWidget});
+  const LoadStateWidget(
+      {super.key,
+      required this.loadState,
+      this.loadingWidget,
+      required this.successWidget,
+      this.errorWidget});
 
   @override
   Widget build(BuildContext context) {
     const placeHolder = Center(
         child: CircularProgressIndicator(
-          color: GlobalColor.primaryColor,
-        ));
+      color: GlobalColor.primaryColor,
+    ));
 
     return switch (loadState) {
       Loading() => loadingWidget ?? placeHolder,
@@ -85,10 +91,12 @@ class LoadStateWidget extends StatelessWidget {
   }
 }
 
-void showDismissDialog(BuildContext context, {
+void showDismissDialog(
+  BuildContext context, {
+  String? title,
   Function(bool, Object?)? onPopInvokedWithResult,
-  required TextEditingController controller,
-  required String hint,
+  TextEditingController? controller,
+  String? hint,
   TextInputType? keyboardType,
   List<TextInputFormatter>? textInputFormatter,
   Function()? onTap,
@@ -106,7 +114,7 @@ void showDismissDialog(BuildContext context, {
         child: Dialog(
           elevation: 0,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -121,22 +129,27 @@ void showDismissDialog(BuildContext context, {
                 SizedBox(
                   height: 20,
                 ),
-                MyInfoModifyTextField(
-                    indexTitle: hint,
-                    indexController: controller,
-                    keyboardType: keyboardType,
-                    inputFormatters: textInputFormatter),
-                SizedBox(height: 20),
+                ...title != null ? [Text(title, textAlign: TextAlign.center,), SizedBox(height: 15,)] : [],
+                ...(textInputFormatter != null && hint != null)
+                    ? [
+                        MyInfoModifyTextField(
+                            indexTitle: hint,
+                            indexController: controller,
+                            keyboardType: keyboardType,
+                            inputFormatters: textInputFormatter),
+                        SizedBox(height: 20)
+                      ]
+                    : [],
                 ...(subController != null && subHint != null)
                     ? [
-                  MyInfoModifyTextField(
-                      indexTitle: subHint,
-                      indexController: subController,
-                      keyboardType: keyboardType,
-                      obscureText: true,
-                      inputFormatters: textInputFormatter),
-                  SizedBox(height: 20),
-                ]
+                        MyInfoModifyTextField(
+                            indexTitle: subHint,
+                            indexController: subController,
+                            keyboardType: keyboardType,
+                            obscureText: true,
+                            inputFormatters: textInputFormatter),
+                        SizedBox(height: 20),
+                      ]
                     : [],
                 Row(mainAxisSize: MainAxisSize.max, children: [
                   Expanded(
