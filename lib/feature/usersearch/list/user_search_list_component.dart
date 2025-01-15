@@ -11,10 +11,11 @@ import '../../userSearch/info/user_info_screen.dart';
 
 class FutureImage extends ConsumerStatefulWidget {
   const FutureImage(this.futureId,
-      {super.key, this.width, this.height, this.onError});
+      {super.key, this.itemKey,this.width, this.height, this.onError});
 
   final Future<int?> futureId;
   final double? width;
+  final GlobalKey? itemKey;
   final double? height;
   final Widget? onError;
 
@@ -60,7 +61,9 @@ class _NetworkImage extends ConsumerState<FutureImage>
               size: 60,
             ));
 
-    var image = Image.network('$BASE_URL/file/$imagePK',
+    var image = Image.network(
+        key: widget.itemKey,
+        '$BASE_URL/file/$imagePK',
         fit: widget.height == null ? BoxFit.fitWidth : BoxFit.cover,
         headers: const {'cheat': 'showmethemoney'},
         width: widget.width,
@@ -87,9 +90,12 @@ class _NetworkImage extends ConsumerState<FutureImage>
                     : image,
               )
             : placeHolder
-        : Container(width: widget.width,height: widget.height,child:  Center(
-            child: CircularProgressIndicator(),
-          ));
+        : Container(
+            width: widget.width,
+            height: widget.height,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ));
   }
 }
 
@@ -165,7 +171,8 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   ),
                   Container(
                       width: 165,
-                      child: Row(children: [    //todo r: 직책 배경주고 색상
+                      child: Row(children: [
+                        //todo r: 직책 배경주고 색상
                         IndexMinText('입회일'),
                         Spacer(),
                         IndexMinTitle(

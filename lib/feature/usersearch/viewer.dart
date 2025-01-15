@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/advertise_model.dart';
+import 'package:rotary_flutter/data/model/article_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_view_model.dart';
 import 'package:rotary_flutter/feature/event/page/advertise_page_screen.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';

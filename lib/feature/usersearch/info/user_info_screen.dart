@@ -61,15 +61,18 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                   delegate: SliverChildListDelegate(
                     [
                       InkWell(
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                            return UserSearchViewer(id:widget.account.id);
-                          }));
-                        },
-                          child: FutureImage(userSearchListViewModel.getAccountFile(widget.account.id),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width * 1.2,
-                      ))
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return UserSearchViewer(id: widget.account.id);
+                            }));
+                          },
+                          child: FutureImage(
+                            userSearchListViewModel
+                                .getAccountFile(widget.account.id),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width * 1.2,
+                          ))
                       // Icon(Icons.person_rounded,size: MediaQuery.of(context).size.width/5,color: GlobalColor.indexColor,)
                     ],
                   ),
@@ -104,7 +107,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                         borderRadius: BorderRadius.circular(100),
                         border: Border.all(
                             color: GlobalColor.primaryColor, width: 1)),
-                    indicatorPadding: EdgeInsets.symmetric(horizontal: 15),
+                    indicatorPadding: EdgeInsets.symmetric(horizontal: 25),
                   ),
                   SizedBox(
                     height: 15,
@@ -140,81 +143,51 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                           ),
                           Row(
                             children: [
-                              Expanded(
-                                  child: InkWell(
-                                      onTap: () async {
-                                        var uri = Uri(
-                                            scheme: 'sms',
-                                            path: widget.account.cellphone);
-                                        if (await canLaunchUrl(uri))
-                                          await launchUrl(uri);
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(left: 15),
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                                width: 1,
-                                                color: GlobalColor
-                                                    .lightPrimaryColor)),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                  width: 15,
-                                                  height: 15,
-                                                  'asset/icons/message_icon.svg'),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              IndexText('문자보내기',
-                                                  textColor:
-                                                      GlobalColor.primaryColor)
-                                            ]),
-                                      ))),
+                              SizedBox(width: 25,),
+                              InkWell(
+                                  onTap: () async {
+                                    var uri = Uri(
+                                        scheme: 'tel',
+                                        path: widget.account.cellphone);
+                                    if (await canLaunchUrl(uri))
+                                      await launchUrl(uri);
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: GlobalColor.indexBoxColor,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: SvgPicture.asset(
+                                        'asset/icons/phone_icon.svg'),
+                                  ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
                               SizedBox(
                                 width: 15,
                               ),
-                              Expanded(
-                                  child: InkWell(
-                                      onTap: () async {
-                                        var uri = Uri(
-                                            scheme: 'tel',
-                                            path: widget.account.cellphone);
-                                        if (await canLaunchUrl(uri))
-                                          await launchUrl(uri);
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(right: 15),
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                                width: 1,
-                                                color: GlobalColor
-                                                    .lightPrimaryColor)),
-                                        child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                  width: 15,
-                                                  height: 15,
-                                                  'asset/icons/phone_icon.svg'),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              IndexText('전화하기',
-                                                  textColor:
-                                                      GlobalColor.primaryColor)
-                                            ]),
-                                      )))
+                              InkWell(
+                                  borderRadius: BorderRadius.circular(100),
+                                  onTap: () async {
+                                    var uri = Uri(
+                                        scheme: 'sms',
+                                        path: widget.account.cellphone);
+                                    if (await canLaunchUrl(uri))
+                                      await launchUrl(uri);
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: GlobalColor.indexBoxColor,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: SvgPicture.asset(
+                                        'asset/icons/message_icon.svg'),
+                                  )),
                             ],
                           )
                         ],
@@ -236,11 +209,11 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                               index: widget.account.workPositionName),
                           UserInfoIndex(
                               assetName: 'asset/icons/phone_icon.svg',
-                              indexName: '전화번호',
+                              indexName: '전화',
                               index: widget.account.cellphone),
                           UserInfoIndex(
                               assetName: 'asset/icons/fax_icon.svg',
-                              indexName: '팩스번호',
+                              indexName: '팩스',
                               index: widget.account.faxNumber),
                           UserInfoIndex(
                               assetName: 'asset/icons/address_icon.svg',

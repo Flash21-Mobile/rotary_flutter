@@ -2,19 +2,19 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'account_model.dart';
 
-part 'advertise_model.g.dart';
+part 'article_model.g.dart';
 
 @JsonSerializable()
-class AdvertiseModel {
+class ArticleModel {
   int? id;
   Account? account;
   Board? board;
   String? title;
   String? content;
 
-  AdvertiseModel({this.id, this.account, this.board, this.title, this.content});
+  ArticleModel({this.id, this.account, this.board, this.title, this.content});
 
-  AdvertiseModel.fromJson(Map<String, dynamic> json) {
+  ArticleModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     account =
     json['account'] != null ? new Account.fromJson(json['account']) : null;

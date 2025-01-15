@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/fontSize.dart';
 import '../../util/global_color.dart';
+import '../userSearch/list/user_search_list_component.dart';
 
 class IndexText extends StatelessWidget {
   final String? text;
   final Color? textColor;
   final bool? overFlowFade;
+  final TextAlign? textAlign;
 
-  const IndexText(this.text, {super.key, this.textColor, this.overFlowFade});
+  const IndexText(this.text,
+      {super.key, this.textColor, this.overFlowFade, this.textAlign});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
+      textAlign: textAlign,
       style: TextStyle(
           fontSize: DynamicFontSize.font21(context),
           color: textColor ?? GlobalColor.black),
@@ -46,13 +51,15 @@ class IndexTitle extends StatelessWidget {
 class IndexThumbTitle extends StatelessWidget {
   final String? text;
   final Color? textColor;
+  final TextAlign? textAlign;
 
-  const IndexThumbTitle(this.text, {super.key, this.textColor});
+  const IndexThumbTitle(this.text, {super.key, this.textColor, this.textAlign});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
+      textAlign: textAlign,
       style: TextStyle(
           fontSize: DynamicFontSize.font25(context),
           color: textColor ?? GlobalColor.black,
@@ -67,7 +74,8 @@ class IndexMinText extends StatelessWidget {
   final bool? overFlowFade;
   final int? maxLength;
 
-  const IndexMinText(this.text, {super.key, this.textColor, this.overFlowFade, this.maxLength});
+  const IndexMinText(this.text,
+      {super.key, this.textColor, this.overFlowFade, this.maxLength});
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +84,13 @@ class IndexMinText extends StatelessWidget {
       style: TextStyle(
           fontSize: DynamicFontSize.font17(context),
           color: textColor ?? GlobalColor.black),
-      overflow: maxLength == null ? overFlowFade ?? false ? TextOverflow.fade : null: TextOverflow.ellipsis,
+      overflow: maxLength == null
+          ? overFlowFade ?? false
+              ? TextOverflow.fade
+              : null
+          : TextOverflow.ellipsis,
       maxLines: maxLength ?? (overFlowFade ?? false ? 1 : null),
-      softWrap:  overFlowFade ?? false ? false : null,
+      softWrap: overFlowFade ?? false ? false : null,
     );
   }
 }
@@ -88,7 +100,8 @@ class IndexMinTitle extends StatelessWidget {
   final Color? textColor;
   final bool? overFlowFade;
 
-  const IndexMinTitle(this.text, {super.key, this.textColor, this.overFlowFade});
+  const IndexMinTitle(this.text,
+      {super.key, this.textColor, this.overFlowFade});
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +153,140 @@ class _ScrollablePinchView extends ConsumerState<ScrollablePinchView> {
                     _isPinch ? NeverScrollableScrollPhysics() : ScrollPhysics(),
                 child: InteractiveViewer(
                     minScale: 1.0, maxScale: 6.0, child: widget.child))));
+  }
+}
+
+class ListPinchView extends ConsumerStatefulWidget {
+  final List<int?>? items;
+  final Function(int) indexNum;
+
+  const ListPinchView({super.key, required this.items, required this.indexNum});
+
+  @override
+  ConsumerState<ListPinchView> createState() => _ListPinchView();
+}
+
+class _ListPinchView extends ConsumerState<ListPinchView> {
+  final List<int> events = [];
+  bool _isPinch = false;
+  GlobalKey itemKey = GlobalKey();
+
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+        builder: (context) => Listener(
+            onPointerDown: (PointerEvent event) {
+              events.add(event.pointer);
+              final int pointers = events.length;
+
+              if (pointers >= 2) {
+                print('isPinching');
+                setState(() => _isPinch = true);
+              }
+            },
+            onPointerUp: (event) {
+              events.clear();
+              print('isPinching false');
+              setState(() => _isPinch = false);
+            },
+            child: InteractiveViewer(
+                minScale: 1.0,
+                maxScale: 6.0,
+                child: ListView.separated(
+                  controller: _scrollController,
+                  itemCount: widget.items?.length ?? 0,
+                  physics: _isPinch
+                      ? NeverScrollableScrollPhysics()
+                      : ScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return FutureImage(itemKey: index == 0 ? itemKey: null, Future.value(widget.items?[index]));
+                  },
+                  separatorBuilder: (_, $) {
+                    return Container(
+                      height: 1,
+                      color: GlobalColor.dividerColor,
+                    );
+                  },
+                ))));
+  }
+  void _scrollListener() {
+    final position = _scrollController.position;
+    final viewportHeight = position.viewportDimension;
+
+    // 화면의 중앙 위치
+    final centerPosition = position.pixels + viewportHeight / 2;
+
+    // 가장 많이 보이는 아이템 계산
+    final visibleItemIndex = (centerPosition / ((itemKey.currentContext?.findRenderObject()) as RenderBox).size.height).floor();
+
+    // widget.indexNum을 가장 자연스러운 아이템 번호로 호출
+    widget.indexNum(visibleItemIndex);
+  }
+}
+
+class PageablePinchView extends ConsumerStatefulWidget {
+  final List<int?>? items;
+  final Function(int)? onPageChanged;
+
+  const PageablePinchView({super.key, required this.items, this.onPageChanged});
+
+  @override
+  ConsumerState<PageablePinchView> createState() => _PageablePinchView();
+}
+
+class _PageablePinchView extends ConsumerState<PageablePinchView> {
+  final List<int> events = [];
+  bool _isPinch = false;
+
+  late double scale;
+
+  @override
+  void initState() {
+    scale = 1.0;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Log.d('scale: $scale');
+    return Builder(
+        builder: (context) => Listener(
+            onPointerDown: (PointerEvent event) {
+              events.add(event.pointer);
+              final int pointers = events.length;
+
+              if (pointers >= 2) {
+                print('isPinching');
+                setState(() => _isPinch = true);
+              }
+            },
+            onPointerUp: (event) {
+              events.clear();
+              print('isPinching false');
+              setState(() => _isPinch = false);
+            },
+            child: PageView.builder(
+                onPageChanged: widget.onPageChanged,
+                itemCount: widget.items?.length,
+                physics:
+                    _isPinch ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return InteractiveViewer(
+                      minScale: 1.0,
+                      maxScale: 6.0,
+                      child: FutureImage(
+                        Future.value(widget.items?[index]),
+                      ));
+                })));
   }
 }
 

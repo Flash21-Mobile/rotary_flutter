@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/advertise_model.dart';
+import 'package:rotary_flutter/data/model/article_model.dart';
 
-import '../../data/remoteData/advertise_remote_data.dart';
+import '../../data/remoteData/article_remote_data.dart';
 import '../../data/remoteData/file_remote_data.dart';
 import '../../util/model/loadstate.dart';
 
@@ -12,10 +12,10 @@ final HomeMainProvider = ChangeNotifierProvider.autoDispose<_ViewModel>((ref) {
 
 class _ViewModel with ChangeNotifier {
   List<Future<int?>> futureBanners = [];
-  List<AdvertiseModel> advertises = [];
+  List<ArticleModel> advertises = [];
 
   Future<LoadState> getAdvertiseRandom() async {
-    var temp = await AdvertiseAPI().getAdvertiseRandom();
+    var temp = await ArticleAPI().getAdvertiseRandom();
 
     futureBanners = temp?.map((value) async {
           return await getAdvertiseFile(value.id);

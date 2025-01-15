@@ -82,12 +82,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                       ),
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            width: 25,
-                            height: 25,
-                            'asset/icons/search_icon.svg',
-                          ),
-                          IndexTitle(account.name),
+                          IndexThumbTitle(account.name),
                           Spacer(),
                           InkWell(
                               onTap: () {

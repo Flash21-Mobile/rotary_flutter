@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/advertise_model.dart';
-import 'package:rotary_flutter/data/remoteData/advertise_remote_data.dart';
+import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/remoteData/article_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 
 import '../../../../util/model/loadstate.dart';
@@ -22,8 +22,13 @@ class AdvertiseViewModel with ChangeNotifier {
     return data?.id;
   }
 
-  Future<LoadState> getAdvertiseAll({int? page, String? title}) async {
-    var temp = await AdvertiseAPI().getAdvertiseAll(page, title);
+  Future<LoadState> getAdvertiseAll({int? page, String? query}) async {
+    var temp = await ArticleAPI().getAdvertiseAll(
+        page: page,
+        title: query,
+        content: query,
+        accountName: query,
+        gradeName: query);
 
     if (temp == null) {
       advertiseState = Error('exception');
@@ -31,7 +36,7 @@ class AdvertiseViewModel with ChangeNotifier {
       return advertiseState;
     } else {
       // 본문과 썸네일 리스트 분리
-      final List<AdvertiseModel> advertiseData = temp;
+      final List<ArticleModel> advertiseData = temp;
 
       // 결과를 상태로 설정
       advertiseState = Success(advertiseData);
@@ -45,7 +50,7 @@ class AdvertiseViewModel with ChangeNotifier {
   var advertiseCount = 0;
 
   Future getAdvertiseCount() async {
-    advertiseCount = await AdvertiseAPI().getAdvertiseCount() ??0;
+    advertiseCount = await ArticleAPI().getAdvertiseCount() ?? 0;
     notifyListeners();
   }
 }

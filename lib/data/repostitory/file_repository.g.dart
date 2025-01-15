@@ -67,7 +67,7 @@ class _FileRepository implements FileRepository {
   Future<dynamic> postFile(
     String? fileApiName,
     int? fileApiPK,
-    File file,
+    List<File> file,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -77,13 +77,12 @@ class _FileRepository implements FileRepository {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    _data.files.add(MapEntry(
-      'image',
-      MultipartFile.fromFileSync(
-        file.path,
-        filename: file.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+    _data.files.addAll(file.map((i) => MapEntry(
+        'image',
+        MultipartFile.fromFileSync(
+          i.path,
+          filename: i.path.split(Platform.pathSeparator).last,
+        ))));
     final _options = _setStreamType<dynamic>(Options(
       method: 'POST',
       headers: _headers,

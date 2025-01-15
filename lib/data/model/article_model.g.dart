@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'advertise_model.dart';
+part of 'article_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-AdvertiseModel _$AdvertiseModelFromJson(Map<String, dynamic> json) =>
-    AdvertiseModel(
+ArticleModel _$ArticleModelFromJson(Map<String, dynamic> json) => ArticleModel(
       id: (json['id'] as num?)?.toInt(),
       account: json['account'] == null
           ? null
@@ -19,7 +18,7 @@ AdvertiseModel _$AdvertiseModelFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String?,
     );
 
-Map<String, dynamic> _$AdvertiseModelToJson(AdvertiseModel instance) =>
+Map<String, dynamic> _$ArticleModelToJson(ArticleModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'account': instance.account,

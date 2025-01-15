@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/advertise_model.dart';
+import 'package:rotary_flutter/data/model/article_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_view_model.dart';
 import 'package:rotary_flutter/feature/event/page/advertise_page_screen.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
@@ -11,7 +11,7 @@ import 'package:rotary_flutter/util/global_color.dart';
 import '../usersearch/list/user_search_list_view_model.dart';
 
 class AdvertiseDetailScreen extends ConsumerStatefulWidget {
-  final AdvertiseModel data;
+  final ArticleModel data;
 
   const AdvertiseDetailScreen({super.key, required this.data});
 
@@ -55,8 +55,8 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
               onTap: () {
                 widget.data.account != null
                     ? Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            UserInfoScreen(account: widget.data.account!)))
+                    builder: (context) =>
+                        UserInfoScreen(account: widget.data.account!)))
                     : () {};
               },
               child: Container(
@@ -92,23 +92,24 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
                             width: 10,
                           ),
                           IndexTitle(
-                            '${widget.data.account?.name} / ${widget.data.account?.grade?.name}',
+                            '${widget.data.account?.name} / ${widget.data
+                                .account?.grade?.name}',
                             textColor: GlobalColor.white,
                           )
                         ],
                       ),
                       ...widget.data.content != '설명없음'
                           ? [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                  padding: EdgeInsets.only(right: 15),
-                                  child: IndexMinText(
-                                    widget.data.content,
-                                    textColor: GlobalColor.white,
-                                  ))
-                            ]
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(right: 15),
+                            child: IndexMinText(
+                              widget.data.content,
+                              textColor: GlobalColor.white,
+                            ))
+                      ]
                           : [SizedBox()]
                     ],
                   )))
@@ -119,11 +120,11 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
 class AdvertiseListTile extends ConsumerStatefulWidget {
   const AdvertiseListTile({super.key, required this.data, required this.onTap});
 
-  final AdvertiseModel data;
+  final ArticleModel data;
   final VoidCallback onTap;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
+  ConsumerState<AdvertiseListTile> createState() {
     return _AdvertiseListTile();
   }
 }
@@ -152,23 +153,52 @@ class _AdvertiseListTile extends ConsumerState<AdvertiseListTile> {
                 ),
                 ...widget.data.content != '설명없음'
                     ? [
-                        Container(
-                            width: MediaQuery.of(context).size.width - 145,
-                            child: IndexMinText(
-                              '${widget.data.content}',
-                              maxLength: 2,
-                              textColor: GlobalColor.indexColor,
-                            )),
-                        SizedBox(
-                          height: 5,
-                        )
-                      ]
+                  Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width - 145,
+                      child: IndexMinText(
+                        '${widget.data.content}',
+                        maxLength: 2,
+                        textColor: GlobalColor.indexColor,
+                      )),
+                  SizedBox(
+                    height: 5,
+                  )
+                ]
                     : [SizedBox()],
                 IndexMinText(
-                    '${widget.data.account?.name} / ${widget.data.account?.grade?.name}')
+                    '${widget.data.account?.name} / ${widget.data.account?.grade
+                        ?.name}')
               ],
             )
           ],
         ));
+  }
+}
+
+class AdvertiseSearchBoxDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  final double minExtent;
+  @override
+  final double maxExtent;
+
+  final  Function (String) onChanged;
+
+  AdvertiseSearchBoxDelegate({this.minExtent = 50, this.maxExtent = 50,required this.onChanged});
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset,
+      bool overlapsContent) {
+    return Container(color: GlobalColor.white,child:  SearchBox(
+      hint: '검색',
+      onChanged: onChanged
+    ));
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

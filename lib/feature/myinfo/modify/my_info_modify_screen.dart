@@ -40,30 +40,31 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   var workAddressSubController = TextEditingController();
   var typeController = TextEditingController();
 
-
   void getMyData() async {
     var myInfoProvider = ref.read(MyInfoProvider);
     var myInfoModifyProvider = ref.read(MyInfoModifyProvider);
     await myInfoProvider.getMyAccount();
 
     Log.d("hello: heli ${myInfoProvider.accountState}");
-    loadStateFunction(myInfoProvider.accountState, onSuccess: (data) async {
-      var account = (data as List<Account>).first;
+    loadStateFunction(
+        loadState: myInfoProvider.accountState,
+        onSuccess: (data) async {
+          var account = (data as List<Account>).first;
 
-      nickNameController.text = account.nickname ?? '';
-      birthDateController.text = account.birthDate ?? '';
-      enNameController.text = account.englishName ?? '';
-      memoController.text = account.memo ?? '';
+          nickNameController.text = account.nickname ?? '';
+          birthDateController.text = account.birthDate ?? '';
+          enNameController.text = account.englishName ?? '';
+          memoController.text = account.memo ?? '';
 
-      workNameController.text = account.workName ?? '';
-      workPositionNameController.text = account.workPositionName ?? '';
-      workAddressZipCodeController.text = account.workAddressZipCode ?? '';
-      workAddressController.text = account.workAddress ?? '';
-      workAddressSubController.text = account.workAddressSub ?? '';
-      typeController.text = account.job ?? '';
+          workNameController.text = account.workName ?? '';
+          workPositionNameController.text = account.workPositionName ?? '';
+          workAddressZipCodeController.text = account.workAddressZipCode ?? '';
+          workAddressController.text = account.workAddress ?? '';
+          workAddressSubController.text = account.workAddressSub ?? '';
+          typeController.text = account.job ?? '';
 
-      await myInfoModifyProvider.getAccountFile(account.id);
-    });
+          await myInfoModifyProvider.getAccountFile(account.id);
+        });
   }
 
   @override
@@ -137,11 +138,11 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     var response = await AccountAPI().putAccount(data);
 
                     var imageResponse = viewModel.image != null
-                        ? await FileAPI().postAccountFile(data.id, viewModel.image!)
+                        ? await FileAPI()
+                            .postAccountFile(data.id, viewModel.image!)
                         : Success('');
 
                     if (response is Success && imageResponse is Success) {
-
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         duration: Duration(milliseconds: 1500),
                         content: Text('성공적으로 저장되었습니다.'),
@@ -150,7 +151,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                       myInfoProvider.accountState = currentState;
 
                       ref.read(HomeProvider).popCurrentWidget();
-                    }else {
+                    } else {
                       myInfoProvider.accountState = currentState;
                     }
                   },
@@ -221,30 +222,53 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                           margin: EdgeInsets.all(5),
                                           child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(100),
+                                                  BorderRadius.circular(100),
                                               child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: GlobalColor
-                                                        .indexBoxColor,
-                                                    border: Border.all(
-                                                        color: GlobalColor
-                                                            .indexColor,
-                                                        width: 1),
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        100)),
-                                                width: 100,
-                                                height: 100,
-                                                child: viewModel.image != null
-                                                    ? Image.file(viewModel.image!, width: 100, height: 100, fit: BoxFit.cover, alignment: Alignment.topCenter,)
-                                                    : viewModel.imagePath != null
-                                                      ? Image.network('$BASE_URL/file/${viewModel.imagePath}',headers: const {'cheat': 'showmethemoney'},fit: BoxFit.cover,alignment: Alignment.topCenter,)
-                                                      : const Icon(Icons.person_rounded, size: 50, color: GlobalColor.indexColor,)
-                                              ))),
+                                                  decoration: BoxDecoration(
+                                                      color: GlobalColor
+                                                          .indexBoxColor,
+                                                      border: Border.all(
+                                                          color: GlobalColor
+                                                              .indexColor,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100)),
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: viewModel.image != null
+                                                      ? Image.file(
+                                                          viewModel.image!,
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
+                                                          alignment: Alignment
+                                                              .topCenter,
+                                                        )
+                                                      : viewModel.imagePath !=
+                                                              null
+                                                          ? Image.network(
+                                                              '$BASE_URL/file/${viewModel.imagePath}',
+                                                              headers: const {
+                                                                'cheat':
+                                                                    'showmethemoney'
+                                                              },
+                                                              fit: BoxFit.cover,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .topCenter,
+                                                            )
+                                                          : const Icon(
+                                                              Icons
+                                                                  .person_rounded,
+                                                              size: 50,
+                                                              color: GlobalColor
+                                                                  .indexColor,
+                                                            )))),
                                       Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(100),
+                                                  BorderRadius.circular(100),
                                               color: GlobalColor.indexColor),
                                           padding: EdgeInsets.all(5),
                                           child: Icon(
@@ -260,7 +284,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                 ),
                                 Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       IndexThumbTitle(account.name),
                                       SizedBox(

@@ -1,16 +1,15 @@
-sealed class LoadState {}
+sealed class LoadState<T> {}
 
-class Loading extends LoadState {}
-class Before extends LoadState {}
-class End extends LoadState {}
+class Loading<T> extends LoadState<T> {}
+class End<T> extends LoadState<T> {}
 
-class Success extends LoadState {
-  final dynamic data;
+class Success<T> extends LoadState<T> {
+  final T data;
 
   Success(this.data);
 }
 
-class Error extends LoadState {
+class Error<T> extends LoadState<T> {
   final Object exception;
 
   Error(this.exception);

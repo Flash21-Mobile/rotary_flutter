@@ -13,6 +13,7 @@ import 'package:rotary_flutter/feature/etc/policy_screen.dart';
 import 'package:rotary_flutter/feature/etc/president_record_screen.dart';
 import 'package:rotary_flutter/feature/etc/president_screen.dart';
 import 'package:rotary_flutter/feature/etc/rotary_korea_screen.dart';
+import 'package:rotary_flutter/feature/montlyletter/monthly_letter_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
 import 'package:rotary_flutter/feature/criterion/criterion_screen.dart';
 import 'package:rotary_flutter/feature/etc/programing_table_screen.dart';
@@ -43,7 +44,9 @@ final List<MenuItem> menuItems = [
   MenuItem(
       iconPath: 'asset/icons/menu/gallery_icon.svg',
       label: '지구갤러리',
-      widget: const GalleryScreen()),
+      onTap: (){
+        launchUrl(Uri.parse('https://band.us/band/50079452/album'));
+      }),
   MenuItem(
 iconPath: 'asset/icons/menu/my_rotary_icon.svg',
       label: '내 로타리',
@@ -61,7 +64,7 @@ iconPath: 'asset/icons/menu/my_rotary_icon.svg',
   MenuItem(
       iconPath: 'asset/icons/menu/magazine_icon.svg',
       label: '총재월신',
-      widget: const MagazineScreen()),
+      widget: const MonthlyLetter()),
   MenuItem(
       iconPath: 'asset/icons/menu/introduce_foundation_icon.svg',
       label: '총재단소개',

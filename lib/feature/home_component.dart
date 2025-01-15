@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
+import '../util/fontSize.dart';
 import '../util/global_color.dart';
 import '../util/model/loadstate.dart';
 import 'home/home_main_component.dart';
@@ -62,9 +63,9 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
 }
 
 class LoadStateWidget extends StatelessWidget {
-  final Widget? loadingWidget;
+  final Widget? Function()? loadingWidget;
   final Widget Function(dynamic) successWidget;
-  final Widget? errorWidget;
+  final Widget? Function(Object)? errorWidget;
 
   final LoadState loadState;
 
@@ -83,10 +84,14 @@ class LoadStateWidget extends StatelessWidget {
     ));
 
     return switch (loadState) {
-      Loading() => loadingWidget ?? placeHolder,
+      Loading() => loadingWidget != null ? loadingWidget!()! : placeHolder,
       Success() => successWidget((loadState as Success).data),
-      Error() => errorWidget ?? loadingWidget ?? placeHolder,
-      _ => const Placeholder()
+      Error() => errorWidget != null
+          ? errorWidget!((loadState as Error).exception)!
+          : loadingWidget != null
+              ? loadingWidget!()!
+              : placeHolder,
+      _ => const SizedBox()
     };
   }
 }
@@ -129,7 +134,17 @@ void showDismissDialog(
                 SizedBox(
                   height: 20,
                 ),
-                ...title != null ? [Text(title, textAlign: TextAlign.center,), SizedBox(height: 15,)] : [],
+                ...title != null
+                    ? [
+                        Text(
+                          title,
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        )
+                      ]
+                    : [],
                 ...(textInputFormatter != null && hint != null)
                     ? [
                         MyInfoModifyTextField(
@@ -177,11 +192,18 @@ void showDismissDialog(
   );
 }
 
-void loadStateFunction(LoadState loadState,
-    {required Function(dynamic) onSuccess, Function(Object)? onError}) {
+void loadStateFunction<T>(
+    {
+      required LoadState loadState,
+      required Function(T) onSuccess,
+    Function()? onLoading,
+    Function(Object)? onError}) {
   if (loadState is Success) {
     Log.d('success on', isSuper: true);
-    onSuccess(loadState.data);
+    onSuccess(loadState.data as T);
+  } else if (loadState is Loading) {
+    Log.d('loading on', isSuper: true);
+    (onLoading ?? () {})();
   } else if (loadState is Error) {
     Log.e('${loadState.exception}', isSuper: true);
     (onError ?? () {})(loadState.exception);
@@ -208,4 +230,143 @@ LoadState runCatching(LoadState Function() function,
     }
   }
   return data;
+}
+
+class CustomDialog extends StatelessWidget {
+  final String title;
+  final String? subTitle;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
+  final String confirmText;
+  final String cancelText;
+
+  const CustomDialog(
+      {super.key,
+      required this.title,
+      this.subTitle,
+      required this.onConfirm,
+      required this.onCancel,
+      required this.confirmText,
+      required this.cancelText});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IndexText(
+              title,
+              textAlign: TextAlign.center,
+            ),
+            ...subTitle == null
+                ? []
+                : [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    IndexText(
+                      subTitle,
+                      textColor: GlobalColor.primaryColor,
+                    )
+                  ],
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 120,
+                  child: InkWell(
+                    onTap: () {
+                      onConfirm();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: GlobalColor.primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: IndexMinText(
+                        textColor: GlobalColor.white,
+                        confirmText,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  width: 120,
+                  child: InkWell(
+                    onTap: () {
+                      onCancel();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              width: 1, color: GlobalColor.greyFontColor)),
+                      child: IndexMinText(
+                        textColor: GlobalColor.black,
+                        cancelText,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LoadingWidget {
+  static show(context, content) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PopScope(
+            canPop: false,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                children: [
+                  Center(
+                    child: Column(
+                      // clipBehavior: Clip.none,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IndexThumbTitle(
+                          content,
+                          textColor: GlobalColor.white,
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        CircularProgressIndicator(
+                          color: GlobalColor.primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ));
+      },
+    );
+  }
 }

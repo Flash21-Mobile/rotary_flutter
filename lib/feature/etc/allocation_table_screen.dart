@@ -30,7 +30,7 @@ class _AllocationTableScreen extends ConsumerState<AllocationTableScreen> {
       ),
       body:  ScrollablePinchView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -874,7 +874,6 @@ class AllocationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: 24),
           decoration: BoxDecoration(
             color: GlobalColor.primaryColor,
             borderRadius: BorderRadius.circular(12),
@@ -904,6 +903,7 @@ class AllocationSection extends StatelessWidget {
             ),
           ),
         ),
+        SizedBox(height: 24,)
       ],
     );
   }

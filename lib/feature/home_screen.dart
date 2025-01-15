@@ -48,9 +48,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   Future<void> androidLogin() async {
-    if (await Permission.phone
-        .request()
-        .isGranted) {
+    if (await Permission.phone.request().isGranted) {
       const androidChannel = MethodChannel('com.flash21.rotary_3700/android');
       try {
         var phone = await androidChannel.invokeMethod('getPhoneNumber');
@@ -60,10 +58,10 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
           var data = phone.replaceAll('+82', '0');
 
-          //todo r: 검색 문구 변경, 전체 회원수 추가, 전체 회원수 위치 변경 상단으로
+          //todo r: 검색 문구 변경, 전체 회원수 추가, 전체 회원수 위치 변경 상단으로, 회원에 홍보 추가, dialog 전체 화면
 
-          final indexPhone = '${data.substring(0, 3)}-${data.substring(
-              3, 7)}-${data.substring(7)}';
+          final indexPhone =
+              '${data.substring(0, 3)}-${data.substring(3, 7)}-${data.substring(7)}';
           login(indexPhone);
         }
       } catch (e) {
@@ -86,7 +84,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   void login(String phone) async {
     var dataState = await AccountAPI().getAccount(cellphone: phone);
 
-    loadStateFunction(dataState,
+    loadStateFunction(
+        loadState: dataState,
         onSuccess: (data) async {
           var result = (data as List<Account>)[0];
           Fluttertoast.showToast(msg: '${result.name}님 로그인에 성공하였습니다.');
@@ -97,8 +96,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
             globalStorage.write(key: 'admin', value: null);
           }
           Log.d(
-              'i am permission: ${result.permission} ${await globalStorage.read(
-                  key: 'admin')}');
+              'i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
 
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
@@ -134,17 +132,14 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   void showAuthenticateDialog() {
     var homeProvider = ref.read(HomeProvider);
 
-    showDismissDialog(context, controller: authenticateController,
-        hint: '인증번호',
+    showDismissDialog(context, controller: authenticateController, hint: '인증번호',
         onTap: () {
-          if (authenticateController.text.isNotEmpty) {
-            FocusNode().unfocus();
-            homeProvider.postAuthenticate(
-                phoneController.text, authenticateController.text);
-          }
-        },
-        keyboardType: TextInputType.number,
-        buttonText: '인증하기');
+      if (authenticateController.text.isNotEmpty) {
+        FocusNode().unfocus();
+        homeProvider.postAuthenticate(
+            phoneController.text, authenticateController.text);
+      }
+    }, keyboardType: TextInputType.number, buttonText: '인증하기');
   }
 
   void showLoginDialog() {
@@ -153,67 +148,72 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         controller: idController,
         subHint: '비밀번호',
         subController: passwordController,
-        buttonText: '로그인',
-        onTap: () {
-          if (idController.text == 'flash21' &&
-              passwordController.text == 'flash2121') {
-            Navigator.of(context, rootNavigator: true).pop();
+        buttonText: '로그인', onTap: () {
+      if (idController.text == 'flash21' &&
+          passwordController.text == 'flash2121') {
+        Navigator.of(context, rootNavigator: true).pop();
 
-            login('010-3811-0831');
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(milliseconds: 1500),
-              content: Text('로그인에 실패하였습니다.'),
-            ));
-          }
-        });
+        login('010-3811-0831');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(milliseconds: 1500),
+          content: Text('로그인에 실패하였습니다.'),
+        ));
+      }
+    });
   }
 
   void showErrorDialog() {
     showDismissDialog(context,
         title: '앱 재실행 후 전화번호 사용 권한을 허용해 주세요',
         buttonText: '확인', onTap: () async {
-          Navigator.of(context, rootNavigator: true).pop();
+      Navigator.of(context, rootNavigator: true).pop();
 
-          SystemNavigator.pop();
-        });
+      SystemNavigator.pop();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var homeProvider = ref.watch(HomeProvider);
 
-    loadStateFunction(homeProvider.phoneState, onSuccess: (data) {
-      Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-        Navigator.of(context, rootNavigator: true).pop();
-        showAuthenticateDialog();
+    loadStateFunction(
+        loadState: homeProvider.phoneState,
+        onSuccess: (data) {
+          Future.delayed(Duration(milliseconds: 300)).then((onValue) {
+            Navigator.of(context, rootNavigator: true).pop();
+            showAuthenticateDialog();
 
-        homeProvider.phoneState = End();
-      });
-    }, onError: (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(milliseconds: 1500),
-          content: Text('인증에 실패하였습니다.'),
-        ),
-      );
-    });
+            homeProvider.phoneState = End();
+          });
+        },
+        onError: (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1500),
+              content: Text('인증에 실패하였습니다.'),
+            ),
+          );
+        });
 
-    loadStateFunction(homeProvider.authenticateState, onSuccess: (data) {
-      Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-        Navigator.of(context, rootNavigator: true).pop();
+    loadStateFunction(
+        loadState: homeProvider.authenticateState,
+        onSuccess: (data) {
+          Future.delayed(Duration(milliseconds: 300)).then((onValue) {
+            Navigator.of(context, rootNavigator: true).pop();
 
-        homeProvider.authenticateState = End();
-        login(phoneController.text);
-      });
-    }, onError: (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(milliseconds: 1500),
-          content: Text('인증번호가 잘못되었습니다.'),
-        ),
-      );
-    });
+            homeProvider.authenticateState = End();
+            login(phoneController.text);
+          });
+        },
+        onError: (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: Duration(milliseconds: 1500),
+              content: Text('인증번호가 잘못되었습니다.'),
+            ),
+          );
+        });
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -279,9 +279,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   Future addHomeScreen() async {
     await Future.delayed(const Duration(milliseconds: 1500)).then((onValue) {
       Log.d('NavigateScope: Add HomeMainScreen');
-      ref
-          .read(HomeProvider)
-          .setCurrentWidget = const HomeMainScreen();
+      ref.read(HomeProvider).setCurrentWidget = const HomeMainScreen();
     });
     return;
   }

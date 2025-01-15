@@ -27,16 +27,16 @@ class _EventScreenState extends ConsumerState<EventScreen> {
 
   var isAdmin = false;
 
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
   void checkAdmin() async {
     var data = (await globalStorage.read(key: 'admin')) == 'admin';
 
     setState(() => isAdmin = data);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
   }
 
   void getData() {

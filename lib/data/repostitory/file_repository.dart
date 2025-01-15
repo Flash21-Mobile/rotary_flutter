@@ -23,6 +23,7 @@ abstract class FileRepository {
   Future postFile(
       @Query('apiName') String? fileApiName,
       @Query('fileApiPK') int? fileApiPK,
-      @Part(name: 'image') File file
+      @Part(name: 'image') List<File> file
       );
 }
+//todo r: 저장 후 안 넘어감

@@ -195,12 +195,12 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                       return const Center(child: CircularProgressIndicator());
                     } else {
                       return Container(
-                      padding: EdgeInsets.only(bottom: 30,top: 10),
+                      padding: EdgeInsets.only(bottom: 30,),
                           child:Text('더 이상 검색된 회원이 없습니다', textAlign: TextAlign.center,));
                     }
                   }
                   return UserSearchListTile(account: items[index]);
-                },
+                },    //todo r: 애경사, 회원검색 빼기
                 separatorBuilder: (_, $) => const SizedBox(height: 10),
 
             // errorWidget: const Expanded(
