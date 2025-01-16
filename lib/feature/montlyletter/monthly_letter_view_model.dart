@@ -106,4 +106,42 @@ class _ViewModel with ChangeNotifier {
   Future<LoadState> deleteMonthlyLetter(int id) async {
     return await ArticleAPI().deleteMonthlyLetter(id);
   }
+
+  bool hasMore = true;
+
+  int currentPage = 0;
+
+  String query = '';
+
+  List<ArticleModel> items = [];
+
+  int? monthlyLetterCount = 0;
+
+  Future<void> fetchData() async {
+    if (monthlyLetterState is Loading && !hasMore) return;
+
+    var loadState = await getMonthlyLetterAll(page: currentPage, query: query);
+
+    monthlyLetterCount = await getMonthlyLetterAllCount(query: query) ?? 0;
+
+    if (loadState is Success) {
+      final List<ArticleModel> data = loadState.data;
+      if (data.isNotEmpty) {
+        items.addAll(data);
+        currentPage++;
+      } else {
+        hasMore = false;
+      }
+    } else {
+      hasMore = false;
+    }
+    notifyListeners();
+  }
+
+  Future<void> initData() async {
+    currentPage = 0;
+    items = [];
+    hasMore = true;
+    notifyListeners();
+  }
 }

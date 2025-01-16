@@ -29,18 +29,9 @@ class MonthlyLetter extends ConsumerStatefulWidget {
 }
 
 class _Widget extends ConsumerState<MonthlyLetter> {
-  late bool hasMore;
-
-  late int currentPage;
-
-  late String query;
-
-  late List<ArticleModel> items;
   late ScrollController controller;
 
   var isAdmin = false;
-
-  late int? monthlyLetterCount;
 
   void checkAdmin() async {
     var data = (await globalStorage.read(key: 'admin')) == 'admin';
@@ -60,55 +51,11 @@ class _Widget extends ConsumerState<MonthlyLetter> {
   void initState() {
     super.initState();
     controller = ScrollController();
-    query = '';
-    monthlyLetterCount = 0;
-    initData();
 
     ref.read(MonthlyLetterProvider).monthlyLetterPostState = End();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAdmin();
-    });
-  }
-
-  Future<void> fetchData() async {
-    var monthlyLetterViewModel = ref.read(MonthlyLetterProvider);
-    if (monthlyLetterViewModel.monthlyLetterState is Loading && !hasMore)
-      return;
-
-    var loadState = await monthlyLetterViewModel.getMonthlyLetterAll(
-        page: currentPage, query: query);
-
-    monthlyLetterCount =
-        await monthlyLetterViewModel.getMonthlyLetterAllCount(query: query) ?? 0;
-
-    if (loadState is Success) {
-      final List<ArticleModel> data = loadState.data;
-      print('hello: ioio ${loadState.data}');
-
-      if (data.isNotEmpty) {
-        setState(() {
-          items.addAll(data);
-          currentPage++;
-        });
-      } else {
-        setState(() {
-          hasMore = false;
-        });
-      }
-    } else {
-      setState(() {
-        hasMore = false;
-      });
-      print('hello: else $hasMore');
-    }
-  }
-
-  Future<void> initData() async {
-    setState(() {
-      currentPage = 0;
-      items = [];
-      hasMore = true;
     });
   }
 
@@ -131,7 +78,7 @@ class _Widget extends ConsumerState<MonthlyLetter> {
           });
           viewModel.monthlyLetterPostState = End();
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            initData();
+            viewModel.initData();
           });
           Navigator.of(context, rootNavigator: true).pop();
         },
@@ -173,7 +120,7 @@ class _Widget extends ConsumerState<MonthlyLetter> {
           height: 30,
           padding: EdgeInsets.only(right: 15),
           alignment: Alignment.topRight,
-          child: IndexMinText('총재월신 수: $monthlyLetterCount'),
+          child: IndexMinText('총재월신 수: ${viewModel.monthlyLetterCount}'),
         ),
 
         Padding(
@@ -193,8 +140,8 @@ class _Widget extends ConsumerState<MonthlyLetter> {
                         child: SearchBox(
                             hint: '검색',
                             onSearch: (data) {
-                              query = data;
-                              initData();
+                              viewModel.query = data;
+                              viewModel.initData();
                             })),
                   ),
                   SliverToBoxAdapter(
@@ -202,14 +149,14 @@ class _Widget extends ConsumerState<MonthlyLetter> {
                     height: 15,
                   )),
                   SliverList.separated(
-                    itemCount: items.length + 1,
+                    itemCount: viewModel.items.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == items.length) {
+                      if (index == viewModel.items.length) {
                         if (viewModel.monthlyLetterState is Loading) {
                           return const Center(
                               child: CircularProgressIndicator());
-                        } else if (hasMore) {
-                          fetchData();
+                        } else if (viewModel.hasMore) {
+                          viewModel.fetchData();
                           return const Center(
                               child: CircularProgressIndicator());
                         } else {
@@ -224,14 +171,14 @@ class _Widget extends ConsumerState<MonthlyLetter> {
                         }
                       }
                       return MonthlyLetterListTile(
-                        data: items[index],
+                        data: viewModel.items[index],
                         onTap: () {
                           FocusScope.of(context).unfocus();
 
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return MonthlyLetterDetail(
-                                data: items[
+                                data: viewModel.items[
                                     index]); //todo r: 윤용택 740 article 추가 바른이엔씨
                           }));
                         },
