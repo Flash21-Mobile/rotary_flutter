@@ -24,78 +24,20 @@ class AdvertiseScreen extends ConsumerStatefulWidget {
 }
 
 class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
-  late bool hasMore;
-
-  late int currentPage;
-
-  late String query;
-
-  late List<ArticleModel> items;
   late ScrollController controller;
-
-  late int advertiseCount;
 
   @override
   void initState() {
     super.initState();
     controller = ScrollController();
-    items = [];
-    query = '';
-    currentPage = 0;
-    hasMore = true;
-    advertiseCount = 0;
 
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    var advertiseProvider = ref.read(AdvertiseProvider);
-    if (advertiseProvider.advertiseState is Loading && !hasMore) return;
-
-    var loadState = await advertiseProvider.getAdvertiseAll(
-        page: currentPage, query: query);
-
-    advertiseCount =
-        await advertiseProvider.getAdvertiseAllCount(query: query) ?? 0;
-
-    if (loadState is Success) {
-      final List<ArticleModel> data = loadState.data;
-      print('hello: ioio ${loadState.data}');
-
-      if (data.isNotEmpty) {
-        setState(() {
-          items.addAll(data);
-          currentPage++;
-        });
-      } else {
-        setState(() {
-          hasMore = false;
-        });
-      }
-    } else {
-      setState(() {
-        hasMore = false;
-      });
-      print('hello: else $hasMore');
-    }
-  }
-
-  Future<void> initData() async {
-    var userSearchListProvider = ref.read(AdvertiseProvider);
-    if (userSearchListProvider.advertiseState is Loading && !hasMore) return;
-
-    setState(() {
-      currentPage = 0;
-      items = [];
-      hasMore = true;
-    });
+    ref.read(AdvertiseProvider).advertiseState = End();
+    ref.read(AdvertiseProvider).initData();
   }
 
   @override
   Widget build(BuildContext context) {
     var viewModel = ref.watch(AdvertiseProvider);
-
-    Log.d('데이터: ${items}');
 
     return Scaffold(
         backgroundColor: GlobalColor.white,
@@ -108,81 +50,90 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
               ref.read(HomeProvider).popCurrentWidget();
             },
           ),
+          actions: [
+            Center(
+                child: Row(children: [
+              Icon(
+                Icons.article,
+                color: GlobalColor.greyFontColor,
+                size: 20,
+              ),
+              IndexMinText(
+                '${viewModel.advertiseCount}',
+                textColor: GlobalColor.greyFontColor,
+              ),
+              SizedBox(
+                width: 15,
+              )
+            ]))
+          ],
         ),
         body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Stack(alignment: Alignment.topCenter, children: [
-              Container(
-                height: 30,
-                alignment: Alignment.topRight,
-                child: IndexMinText('홍보 수: $advertiseCount'),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(top: 30),
-                  child: CustomScrollView(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      controller: controller,
-                      slivers: [
-                        SliverAppBar(
-                          snap: true,
-                          automaticallyImplyLeading: false,
-                          floating: true,
-                          flexibleSpace: Container(
-                              color: GlobalColor.white,
-                              child: SearchBox(
-                                  hint: '검색',
-                                  onSearch: (data) {
-                                    query = data;
-                                    initData();
-                                  })),
-                        ),
-                        SliverToBoxAdapter(
-                            child: SizedBox(
-                          height: 15,
-                        )),
-                        SliverList.separated(
-                          itemCount: items.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == items.length) {
-                              if (viewModel.advertiseState is Loading) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (hasMore) {
-                                fetchData();
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else {
-                                return Container(
-                                    padding: EdgeInsets.only(
-                                      bottom: 30,
-                                    ),
-                                    child: Text(
-                                      '더 이상 검색된 홍보물이 없습니다',
-                                      textAlign: TextAlign.center,
-                                    ));
-                              }
-                            }
-                            return AdvertiseListTile(
-                              data: items[index],
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
+              CustomScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  controller: controller,
+                  slivers: [
+                    SliverAppBar(
+                      snap: true,
+                      automaticallyImplyLeading: false,
+                      floating: true,
+                      flexibleSpace: Container(
+                          color: GlobalColor.white,
+                          child: SearchBox(
+                              hint: '검색',
+                              onSearch: (data) {
+                                viewModel.query = data;
+                                viewModel.initData();
+                              })),
+                    ),
+                    SliverToBoxAdapter(
+                        child: SizedBox(
+                      height: 15,
+                    )),
+                    SliverList.separated(
+                      itemCount: viewModel.items.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == viewModel.items.length) {
+                          if (viewModel.advertiseState is Loading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (viewModel.hasMore) {
+                            viewModel.fetchData();
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            return Container(
+                                padding: EdgeInsets.only(
+                                  bottom: 30,
+                                ),
+                                child: Text(
+                                  '더 이상 검색된 홍보물이 없습니다',
+                                  textAlign: TextAlign.center,
+                                ));
+                          }
+                        }
+                        return AdvertiseListTile(
+                          data: viewModel.items[index],
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
 
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return AdvertiseDetailScreen(
-                                      data: items[index]);
-                                }));
-                              },
-                            );
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return AdvertiseDetailScreen(data: viewModel.items[index]);
+                            }));
                           },
-                          separatorBuilder: (_, $) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Container(
-                                height: 1, color: GlobalColor.dividerColor),
-                          ),
-                        )
-                      ]))
+                        );
+                      },
+                      separatorBuilder: (_, $) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                            height: 1, color: GlobalColor.dividerColor),
+                      ),
+                    )
+                  ])
             ])));
     // Container(
     //     color: GlobalColor.white,

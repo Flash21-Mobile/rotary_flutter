@@ -8,6 +8,7 @@ import 'package:rotary_flutter/feature/userSearch/list/user_search_list_componen
 import '../../data/model/article_model.dart';
 import '../../util/global_color.dart';
 import '../home/home_main_component.dart';
+import 'detail/monthly_letter_detail.dart';
 
 class MonthlyLetterListTile extends ConsumerStatefulWidget {
   const MonthlyLetterListTile(
@@ -30,7 +31,14 @@ class _MonthlyLetterListTile extends ConsumerState<MonthlyLetterListTile> {
         padding: EdgeInsets.only(left: 15, right: 15),
         child: InkWell(
             borderRadius: BorderRadius.circular(15),
-            onTap: widget.onTap,
+            onTap: (){
+              widget.onTap();
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) {
+                return MonthlyLetterDetail(
+                    data: widget.data);
+              }));
+            },
             child: Row(
               children: [
                 Container(

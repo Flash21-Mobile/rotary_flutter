@@ -156,7 +156,6 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                                   : '',
                             ),
                             SizedBox(
-                              //todo: 홍보 추가하기
                               height: 15,
                             ),
                             Row(

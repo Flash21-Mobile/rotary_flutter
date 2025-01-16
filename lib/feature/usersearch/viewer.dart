@@ -43,7 +43,7 @@ class _Widget extends ConsumerState<UserSearchViewer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     FutureImage(
-                        ref.read(UserSearchListProvider).getAccountFile(widget.id),
+                         ref.read(UserSearchListProvider).getAccountFile(widget.id),
                         onError: Center(child: CircularProgressIndicator(),),)
                   ])),
         ]));

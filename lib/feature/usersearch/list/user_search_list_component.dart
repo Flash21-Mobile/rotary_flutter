@@ -183,15 +183,16 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                     //         color: GlobalColor.primaryColor,
                     //         borderRadius: BorderRadius.circular(100)),
                     //     child: IndexMinText('입회일', textColor: GlobalColor.white,)),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: IndexMinTitle(
-                      widget.account.time != null
-                          ? formatDateTime(widget.account.time)
-                          : '',
-                    ),)
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: IndexMinTitle(
+                        widget.account.time != null
+                            ? formatDateTime(widget.account.time)
+                            : '',
+                      ),
+                    )
                   ])),
               SizedBox(
                 height: 5,

@@ -13,7 +13,7 @@ final AdvertiseProvider =
 });
 
 class AdvertiseViewModel with ChangeNotifier {
-  LoadState advertiseState = Loading();
+  LoadState advertiseState = End();
 
   List<int> banners = [];
 
@@ -55,5 +55,44 @@ class AdvertiseViewModel with ChangeNotifier {
         accountName: query,
         or: true,
         gradeName: query);
+  }
+
+  bool hasMore = true;
+
+  int currentPage = 0;
+
+  String query = '';
+
+  List<ArticleModel> items = [];
+
+  int? advertiseCount = 0;
+
+  Future<void> fetchData() async {
+    if (advertiseState is Loading && !hasMore) return;
+
+    var loadState = await getAdvertiseAll(page: currentPage++, query: query);
+    advertiseCount = await getAdvertiseAllCount(query: query) ?? 0;
+
+    if (loadState is Success) {
+      final List<ArticleModel> data = loadState.data;
+      if (data.isNotEmpty) {
+        items.addAll(data);
+      } else {
+        hasMore = false;
+      }
+    } else {
+      hasMore = false;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      notifyListeners();
+    });
+  }
+
+  Future<void> initData() async {
+    advertiseCount = 0;
+    currentPage = 0;
+    items = [];
+    hasMore = true;
+    notifyListeners();
   }
 }

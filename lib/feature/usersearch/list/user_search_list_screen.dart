@@ -25,10 +25,10 @@ class UserSearchListScreen extends ConsumerStatefulWidget {
   const UserSearchListScreen({super.key, required this.initialRegion});
 
   @override
-  ConsumerState<UserSearchListScreen> createState() => _UserSearchLIstScreen();
+  ConsumerState<UserSearchListScreen> createState() => _ViewModel();
 }
 
-class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
+class _ViewModel extends ConsumerState<UserSearchListScreen> {
   late int _selectedGrade;
   late int _selectedRegion;
   final TextEditingController _searchController = TextEditingController();
@@ -56,13 +56,13 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   }
 
   // 서버에서 데이터를 페이징으로 받아오는 함수
-  Future<void> fetchData(int currentPage) async {
+  Future<void> fetchData() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       var userSearchListProvider = ref.read(UserSearchListProvider);
       if (userSearchListProvider.userListState is Loading && !hasMore) return;
 
       var loadState = await userSearchListProvider.getAccountList(
-          page: currentPage,
+          page: currentPage++,
           grade: AccountGrade.all[_selectedGrade] == '전체RC'
               ? null
               : AccountGrade.all[_selectedGrade],
@@ -103,7 +103,6 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
           setState(() {
             hasMore = false;
           });
-          Log.d('hello: else $hasMore');
         }
       } else {
         setState(() {
@@ -124,12 +123,6 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
       items = [];
     });
   }
-
-  // void getAccountList() {
-  //   ref.read(UserSearchListProvider).getAccountList(
-  //       cardinal: CardinalLocation.all[_selectedLocation].id,
-  //       groupCardinal: CardinalRC.all[_selectedRC].id);
-  // }
 
   @override
   void dispose() {
@@ -152,15 +145,20 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
               ref.read(HomeProvider).popCurrentWidget();
             },
           ),
+          actions: [
+            Center(
+                child: Row(children: [
+                  Icon(Icons.account_box_rounded, color: GlobalColor.greyFontColor,size: 20,),
+                  IndexMinText('$accountCount', textColor: GlobalColor.greyFontColor,),
+                  SizedBox(
+                    width: 15,
+                  )
+                ]))
+          ],
         ),
         body: Column(children: [
-          SizedBox(height: 5,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [IndexMinText('회원 수: $accountCount'), SizedBox(width: 15,)],
-          ),
           SizedBox(
-            height: 5,
+            height: 10,
           ),
           Container(
               padding: EdgeInsets.symmetric(
@@ -228,7 +226,7 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                 ],
               )),
           SizedBox(
-            height: 15,
+            height:10,
           ),
           Expanded(
               child: ListView.separated(
@@ -239,8 +237,7 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                 if (viewModel.userListState is Loading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (hasMore) {
-                  fetchData(currentPage);
-                  currentPage++;
+                  fetchData();
                   return const Center(child: CircularProgressIndicator());
                 } else {
                   return Container(

@@ -42,7 +42,7 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     FutureImage(
-                        ref
+                    ref
                             .read(AdvertiseProvider)
                             .getAdvertiseFile(widget.data.id),
                         onError: Center(
@@ -72,7 +72,7 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: FutureImage(
-                              ref
+                            ref
                                   .read(UserSearchListProvider)
                                   .getAccountFile(widget.data.account?.id),
                               width: 30,
@@ -141,7 +141,7 @@ class _AdvertiseListTile extends ConsumerState<AdvertiseListTile> {
           children: [
             ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: FutureImage(viewModel.getAdvertiseFile(widget.data.id),
+                child: FutureImage( viewModel.getAdvertiseFile(widget.data.id),
                     width: 100, height: 100)),
             SizedBox(
               width: 15,

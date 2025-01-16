@@ -34,7 +34,7 @@ abstract class ArticleRepository {
   @GET("/article/random")
   Future<List<ArticleModel>> getArticleRandom();
 
-  @GET("/account/count")
+  @GET("/article/count")
   Future<int> getArticleCount({
     @Query('title') String? title,
     @Query('content') String? content,

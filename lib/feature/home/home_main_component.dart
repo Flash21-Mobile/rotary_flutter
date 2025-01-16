@@ -215,7 +215,7 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                   itemBuilder: (context, index) {
                     return FutureImage(
                         itemKey: index == 0 ? itemKey : null,
-                        Future.value(widget.items?[index]));
+                   Future.value(widget.items?[index]));
                   },
                   separatorBuilder: (_, $) {
                     return Container(
@@ -296,7 +296,7 @@ class _PageablePinchView extends ConsumerState<PageablePinchView> {
                       minScale: 1.0,
                       maxScale: 6.0,
                       child: FutureImage(
-                        Future.value(widget.items?[index]),
+                      Future.value(widget.items?[index]),
                       ));
                 })));
   }

@@ -17,18 +17,19 @@ import '../../../../util/global_color.dart';
 import '../../util/logger.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/secure_storage.dart';
+import '../advertise/advertise_view_model.dart';
 import '../event/page/advertise_page_screen.dart';
 import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 
-class MonthlyLetter extends ConsumerStatefulWidget {
-  const MonthlyLetter({super.key});
+class MonthlyLetterScreen extends ConsumerStatefulWidget {
+  const MonthlyLetterScreen({super.key});
 
   @override
-  ConsumerState<MonthlyLetter> createState() => _Widget();
+  ConsumerState<MonthlyLetterScreen> createState() => _Widget();
 }
 
-class _Widget extends ConsumerState<MonthlyLetter> {
+class _Widget extends ConsumerState<MonthlyLetterScreen> {
   late ScrollController controller;
 
   var isAdmin = false;
@@ -53,6 +54,7 @@ class _Widget extends ConsumerState<MonthlyLetter> {
     controller = ScrollController();
 
     ref.read(MonthlyLetterProvider).monthlyLetterPostState = End();
+    ref.read(MonthlyLetterProvider).initData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAdmin();
@@ -114,83 +116,73 @@ class _Widget extends ConsumerState<MonthlyLetter> {
             ref.read(HomeProvider).popCurrentWidget();
           },
         ),
+        actions: [
+          Center(
+              child: Row(children: [
+                Icon(Icons.article, color: GlobalColor.greyFontColor,size: 20,),
+                IndexMinText('${viewModel.monthlyLetterCount}', textColor: GlobalColor.greyFontColor,),
+                SizedBox(
+                  width: 15,
+                )
+              ]))
+        ],
       ),
       body: Stack(alignment: Alignment.topCenter, children: [
-        Container(
-          height: 30,
-          padding: EdgeInsets.only(right: 15),
-          alignment: Alignment.topRight,
-          child: IndexMinText('총재월신 수: ${viewModel.monthlyLetterCount}'),
-        ),
-
-        Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: CustomScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                controller: controller,
-                slivers: [
-                  SliverAppBar(
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                    floating: true,
-                    flexibleSpace: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        color: GlobalColor.white,
-                        child: SearchBox(
-                            hint: '검색',
-                            onSearch: (data) {
-                              viewModel.query = data;
-                              viewModel.initData();
-                            })),
-                  ),
-                  SliverToBoxAdapter(
-                      child: SizedBox(
-                    height: 15,
-                  )),
-                  SliverList.separated(
-                    itemCount: viewModel.items.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == viewModel.items.length) {
-                        if (viewModel.monthlyLetterState is Loading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (viewModel.hasMore) {
-                          viewModel.fetchData();
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return Container(
-                              padding: EdgeInsets.only(
-                                bottom: 30,
-                              ),
-                              child: Text(
-                                '더 이상 검색된 총재월신이 없습니다',
-                                textAlign: TextAlign.center,
-                              ));
-                        }
-                      }
-                      return MonthlyLetterListTile(
-                        data: viewModel.items[index],
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return MonthlyLetterDetail(
-                                data: viewModel.items[
-                                    index]); //todo r: 윤용택 740 article 추가 바른이엔씨
-                          }));
-                        },
-                      );
+        CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            controller: controller,
+            slivers: [
+              SliverAppBar(
+                snap: true,
+                automaticallyImplyLeading: false,
+                floating: true,
+                flexibleSpace: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    color: GlobalColor.white,
+                    child: SearchBox(
+                        hint: '검색',
+                        onSearch: (data) {
+                          viewModel.query = data;
+                          viewModel.initData();
+                        })),
+              ),
+              SliverToBoxAdapter(
+                  child: SizedBox(
+                height: 15,
+              )),
+              SliverList.separated(
+                itemCount: viewModel.items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == viewModel.items.length) {
+                    if (viewModel.monthlyLetterState is Loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (viewModel.hasMore) {
+                      viewModel.fetchData();
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return Container(
+                          padding: EdgeInsets.only(
+                            bottom: 30,
+                          ),
+                          child: Text(
+                            '더 이상 검색된 총재월신이 없습니다',
+                            textAlign: TextAlign.center,
+                          ));
+                    }
+                  }
+                  return MonthlyLetterListTile(
+                    data: viewModel.items[index],
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
                     },
-                    separatorBuilder: (_, $) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child:
-                          Container(height: 1, color: GlobalColor.dividerColor),
-                    ),
-                  )
-                ])),
+                  );
+                },
+                separatorBuilder: (_, $) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Container(height: 1, color: GlobalColor.dividerColor),
+                ),
+              )
+            ]),
       ]),
       floatingActionButton: isAdmin
           ? FloatingActionButton(

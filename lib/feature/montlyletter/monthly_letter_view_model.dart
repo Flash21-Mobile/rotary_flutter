@@ -120,7 +120,7 @@ class _ViewModel with ChangeNotifier {
   Future<void> fetchData() async {
     if (monthlyLetterState is Loading && !hasMore) return;
 
-    var loadState = await getMonthlyLetterAll(page: currentPage, query: query);
+    var loadState = await getMonthlyLetterAll(page: currentPage++, query: query);
 
     monthlyLetterCount = await getMonthlyLetterAllCount(query: query) ?? 0;
 
@@ -128,17 +128,19 @@ class _ViewModel with ChangeNotifier {
       final List<ArticleModel> data = loadState.data;
       if (data.isNotEmpty) {
         items.addAll(data);
-        currentPage++;
       } else {
         hasMore = false;
       }
     } else {
       hasMore = false;
     }
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      notifyListeners();
+    });
   }
 
   Future<void> initData() async {
+    monthlyLetterCount = 0;
     currentPage = 0;
     items = [];
     hasMore = true;

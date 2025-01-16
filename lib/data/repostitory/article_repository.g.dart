@@ -176,7 +176,7 @@ class _ArticleRepository implements ArticleRepository {
     )
         .compose(
           _dio.options,
-          '/account/count',
+          '/article/count',
           queryParameters: queryParameters,
           data: _data,
         )

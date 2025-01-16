@@ -6,7 +6,6 @@ import 'package:rotary_flutter/feature/etc/gallery_screen.dart';
 import 'package:rotary_flutter/feature/etc/homepage_screen.dart';
 import 'package:rotary_flutter/feature/etc/introduce_foundation_screen.dart';
 import 'package:rotary_flutter/feature/etc/k_rotary_screen.dart';
-import 'package:rotary_flutter/feature/etc/magazine_screen.dart';
 import 'package:rotary_flutter/feature/etc/my_rotary_screen.dart';
 import 'package:rotary_flutter/feature/etc/organization_screen.dart';
 import 'package:rotary_flutter/feature/etc/policy_screen.dart';
@@ -64,7 +63,7 @@ iconPath: 'asset/icons/menu/my_rotary_icon.svg',
   MenuItem(
       iconPath: 'asset/icons/menu/magazine_icon.svg',
       label: '총재월신',
-      widget: const MonthlyLetter()),
+      widget: const MonthlyLetterScreen()),
   MenuItem(
       iconPath: 'asset/icons/menu/introduce_foundation_icon.svg',
       label: '총재단소개',
@@ -101,10 +100,6 @@ iconPath: 'asset/icons/menu/my_rotary_icon.svg',
       iconPath: 'asset/icons/menu/policy_icon.svg',
       label: '운영방침',
       widget: const PolicyScreen()),
-  MenuItem(
-      iconPath: 'asset/icons/menu/president_record_icon.svg',
-      label: '총재약력',
-      widget: const PresidentRecordScreen()),
   MenuItem(
       iconPath: 'asset/icons/menu/allocation_icon.svg',
       label: '배점표',
