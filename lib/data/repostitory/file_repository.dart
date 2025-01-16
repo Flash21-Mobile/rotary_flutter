@@ -26,4 +26,3 @@ abstract class FileRepository {
       @Part(name: 'image') List<File> file
       );
 }
-//todo r: 저장 후 안 넘어감

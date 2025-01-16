@@ -22,6 +22,7 @@ class IndexText extends StatelessWidget {
       textAlign: textAlign,
       style: TextStyle(
           fontSize: DynamicFontSize.font21(context),
+          //* MediaQuery.of(context).textScaleFactor,
           color: textColor ?? GlobalColor.black),
       overflow: overFlowFade ?? false ? TextOverflow.fade : null,
       maxLines: overFlowFade ?? false ? 1 : null,
@@ -42,6 +43,7 @@ class IndexTitle extends StatelessWidget {
       text ?? '',
       style: TextStyle(
           fontSize: DynamicFontSize.font21(context),
+          // * MediaQuery.of(context).textScaleFactor,,
           color: textColor ?? GlobalColor.black,
           fontWeight: FontWeight.bold),
     );
@@ -62,6 +64,7 @@ class IndexThumbTitle extends StatelessWidget {
       textAlign: textAlign,
       style: TextStyle(
           fontSize: DynamicFontSize.font25(context),
+          // * MediaQuery.of(context).textScaleFactor,
           color: textColor ?? GlobalColor.black,
           fontWeight: FontWeight.bold),
     );
@@ -83,6 +86,7 @@ class IndexMinText extends StatelessWidget {
       text ?? '',
       style: TextStyle(
           fontSize: DynamicFontSize.font17(context),
+          // * MediaQuery.of(context).textScaleFactor,
           color: textColor ?? GlobalColor.black),
       overflow: maxLength == null
           ? overFlowFade ?? false
@@ -110,6 +114,7 @@ class IndexMinTitle extends StatelessWidget {
       style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: DynamicFontSize.font17(context),
+          // * MediaQuery.of(context).textScaleFactor,
           color: textColor ?? GlobalColor.black),
       overflow: overFlowFade ?? false ? TextOverflow.fade : null,
       maxLines: overFlowFade ?? false ? 1 : null,
@@ -208,7 +213,9 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                       ? NeverScrollableScrollPhysics()
                       : ScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return FutureImage(itemKey: index == 0 ? itemKey: null, Future.value(widget.items?[index]));
+                    return FutureImage(
+                        itemKey: index == 0 ? itemKey : null,
+                        Future.value(widget.items?[index]));
                   },
                   separatorBuilder: (_, $) {
                     return Container(
@@ -218,6 +225,7 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                   },
                 ))));
   }
+
   void _scrollListener() {
     final position = _scrollController.position;
     final viewportHeight = position.viewportDimension;
@@ -226,7 +234,11 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
     final centerPosition = position.pixels + viewportHeight / 2;
 
     // 가장 많이 보이는 아이템 계산
-    final visibleItemIndex = (centerPosition / ((itemKey.currentContext?.findRenderObject()) as RenderBox).size.height).floor();
+    final visibleItemIndex = (centerPosition /
+            ((itemKey.currentContext?.findRenderObject()) as RenderBox)
+                .size
+                .height)
+        .floor();
 
     // widget.indexNum을 가장 자연스러운 아이템 번호로 호출
     widget.indexNum(visibleItemIndex);
@@ -307,11 +319,13 @@ class SearchBox extends ConsumerStatefulWidget {
   final Color? backgroundColor;
   final Color? borderColor;
   final Function(String)? onChanged;
+  final FocusNode? focusNode;
 
   const SearchBox(
       {super.key,
       required this.hint,
       this.onSearch,
+      this.focusNode,
       this.backgroundColor,
       this.borderColor,
       this.onChanged});
@@ -332,6 +346,7 @@ class _SearchBox extends ConsumerState<SearchBox> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: widget.focusNode,
       controller: _controller,
       onFieldSubmitted: widget.onSearch,
       onChanged: widget.onChanged,
@@ -377,6 +392,7 @@ class CustomDropdown extends ConsumerWidget {
   final Color? bgColor;
   final String title; // 제목을 추가
   final bool isLoading;
+  final VoidCallback? onTap;
 
   const CustomDropdown({
     super.key,
@@ -387,6 +403,7 @@ class CustomDropdown extends ConsumerWidget {
     this.height = 40,
     this.bgColor,
     this.title = '',
+    this.onTap,
     this.isLoading = false,
   });
 
@@ -400,45 +417,50 @@ class CustomDropdown extends ConsumerWidget {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    if (onTap != null) {
+                      onTap!();
+                    }
+                    return Container(
+                        decoration: BoxDecoration(
+                          color: GlobalColor.white,
+                          borderRadius: BorderRadius.circular(15),
                         ),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 450,
-                            child: Scrollbar(
-                              thumbVisibility: true, // 항상 보이도록 설정
-                              thickness: 2,
-                              radius: Radius.circular(10),
-                              child: ListView(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Scrollbar(
+                            thumbVisibility: true, // 항상 보이도록 설정
+                            thickness: 2,
+                            radius: Radius.circular(10),
+                            child: ListView.builder(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 6),
+                                    vertical: 16),
                                 shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
-                                children: items.asMap().entries.map((entry) {
-                                  return InkWell(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(15),
-                                      child: Text(
-                                        entry.value,
-                                        style: TextStyle(
-                                          fontSize:
-                                              DynamicFontSize.font20(context),
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  return Material(
+                                      color: GlobalColor.white,
+                                      child: InkWell(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(vertical: 15,horizontal: 21),
+                                          child: Text(
+                                            items[index],
+                                            style: TextStyle(
+                                              fontSize: DynamicFontSize.font20(
+                                                  context),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      print('바꿀 값 ${entry.key}');
-                                      // ref.read(statusProvider.notifier).setStatus(entry.key);
-                                      onChanged(entry.key);
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                    },
-                                  );
-                                }).toList(),
-                              ),
-                            ),
+                                        onTap: () {
+                                          // ref.read(statusProvider.notifier).setStatus(entry.key);
+                                          onChanged(index);
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                        },
+                                      ));
+                                }),
                           ),
                         ));
                   });

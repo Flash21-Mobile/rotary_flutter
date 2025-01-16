@@ -35,12 +35,12 @@ class _MonthlyLetterListTile extends ConsumerState<MonthlyLetterListTile> {
               children: [
                 Container(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1, color: GlobalColor.dividerColor),
+                      border:
+                          Border.all(width: 1, color: GlobalColor.dividerColor),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15),
                         child: FutureImage(
                             viewModel.getMonthlyFileFirst(widget.data.id),
                             width: 120,
@@ -49,14 +49,19 @@ class _MonthlyLetterListTile extends ConsumerState<MonthlyLetterListTile> {
                   width: 15,
                 ),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  IndexTitle('${widget.data.title}'),
+                  Container(
+                    width: MediaQuery.of(context).size.width - 167,
+                    child: IndexTitle('${widget.data.title}'),
+                  ),
                   SizedBox(
                     height: 3,
                   ),
-                  IndexMinText(
-                    '${formatDateToFeature(widget.data.content)}',
-                    maxLength: 2,
-                    textColor: GlobalColor.indexColor,
+                  Container(
+                    width: MediaQuery.of(context).size.width - 167,
+                    child: IndexMinText(
+                      '${formatDateToFeature(widget.data.content)}',
+                      textColor: GlobalColor.indexColor,
+                    ),
                   ),
                   SizedBox(
                     height: 5,

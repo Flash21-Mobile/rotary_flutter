@@ -40,6 +40,8 @@ class _Widget extends ConsumerState<MonthlyLetter> {
 
   var isAdmin = false;
 
+  late int? monthlyLetterCount;
+
   void checkAdmin() async {
     var data = (await globalStorage.read(key: 'admin')) == 'admin';
 
@@ -59,23 +61,26 @@ class _Widget extends ConsumerState<MonthlyLetter> {
     super.initState();
     controller = ScrollController();
     query = '';
+    monthlyLetterCount = 0;
     initData();
 
     ref.read(MonthlyLetterProvider).monthlyLetterPostState = End();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(MonthlyLetterProvider).getAdvertiseCount();
       checkAdmin();
     });
   }
 
   Future<void> fetchData() async {
-    var userSearchListProvider = ref.read(MonthlyLetterProvider);
-    if (userSearchListProvider.monthlyLetterState is Loading && !hasMore)
+    var monthlyLetterViewModel = ref.read(MonthlyLetterProvider);
+    if (monthlyLetterViewModel.monthlyLetterState is Loading && !hasMore)
       return;
 
-    var loadState = await userSearchListProvider.getMonthlyLetterAll(
+    var loadState = await monthlyLetterViewModel.getMonthlyLetterAll(
         page: currentPage, query: query);
+
+    monthlyLetterCount =
+        await monthlyLetterViewModel.getMonthlyLetterAllCount(query: query) ?? 0;
 
     if (loadState is Success) {
       final List<ArticleModel> data = loadState.data;
@@ -163,7 +168,14 @@ class _Widget extends ConsumerState<MonthlyLetter> {
           },
         ),
       ),
-      body: Stack(children: [
+      body: Stack(alignment: Alignment.topCenter, children: [
+        Container(
+          height: 30,
+          padding: EdgeInsets.only(right: 15),
+          alignment: Alignment.topRight,
+          child: IndexMinText('총재월신 수: $monthlyLetterCount'),
+        ),
+
         Padding(
             padding: EdgeInsets.only(top: 30),
             child: CustomScrollView(
@@ -180,7 +192,7 @@ class _Widget extends ConsumerState<MonthlyLetter> {
                         color: GlobalColor.white,
                         child: SearchBox(
                             hint: '검색',
-                            onChanged: (data) {
+                            onSearch: (data) {
                               query = data;
                               initData();
                             })),
@@ -224,7 +236,7 @@ class _Widget extends ConsumerState<MonthlyLetter> {
                           }));
                         },
                       );
-                    }, //todo r: 에러일시 로직
+                    },
                     separatorBuilder: (_, $) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child:

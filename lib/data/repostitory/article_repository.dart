@@ -16,11 +16,14 @@ abstract class ArticleRepository {
     @Query('content') String? content,
     @Query('accountName') String? accountName,
     @Query('gradeName') String? gradeName,
+    @Query('account') int? account,
 
     @Query('board') int? board,
     @Query('page') int? page,
     @Query('size') int? size,
-    @Query('or') bool? or
+    @Query('or') bool? or,
+
+    @Query('orderBy') String? orderBy
   });
 
   @POST("/article")
@@ -31,8 +34,15 @@ abstract class ArticleRepository {
   @GET("/article/random")
   Future<List<ArticleModel>> getArticleRandom();
 
-  @GET("/article/count")
-  Future<int> getArticleCount();
+  @GET("/account/count")
+  Future<int> getArticleCount({
+    @Query('title') String? title,
+    @Query('content') String? content,
+    @Query('accountName') String? accountName,
+    @Query('gradeName') String? gradeName,
+    @Query('board') int? board,
+    @Query('or') bool? or,
+  });
 
   @DELETE('/article/{id}')
   Future deleteArticle(

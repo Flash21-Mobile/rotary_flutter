@@ -47,7 +47,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                 children: [
                   SizedBox(
                     height: 10,
-                  ),    //todo r: 인원수 홍보 상세에 rc 추가하기
+                  ),    //todo r: 홍보 수, 총재월신 수
                   Row(
                     children: [
                       Container(

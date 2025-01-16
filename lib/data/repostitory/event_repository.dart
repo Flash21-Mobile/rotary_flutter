@@ -22,3 +22,5 @@ abstract class EventRepository {
 //todo r: 사진 추가
 //todo r: 날짜 기간 추가
 //todo r: 상세에서 직책 안 나옴
+//todo r: 총재월신 순서
+//todo r:총재월신 방향 가로로 변경

@@ -33,6 +33,8 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
   late List<ArticleModel> items;
   late ScrollController controller;
 
+  late int advertiseCount;
+
   @override
   void initState() {
     super.initState();
@@ -41,17 +43,20 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
     query = '';
     currentPage = 0;
     hasMore = true;
+    advertiseCount = 0;
 
     fetchData();
-    ref.read(AdvertiseProvider).getAdvertiseCount();
   }
 
   Future<void> fetchData() async {
-    var userSearchListProvider = ref.read(AdvertiseProvider);
-    if (userSearchListProvider.advertiseState is Loading && !hasMore) return;
+    var advertiseProvider = ref.read(AdvertiseProvider);
+    if (advertiseProvider.advertiseState is Loading && !hasMore) return;
 
-    var loadState = await userSearchListProvider.getAdvertiseAll(
+    var loadState = await advertiseProvider.getAdvertiseAll(
         page: currentPage, query: query);
+
+    advertiseCount =
+        await advertiseProvider.getAdvertiseAllCount(query: query) ?? 0;
 
     if (loadState is Success) {
       final List<ArticleModel> data = loadState.data;
@@ -104,14 +109,17 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
             },
           ),
         ),
-        body:
-        Padding(
+        body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Stack(children: [
+            child: Stack(alignment: Alignment.topCenter, children: [
+              Container(
+                height: 30,
+                alignment: Alignment.topRight,
+                child: IndexMinText('홍보 수: $advertiseCount'),
+              ),
               Padding(
                   padding: EdgeInsets.only(top: 30),
-                  child:
-                  CustomScrollView(
+                  child: CustomScrollView(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       controller: controller,
@@ -124,7 +132,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                               color: GlobalColor.white,
                               child: SearchBox(
                                   hint: '검색',
-                                  onChanged: (data) {
+                                  onSearch: (data) {
                                     query = data;
                                     initData();
                                   })),
@@ -174,16 +182,16 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                                 height: 1, color: GlobalColor.dividerColor),
                           ),
                         )
-                      ]))])));
-              // Container(
-              //     color: GlobalColor.white,
-              //     height: 30,
-              //     alignment: Alignment.center,
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.end,
-              //       children: [
-              //         IndexMinText('전체 광고 수: ${viewModel.advertiseCount}'),
-              //       ],
-
+                      ]))
+            ])));
+    // Container(
+    //     color: GlobalColor.white,
+    //     height: 30,
+    //     alignment: Alignment.center,
+    //     child: Row(
+    //       mainAxisAlignment: MainAxisAlignment.end,
+    //       children: [
+    //         IndexMinText('전체 광고 수: ${viewModel.advertiseCount}'),
+    //       ],
   }
 }

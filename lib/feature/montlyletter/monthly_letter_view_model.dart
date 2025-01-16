@@ -64,11 +64,13 @@ class _ViewModel with ChangeNotifier {
     }
   }
 
-  var monthlyCount = 0;
-
-  Future getAdvertiseCount() async {
-    monthlyCount = await ArticleAPI().getAdvertiseCount() ?? 0; //todo r: 고치기
-    notifyListeners();
+  Future<int?> getMonthlyLetterAllCount({String? query}) async {
+    return await ArticleAPI().getMonthlyLetterCount(
+        title: query,
+        content: query,
+        accountName: query,
+        or: true,
+        gradeName: query);
   }
 
   LoadState monthlyLetterPostState = End();
@@ -90,7 +92,8 @@ class _ViewModel with ChangeNotifier {
           loadStateFunction<ArticleModel>(
               loadState: firstResponseState,
               onSuccess: (data) async {
-                monthlyLetterPostState = await FileAPI().postMonthlyLetterFile(data.id, file);
+                monthlyLetterPostState =
+                    await FileAPI().postMonthlyLetterFile(data.id, file);
                 notifyListeners();
               });
         },

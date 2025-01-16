@@ -11,7 +11,7 @@ import '../../userSearch/info/user_info_screen.dart';
 
 class FutureImage extends ConsumerStatefulWidget {
   const FutureImage(this.futureId,
-      {super.key, this.itemKey,this.width, this.height, this.onError});
+      {super.key, this.itemKey, this.width, this.height, this.onError});
 
   final Future<int?> futureId;
   final double? width;
@@ -113,83 +113,95 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
   Widget build(BuildContext context) {
     final viewModel = ref.read(UserSearchListProvider);
 
-    return InkWell(
-        onTap: () {
-          // ref.read(HomeProvider).pushCurrentWidget =
-          //     UserInfoScreen(id: widget.account.id ?? 0);
-
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return UserInfoScreen(account: widget.account);
-          }));
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: GlobalColor.white,
-              borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.all(15),
-          child: Row(
+    return Container(
+      decoration: BoxDecoration(
+          color: GlobalColor.white, borderRadius: BorderRadius.circular(20)),
+      padding: EdgeInsets.all(15),
+      child: Row(
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: FutureImage(
+                viewModel.getAccountFile(widget.account.id),
+                width: 120,
+                height: 160,
+              )),
+          SizedBox(
+            width: 15,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: FutureImage(
-                    viewModel.getAccountFile(widget.account.id),
-                    width: 120,
-                    height: 160,
-                  )),
+              Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                IndexThumbTitle(widget.account.name),
+                SizedBox(
+                  width: 5,
+                ),
+                IndexMinText(
+                  widget.account.grade?.name,
+                  overFlowFade: true,
+                )
+              ]),
               SizedBox(
-                width: 15,
+                height: 5,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    IndexThumbTitle(widget.account.name),
+              IndexMinText(widget.account.groupGrade?.name),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                  width: 165,
+                  child: Row(children: [
+                    IndexMinText(
+                      '직책',
+                      textColor: GlobalColor.black,
+                    ),
                     SizedBox(
                       width: 5,
                     ),
-                    IndexMinText(
-                      widget.account.grade?.name,
+                    Expanded(
+                        child: IndexMinTitle(
+                      widget.account.pastGrade?.name,
                       overFlowFade: true,
-                    )
-                  ]),
+                    ))
+                  ])),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                  width: 165,
+                  child: Row(children: [
+                    //todo r: 직책 배경주고 색상
+                    IndexMinText(
+                      '입회일',
+                      textColor: GlobalColor.black,
+                    ),
+                    // Container(
+                    //     padding: EdgeInsets.symmetric(
+                    //         horizontal: 6, vertical: 3),
+                    //     decoration: BoxDecoration(
+                    //         color: GlobalColor.primaryColor,
+                    //         borderRadius: BorderRadius.circular(100)),
+                    //     child: IndexMinText('입회일', textColor: GlobalColor.white,)),
                   SizedBox(
-                    height: 5,
+                    width: 5,
                   ),
-                  IndexText(widget.account.groupGrade?.name),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                      width: 165,
-                      child: Row(children: [
-                        IndexMinText('직책'),
-                        Spacer(),
-                        IndexMinTitle(widget.account.pastGrade?.name),
-                      ])),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                      width: 165,
-                      child: Row(children: [
-                        //todo r: 직책 배경주고 색상
-                        IndexMinText('입회일'),
-                        Spacer(),
-                        IndexMinTitle(
-                          widget.account.time != null
-                              ? formatDateTime(widget.account.time)
-                              : '',
-                        ),
-                      ])),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  IndexText('010-****-****'),
-                ],
-              )
+                  Expanded(
+                    child: IndexMinTitle(
+                      widget.account.time != null
+                          ? formatDateTime(widget.account.time)
+                          : '',
+                    ),)
+                  ])),
+              SizedBox(
+                height: 5,
+              ),
+              IndexText('010-****-****'),
             ],
-          ),
-        ));
+          )
+        ],
+      ),
+    );
   }
 
   String formatDateTime(String? dateTime) {

@@ -1,5 +1,6 @@
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:rotary_flutter/util/logger.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
 import '../model/account_model.dart';
@@ -16,14 +17,14 @@ class AccountAPI {
   late AccountRepository accountRepository;
 
   AccountAPI() {
-    // dio.interceptors.add(LogInterceptor(
-    //   request: true, // 요청 데이터 로깅
-    //   requestHeader: true, // 요청 헤더 로깅
-    //   requestBody: true, // 요청 바디 로깅
-    //   responseHeader: true, // 응답 헤더 로깅
-    //   responseBody: true, // 응답 바디 로깅
-    //   error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true, // 요청 데이터 로깅
+      requestHeader: true, // 요청 헤더 로깅
+      requestBody: true, // 요청 바디 로깅
+      responseHeader: true, // 응답 헤더 로깅
+      responseBody: true, // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
     accountRepository = AccountRepository(dio, baseUrl: serverUrl);
   }
 
@@ -36,7 +37,8 @@ class AccountAPI {
     int? page,
   }) async {
     try {
-      final result = await accountRepository.getAccount(cellphone, id, name, grade, region, page, 20);
+      final result = await accountRepository.getAccount(
+          cellphone, id, name, grade, region, page, accountListLength);
       print('success: $result');
 
       return Success(result);
@@ -46,9 +48,23 @@ class AccountAPI {
     }
   }
 
+  Future<int?> getAccountCount({
+    String? name,
+    String? grade,
+    String? region,
+  }) async {
+    try {
+      return await accountRepository.getAccountCount(name, grade, region);
+    } catch (e) {
+      Log.d('$e');
+      return null;
+    }
+  }
+
   Future<LoadState> putAccount(Account account) async {
     try {
-      final result = await accountRepository.putAccount(account.id??0, account);
+      final result =
+          await accountRepository.putAccount(account.id ?? 0, account);
       print('success: $result');
       return Success(result);
     } catch (e) {

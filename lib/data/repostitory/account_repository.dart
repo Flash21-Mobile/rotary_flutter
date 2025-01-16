@@ -20,6 +20,15 @@ abstract class AccountRepository {
     @Query('size') int? size,
   );
 
+  @GET("/account/count")
+  Future<int> getAccountCount(
+      @Query('name') String? name,
+      @Query('grade') String? grade,
+      @Query('region') String? region,
+      );
+
   @PUT("/account/{id}")
   Future<Account> putAccount(@Path("id") int id, @Body() Account account);
+
+
 }

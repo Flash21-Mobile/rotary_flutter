@@ -28,6 +28,7 @@ class AdvertiseViewModel with ChangeNotifier {
         title: query,
         content: query,
         accountName: query,
+        or: true,
         gradeName: query);
 
     if (temp == null) {
@@ -47,10 +48,12 @@ class AdvertiseViewModel with ChangeNotifier {
     }
   }
 
-  var advertiseCount = 0;
-
-  Future getAdvertiseCount() async {
-    advertiseCount = await ArticleAPI().getAdvertiseCount() ?? 0;
-    notifyListeners();
+  Future<int?> getAdvertiseAllCount({String? query}) async {
+    return await ArticleAPI().getAdvertiseCount(
+        title: query,
+        content: query,
+        accountName: query,
+        or: true,
+        gradeName: query);
   }
 }

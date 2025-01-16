@@ -62,10 +62,11 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
   }
 }
 
-class LoadStateWidget extends StatelessWidget {
+class LoadStateWidget<T> extends StatelessWidget {
   final Widget? Function()? loadingWidget;
-  final Widget Function(dynamic) successWidget;
+  final Widget Function(T) successWidget;
   final Widget? Function(Object)? errorWidget;
+  final Widget? elseWidget;
 
   final LoadState loadState;
 
@@ -74,7 +75,8 @@ class LoadStateWidget extends StatelessWidget {
       required this.loadState,
       this.loadingWidget,
       required this.successWidget,
-      this.errorWidget});
+      this.errorWidget,
+      this.elseWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class LoadStateWidget extends StatelessWidget {
           : loadingWidget != null
               ? loadingWidget!()!
               : placeHolder,
-      _ => const SizedBox()
+      _ => elseWidget ?? SizedBox()
     };
   }
 }
@@ -193,9 +195,8 @@ void showDismissDialog(
 }
 
 void loadStateFunction<T>(
-    {
-      required LoadState loadState,
-      required Function(T) onSuccess,
+    {required LoadState loadState,
+    required Function(T) onSuccess,
     Function()? onLoading,
     Function(Object)? onError}) {
   if (loadState is Success) {

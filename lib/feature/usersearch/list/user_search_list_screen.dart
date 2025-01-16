@@ -32,57 +32,85 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   late int _selectedGrade;
   late int _selectedRegion;
   final TextEditingController _searchController = TextEditingController();
+  late GlobalKey itemKey;
+
+  late FocusNode focusNode;
 
   List<Account> items = [];
   String query = '';
   bool hasMore = true;
   int currentPage = 0;
 
+  late int accountCount;
+
   @override
   void initState() {
     super.initState();
     _selectedGrade = 0;
-    _selectedRegion = widget.initialRegion??0;
+    _selectedRegion = widget.initialRegion ?? 0;
+    accountCount = 0;
+    focusNode = FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchData();
-    });
+    itemKey = GlobalKey();
+    initData();
   }
 
   // 서버에서 데이터를 페이징으로 받아오는 함수
-  Future<void> fetchData() async {
-    var userSearchListProvider = ref.read(UserSearchListProvider);
-    if (userSearchListProvider.userListState is Loading && !hasMore) return;
+  Future<void> fetchData(int currentPage) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      var userSearchListProvider = ref.read(UserSearchListProvider);
+      if (userSearchListProvider.userListState is Loading && !hasMore) return;
 
+      var loadState = await userSearchListProvider.getAccountList(
+          page: currentPage,
+          grade: AccountGrade.all[_selectedGrade] == '전체RC'
+              ? null
+              : AccountGrade.all[_selectedGrade],
+          region: AccountRegion.all[_selectedRegion] == '전체'
+              ? null
+              : AccountRegion.all[_selectedRegion],
+          name: query);
 
-    var loadState = await userSearchListProvider.getAccountList(
-        page: currentPage,
-        grade: AccountGrade.all[_selectedGrade] == '전체RC' ? null: AccountGrade.all[_selectedGrade],
-        region: AccountRegion.all[_selectedRegion] == '전체' ? null: AccountRegion.all[_selectedRegion],
-        name: query);
+      accountCount = await userSearchListProvider.getAccountListCount(
+              grade: AccountGrade.all[_selectedGrade] == '전체RC'
+                  ? null
+                  : AccountGrade.all[_selectedGrade],
+              region: AccountRegion.all[_selectedRegion] == '전체'
+                  ? null
+                  : AccountRegion.all[_selectedRegion],
+              name: query) ??
+          0;
 
-    print('hello: ${loadState}');
-
-    if (loadState is Success) {
-      final List<Account> data = loadState.data;
-      print('hello: ioio ${loadState.data}');
-
-      if (data.isNotEmpty) {
-        setState(() {
-          items.addAll(data);
-          currentPage++;
-        });
+      if (loadState is Success) {
+        final List<Account> data = loadState.data;
+        if (hasMore) {
+          Log.d('helloi: add data: ${data.length}');
+          if (data.isNotEmpty) {
+            setState(() {
+              items.addAll(data);
+            });
+            if (data.length != accountListLength) {
+              setState(() {
+                hasMore = false;
+              });
+            }
+          } else {
+            setState(() {
+              hasMore = false;
+            });
+          }
+        } else {
+          setState(() {
+            hasMore = false;
+          });
+          Log.d('hello: else $hasMore');
+        }
       } else {
         setState(() {
           hasMore = false;
         });
       }
-    } else {
-      setState(() {
-        hasMore = false;
-      });
-      print('hello: else $hasMore');
-    }
+    });
   }
 
   Future<void> initData() async {
@@ -91,9 +119,9 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
     if (userSearchListProvider.userListState is Loading && !hasMore) return;
 
     setState(() {
+      hasMore = true;
       currentPage = 0;
       items = [];
-      hasMore = true;
     });
   }
 
@@ -113,8 +141,6 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
   Widget build(BuildContext context) {
     var viewModel = ref.watch(UserSearchListProvider);
 
-    print('isLoading is ${viewModel.userListState}');
-
     return Scaffold(
         backgroundColor: GlobalColor.indexBoxColor,
         appBar: AppBar(
@@ -128,8 +154,13 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
           ),
         ),
         body: Column(children: [
+          SizedBox(height: 5,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [IndexMinText('회원 수: $accountCount'), SizedBox(width: 15,)],
+          ),
           SizedBox(
-            height: 15,
+            height: 5,
           ),
           Container(
               padding: EdgeInsets.symmetric(
@@ -139,20 +170,24 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                 children: [
                   CustomDropdown(
                     isLoading: viewModel.userListState is Loading,
-                      items: AccountRegion.all
-                          .map((value) => value)
-                          .toList(),
-                      selectedValue: _selectedRegion,
-                      onChanged: (value) {
-                        if (value != null && value != _selectedRegion) {
-                          setState(() => _selectedRegion = value);
-                          initData();
-                        }
-                      }),
+                    items: AccountRegion.all.map((value) => value).toList(),
+                    selectedValue: _selectedRegion,
+                    onChanged: (value) {
+                      if (value != null && value != _selectedRegion) {
+                        setState(() => _selectedRegion = value);
+                        initData();
+                      }
+                    },
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        focusNode.unfocus();
+                      });
+                    },
+                  ),
 
                   SizedBox(width: 10),
                   CustomDropdown(
-                    isLoading: viewModel.userListState is Loading,
+                      isLoading: viewModel.userListState is Loading,
                       items: AccountGrade.all.map((value) => value).toList(),
                       selectedValue: _selectedGrade,
                       onChanged: (value) {
@@ -160,6 +195,11 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                           setState(() => _selectedGrade = value);
                           initData();
                         }
+                      },
+                      onTap: () {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          focusNode.unfocus();
+                        });
                       }),
 
                   SizedBox(width: 10),
@@ -168,12 +208,20 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
                       child: Container(
                     height: 40,
                     child: SearchBox(
+                      focusNode: focusNode,
                       hint: '회원검색',
                       borderColor: GlobalColor.transparent,
                       backgroundColor: GlobalColor.white,
-                      onSearch: (queryData){
-                        query = queryData;
+                      onSearch: (queryData) {
+                        viewModel.setUserListState = End();
                         initData();
+                        query = queryData;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          focusNode.unfocus();
+                        });
+                      },
+                      onChanged: (queryData){
+
                       },
                     ),
                   )) //
@@ -184,24 +232,41 @@ class _UserSearchLIstScreen extends ConsumerState<UserSearchListScreen> {
           ),
           Expanded(
               child: ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                itemCount: items.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == items.length) {
-                    if (viewModel.userListState is Loading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (hasMore) {
-                      fetchData();
-                      return const Center(child: CircularProgressIndicator());
-                    } else {
-                      return Container(
-                      padding: EdgeInsets.only(bottom: 30,),
-                          child:Text('더 이상 검색된 회원이 없습니다', textAlign: TextAlign.center,));
-                    }
-                  }
-                  return UserSearchListTile(account: items[index]);
-                },    //todo r: 애경사, 회원검색 빼기
-                separatorBuilder: (_, $) => const SizedBox(height: 10),
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            itemCount: items.length + 1,
+            itemBuilder: (context, index) {
+              if (index == items.length) {
+                if (viewModel.userListState is Loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (hasMore) {
+                  fetchData(currentPage);
+                  currentPage++;
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return Container(
+                      padding: EdgeInsets.only(
+                        bottom: 30,
+                      ),
+                      child: Text(
+                        '더 이상 검색된 회원이 없습니다',
+                        textAlign: TextAlign.center,
+                      ));
+                }
+              }
+              return InkWell(
+                  onTap: () {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      focusNode.unfocus();
+                    });
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return UserInfoScreen(account: items[index]);
+                    }));
+                  },
+                  child: UserSearchListTile(
+                      key: index == 0 ? itemKey : null, account: items[index]));
+            },
+            separatorBuilder: (_, $) => const SizedBox(height: 10),
 
             // errorWidget: const Expanded(
             //     child: Column(

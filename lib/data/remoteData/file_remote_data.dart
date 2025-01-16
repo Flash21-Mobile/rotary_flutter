@@ -23,14 +23,14 @@ class FileAPI {
   late FileRepository repository;
 
   FileAPI() {
-    dio.interceptors.add(LogInterceptor(
-      request: true, // 요청 데이터 로깅
-      requestHeader: true, // 요청 헤더 로깅
-      requestBody: true, // 요청 바디 로깅
-      responseHeader: true, // 응답 헤더 로깅
-      responseBody: true, // 응답 바디 로깅
-      error: true, // 에러 로깅
-    ));
+    // dio.interceptors.add(LogInterceptor(
+    //   request: true, // 요청 데이터 로깅
+    //   requestHeader: true, // 요청 헤더 로깅
+    //   requestBody: true, // 요청 바디 로깅
+    //   responseHeader: true, // 응답 헤더 로깅
+    //   responseBody: true, // 응답 바디 로깅
+    //   error: true, // 에러 로깅
+    // ));
     repository = FileRepository(dio, baseUrl: serverUrl);
   }
 
@@ -104,6 +104,4 @@ class FileAPI {
     await document.close();
     return imageFiles;
   }
-
-  //todo r: 총재월신 순서 총재월신 방향 가로로 변경
 }

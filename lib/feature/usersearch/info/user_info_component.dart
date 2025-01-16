@@ -16,21 +16,21 @@ class UserInfoIndex extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7),
+    return Container(
+        height: 40,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+          horizontal: 30,
+        ),
         child: Row(
           children: [
-            Expanded(
-              flex: 3,
-                child: Row(
-              children: [
-                SizedBox(width: 8,),
-                IndexTitle(indexName, textColor: GlobalColor.greyFontColor,)],
-            )),
-            SizedBox(width: 15,),
-            Expanded(
-                flex: 9,
-                child: IndexTitle(index ?? ''))
+            Container(
+                width: 90,
+                child: IndexTitle(
+                  indexName,
+                  textColor: GlobalColor.greyFontColor,
+                )),
+            Expanded(child: IndexTitle(index ?? ''))
           ],
         ));
   }

@@ -27,10 +27,12 @@ class _ArticleRepository implements ArticleRepository {
     String? content,
     String? accountName,
     String? gradeName,
+    int? account,
     int? board,
     int? page,
     int? size,
     bool? or,
+    String? orderBy,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -38,10 +40,12 @@ class _ArticleRepository implements ArticleRepository {
       r'content': content,
       r'accountName': accountName,
       r'gradeName': gradeName,
+      r'account': account,
       r'board': board,
       r'page': page,
       r'size': size,
       r'or': or,
+      r'orderBy': orderBy,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
@@ -145,9 +149,24 @@ class _ArticleRepository implements ArticleRepository {
   }
 
   @override
-  Future<int> getArticleCount() async {
+  Future<int> getArticleCount({
+    String? title,
+    String? content,
+    String? accountName,
+    String? gradeName,
+    int? board,
+    bool? or,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'title': title,
+      r'content': content,
+      r'accountName': accountName,
+      r'gradeName': gradeName,
+      r'board': board,
+      r'or': or,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<int>(Options(
@@ -157,7 +176,7 @@ class _ArticleRepository implements ArticleRepository {
     )
         .compose(
           _dio.options,
-          '/article/count',
+          '/account/count',
           queryParameters: queryParameters,
           data: _data,
         )

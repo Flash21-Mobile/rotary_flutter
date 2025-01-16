@@ -18,19 +18,19 @@ class ArticleAPI {
   late ArticleRepository repository;
 
   ArticleAPI() {
-    // dio.interceptors.add(LogInterceptor(
-    // request: true,
-    // // 요청 데이터 로깅
-    // requestHeader: true,
-    // // 요청 헤더 로깅
-    // requestBody: true,
-    // // 요청 바디 로깅
-    // responseHeader: true,
-    // // 응답 헤더 로깅
-    // responseBody: true,
-    // // 응답 바디 로깅
-    // error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true,
+      // 요청 데이터 로깅
+      requestHeader: true,
+      // 요청 헤더 로깅
+      requestBody: true,
+      // 요청 바디 로깅
+      responseHeader: true,
+      // 응답 헤더 로깅
+      responseBody: true,
+      // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
     repository = ArticleRepository(dio, baseUrl: serverUrl);
   }
 
@@ -39,17 +39,21 @@ class ArticleAPI {
       String? title,
       String? content,
       String? accountName,
-      String? gradeName}) async {
+      String? gradeName,
+      bool? or,
+      int? account}) async {
     try {
       final result = await repository.getArticle(
           board: 1,
           page: page,
-          size: 10,
+          size: articleListLength,
           title: title,
           content: content,
           accountName: accountName,
           gradeName: gradeName,
-          or: true);
+          account: account,
+          or: or,
+          orderBy: 'date');
       return result;
     } catch (e) {
       return null;
@@ -65,9 +69,20 @@ class ArticleAPI {
     }
   }
 
-  Future<int?> getAdvertiseCount() async {
+  Future<int?> getAdvertiseCount(
+      {String? title,
+      String? content,
+      String? accountName,
+      String? gradeName,
+      bool? or}) async {
     try {
-      final result = await repository.getArticleCount();
+      final result = await repository.getArticleCount(
+          board: 1,
+          title: title,
+          content: content,
+          accountName: accountName,
+          gradeName: gradeName,
+          or: or);
       return result;
     } catch (e) {
       return null;
@@ -78,7 +93,13 @@ class ArticleAPI {
       int? page, String? title, String? content) async {
     try {
       final result = await repository.getArticle(
-          board: 3, page: page, size: 10, title: title, content: content, or: true);
+          board: 3,
+          page: page,
+          size: articleListLength,
+          title: title,
+          content: content,
+          or: true,
+          orderBy: 'date');
       return result;
     } catch (e) {
       return null;
@@ -97,6 +118,26 @@ class ArticleAPI {
       return Success(data);
     } on DioException catch (e) {
       return Error(e);
+    }
+  }
+
+  Future<int?> getMonthlyLetterCount(
+      {String? title,
+      String? content,
+      String? accountName,
+      String? gradeName,
+      bool? or}) async {
+    try {
+      final result = await repository.getArticleCount(
+          board: 3,
+          title: title,
+          content: content,
+          accountName: accountName,
+          gradeName: gradeName,
+          or: or);
+      return result;
+    } catch (e) {
+      return null;
     }
   }
 

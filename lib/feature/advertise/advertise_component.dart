@@ -118,10 +118,12 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
 }
 
 class AdvertiseListTile extends ConsumerStatefulWidget {
-  const AdvertiseListTile({super.key, required this.data, required this.onTap});
+  const AdvertiseListTile({super.key, required this.data, required this.onTap, this.indexWidth = 145});
 
   final ArticleModel data;
   final VoidCallback onTap;
+
+  final double indexWidth;
 
   @override
   ConsumerState<AdvertiseListTile> createState() {
@@ -157,7 +159,7 @@ class _AdvertiseListTile extends ConsumerState<AdvertiseListTile> {
                       width: MediaQuery
                           .of(context)
                           .size
-                          .width - 145,
+                          .width - widget.indexWidth,
                       child: IndexMinText(
                         '${widget.data.content}',
                         maxLength: 2,

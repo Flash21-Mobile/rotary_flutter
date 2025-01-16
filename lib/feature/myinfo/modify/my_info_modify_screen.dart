@@ -21,6 +21,7 @@ import '../../myInfo/modify/my_info_modify_view_model.dart';
 import '../my_info_view_model.dart';
 
 class MyInfoModifyScreen extends ConsumerStatefulWidget {
+  //todo r: 저장 후 안 넘어감
   const MyInfoModifyScreen({super.key});
 
   @override
@@ -32,6 +33,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   var birthDateController = TextEditingController();
   var enNameController = TextEditingController();
   var memoController = TextEditingController();
+
+  var emailController = TextEditingController();
+  var faxController = TextEditingController();
 
   var workNameController = TextEditingController();
   var workPositionNameController = TextEditingController();
@@ -55,6 +59,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           birthDateController.text = account.birthDate ?? '';
           enNameController.text = account.englishName ?? '';
           memoController.text = account.memo ?? '';
+
+          emailController.text = account.faxNumber ?? '';
+          faxController.text = account.faxNumber ?? '';
 
           workNameController.text = account.workName ?? '';
           workPositionNameController.text = account.workPositionName ?? '';
@@ -122,6 +129,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data.birthDate = birthDateController.text;
                     data.englishName = enNameController.text;
                     data.memo = memoController.text;
+
+                    data.email = emailController.text;
+                    data.faxNumber = faxController.text;
 
                     data.workName = workNameController.text;
                     data.workPositionName = workPositionNameController.text;
@@ -315,6 +325,18 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                             MyInfoModifyTextField(
                                 indexTitle: '영문명',
                                 indexController: enNameController),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            MyInfoModifyTextField(
+                                indexTitle: '이메일',
+                                indexController: emailController),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            MyInfoModifyTextField(
+                                indexTitle: '팩스',
+                                indexController: faxController),
                             SizedBox(
                               height: 15,
                             ),

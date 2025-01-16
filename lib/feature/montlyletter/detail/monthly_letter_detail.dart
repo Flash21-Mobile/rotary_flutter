@@ -39,7 +39,10 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
   void initState() {
     super.initState();
 
-    ref.read(MonthlyLetterProvider).getMonthlyFiles(widget.data.id);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(MonthlyLetterProvider).getMonthlyFiles(widget.data.id);
+      checkAdmin();
+    });
   }
 
   @override
@@ -88,7 +91,6 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
                 : null
           ],
         ),
-        //todo r: 팝업 후에 사진 다시 로딩 고치기
         backgroundColor: GlobalColor.black,
         successBody: (data) {
           data as List<int?>?;

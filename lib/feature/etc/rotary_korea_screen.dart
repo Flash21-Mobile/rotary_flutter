@@ -50,7 +50,7 @@ class _RotaryKoreaScreen extends ConsumerState<RotaryKoreaScreen> {
                    if(await canLaunchUrl(iOSUrl)){
                      await launchUrl(iOSUrl);
                    }else {
-                     Fluttertoast.showToast(msg: '앱 스토어를 열 수 없습니다');    //todo rotary:: 왜 안되냐...
+                     Fluttertoast.showToast(msg: '앱 스토어를 열 수 없습니다');
                    }
                  },
                  child:Image.asset('asset/images/korea_rotary_ios_image.png',width: double.infinity,)
