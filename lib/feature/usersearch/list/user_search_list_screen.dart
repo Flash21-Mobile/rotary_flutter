@@ -10,7 +10,6 @@ import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_mod
 import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/account_region.dart';
-import 'package:rotary_flutter/util/model/account_grade.dart';
 
 import '../../../data/model/account_model.dart';
 import '../../../util/global_color.dart';
@@ -31,6 +30,7 @@ class UserSearchListScreen extends ConsumerStatefulWidget {
 class _ViewModel extends ConsumerState<UserSearchListScreen> {
   late int _selectedGrade;
   late int _selectedRegion;
+
   final TextEditingController _searchController = TextEditingController();
   late GlobalKey itemKey;
 
@@ -63,22 +63,21 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
 
       var loadState = await userSearchListProvider.getAccountList(
           page: currentPage++,
-          grade: AccountGrade.all[_selectedGrade] == '전체RC'
+          grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].contains('전체')
               ? null
-              : AccountGrade.all[_selectedGrade],
-          region: AccountRegion.all[_selectedRegion] == '전체'
+              : AccountRegion.regions[_selectedRegion].grades[_selectedGrade],
+          region: AccountRegion.regions[_selectedRegion].name == '전체'
               ? null
-              : AccountRegion.all[_selectedRegion],
+              : AccountRegion.regions[_selectedRegion].name,
           name: query);
 
       accountCount = await userSearchListProvider.getAccountListCount(
-              grade: AccountGrade.all[_selectedGrade] == '전체RC'
+              grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].contains('전체')
                   ? null
-                  : AccountGrade.all[_selectedGrade],
-              region: AccountRegion.all[_selectedRegion] == '전체'
+                  : AccountRegion.regions[_selectedRegion].grades[_selectedGrade],
+              region: AccountRegion.regions[_selectedRegion].name == '전체'
                   ? null
-                  : AccountRegion.all[_selectedRegion],
-              name: query) ??
+                  : AccountRegion.regions[_selectedRegion].name, name: query) ??
           0;
 
       if (loadState is Success) {
@@ -148,12 +147,19 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
           actions: [
             Center(
                 child: Row(children: [
-                  Icon(Icons.account_box_rounded, color: GlobalColor.greyFontColor,size: 20,),
-                  IndexMinText('$accountCount', textColor: GlobalColor.greyFontColor,),
-                  SizedBox(
-                    width: 15,
-                  )
-                ]))
+              Icon(
+                Icons.account_box_rounded,
+                color: GlobalColor.greyFontColor,
+                size: 20,
+              ),
+              IndexMinText(
+                '$accountCount',
+                textColor: GlobalColor.greyFontColor,
+              ),
+              SizedBox(
+                width: 15,
+              )
+            ]))
           ],
         ),
         body: Column(children: [
@@ -168,11 +174,18 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                 children: [
                   CustomDropdown(
                     isLoading: viewModel.userListState is Loading,
-                    items: AccountRegion.all.map((value) => value).toList(),
+                    items: AccountRegion.regions
+                        .map((value) => value.name)
+                        .toList(),
                     selectedValue: _selectedRegion,
                     onChanged: (value) {
                       if (value != null && value != _selectedRegion) {
-                        setState(() => _selectedRegion = value);
+                        setState(() {
+                          if(_selectedRegion != value){
+                            _selectedRegion = value;
+                            _selectedGrade = 0;
+                          }
+                        });
                         initData();
                       }
                     },
@@ -186,7 +199,9 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                   SizedBox(width: 10),
                   CustomDropdown(
                       isLoading: viewModel.userListState is Loading,
-                      items: AccountGrade.all.map((value) => value).toList(),
+                      items: AccountRegion.regions[_selectedRegion].grades
+                          .map((value) => value)
+                          .toList(),
                       selectedValue: _selectedGrade,
                       onChanged: (value) {
                         if (value != null && value != _selectedGrade) {
@@ -218,15 +233,13 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                           focusNode.unfocus();
                         });
                       },
-                      onChanged: (queryData){
-
-                      },
+                      onChanged: (queryData) {},
                     ),
                   )) //
                 ],
               )),
           SizedBox(
-            height:10,
+            height: 10,
           ),
           Expanded(
               child: ListView.separated(

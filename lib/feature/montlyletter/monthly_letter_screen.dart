@@ -165,7 +165,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
                             bottom: 30,
                           ),
                           child: Text(
-                            '더 이상 검색된 총재월신이 없습니다',
+                            '더 이상 검색된 목록이 없습니다',
                             textAlign: TextAlign.center,
                           ));
                     }

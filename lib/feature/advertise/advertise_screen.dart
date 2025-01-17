@@ -110,7 +110,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                                   bottom: 30,
                                 ),
                                 child: Text(
-                                  '더 이상 검색된 홍보물이 없습니다',
+                                  '더 이상 검색된 목록이 없습니다',
                                   textAlign: TextAlign.center,
                                 ));
                           }

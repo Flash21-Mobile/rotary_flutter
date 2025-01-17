@@ -215,7 +215,7 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                   itemBuilder: (context, index) {
                     return FutureImage(
                         itemKey: index == 0 ? itemKey : null,
-                   Future.value(widget.items?[index]));
+                        Future.value(widget.items?[index]));
                   },
                   separatorBuilder: (_, $) {
                     return Container(
@@ -296,7 +296,7 @@ class _PageablePinchView extends ConsumerState<PageablePinchView> {
                       minScale: 1.0,
                       maxScale: 6.0,
                       child: FutureImage(
-                      Future.value(widget.items?[index]),
+                        Future.value(widget.items?[index]),
                       ));
                 })));
   }
@@ -410,6 +410,7 @@ class CustomDropdown extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     print('isLoading $isLoading');
+    var scrollController = ScrollController();
 
     return GestureDetector(
       onTap: !isLoading
@@ -419,35 +420,54 @@ class CustomDropdown extends ConsumerWidget {
                   builder: (BuildContext context) {
                     if (onTap != null) {
                       onTap!();
-                    }
+                    } //todo r: cach manager vs sqlite
+                    Future.delayed(Duration.zero, () {
+                      Log.d('messaged hello: $selectedValue');
+                      scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300
+                          ? 0
+                          : (selectedValue ?? 1) * 51 - 300
+                      ).toDouble());
+                    });
+
                     return Container(
-                        decoration: BoxDecoration(
+                        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                          alignment: Alignment.center,
+                            child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                        child: Container(
                           color: GlobalColor.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
                           child: Scrollbar(
                             thumbVisibility: true, // 항상 보이도록 설정
                             thickness: 2,
                             radius: Radius.circular(10),
-                            child: ListView.builder(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 16),
-                                shrinkWrap: true, // ListView의 크기를 내용에 맞게 조정
+                            child: ListView.separated(
+                                controller: scrollController,
+                                separatorBuilder: (context, index) {
+                                  return Container(
+                                    height: 1,
+                                    color: GlobalColor.dividerColor,
+                                  );
+                                },
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                shrinkWrap: true,
+                                // ListView의 크기를 내용에 맞게 조정
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
                                   return Material(
                                       color: GlobalColor.white,
                                       child: InkWell(
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(vertical: 15,horizontal: 21),
+                                          height: 50,
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.only(left: 45),
                                           child: Text(
+                                            // todo r: 닫기 추가하기
                                             items[index],
                                             style: TextStyle(
-                                              fontSize: DynamicFontSize.font20(
+                                              fontWeight: selectedValue == index
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              fontSize: DynamicFontSize.font24(
                                                   context),
                                             ),
                                           ),
@@ -462,7 +482,7 @@ class CustomDropdown extends ConsumerWidget {
                                       ));
                                 }),
                           ),
-                        ));
+                        )));
                   });
             }
           : () {
@@ -481,7 +501,8 @@ class CustomDropdown extends ConsumerWidget {
             Text(
               items[selectedValue ?? 0],
               style: TextStyle(
-                fontSize: DynamicFontSize.font16(context),
+                fontWeight: FontWeight.w800,
+                fontSize: DynamicFontSize.font17(context),
                 color: GlobalColor.darkGreyFontColor,
               ),
             ),

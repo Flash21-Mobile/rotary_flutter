@@ -52,7 +52,8 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
     return LoadStateScaffold(
         loadState: viewModel.monthlyLetterFilesState,
         appBar: AppBar(
-          title: Text('총재월신'),
+          title: Text(''
+              '총재월신'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
