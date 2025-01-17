@@ -11,13 +11,19 @@ import '../../userSearch/info/user_info_screen.dart';
 
 class FutureImage extends ConsumerStatefulWidget {
   const FutureImage(this.futureId,
-      {super.key, this.itemKey, this.width, this.height, this.onError});
+      {super.key,
+      this.itemKey,
+      this.width,
+      this.height,
+      this.onError,
+      this.loadingWidget});
 
   final Future<int?> futureId;
   final double? width;
   final GlobalKey? itemKey;
   final double? height;
   final Widget? onError;
+  final Widget? loadingWidget;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NetworkImage();
@@ -72,12 +78,23 @@ class _NetworkImage extends ConsumerState<FutureImage>
           if (progress == null) {
             return child;
           } else {
-            return Center(child: CircularProgressIndicator());
+            return widget.loadingWidget ??
+                Container(
+                    width: widget.width,
+                    height: widget.height,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ));
           }
         },
-        errorBuilder: (context, error, stackTrace) => Center(
-              child: CircularProgressIndicator(),
-            ));
+        errorBuilder: (context, error, stackTrace) =>
+            widget.onError ??
+            Container(
+                width: widget.width,
+                height: widget.height,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                )));
 
     return imagePK != -3999021222202
         ? imagePK != null
@@ -90,12 +107,13 @@ class _NetworkImage extends ConsumerState<FutureImage>
                     : image,
               )
             : placeHolder
-        : Container(
-            width: widget.width,
-            height: widget.height,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ));
+        : widget.loadingWidget ??
+            Container(
+                width: widget.width,
+                height: widget.height,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ));
   }
 }
 
@@ -133,7 +151,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                IndexThumbTitle(widget.account.name),
+                IndexMaxTitle(widget.account.name),
                 SizedBox(
                   width: 5,
                 ),

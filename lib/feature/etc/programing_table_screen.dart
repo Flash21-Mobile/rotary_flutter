@@ -29,10 +29,9 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
           },
         ),
       ),
-      body:ScrollablePinchView(child: Padding(padding: EdgeInsets.symmetric(horizontal: 15),child:  dataWidget())),
+      body: dataWidget(),
     );
   }
-
 
   Widget dataWidget() {
     // 데이터 정의
@@ -99,50 +98,36 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
       ],
     ];
 
-    return Column(
-      children: [
-        ...data.map((indexData) {
-          return Column(
-            children: [
-              Container(height: 0.5, color: GlobalColor.black),
-              Row(
+    return ListPinchView(
+        padding: EdgeInsets.only(bottom: 100),
+        itemBuilder: (context, index) {
+          return Container(
+              height: 70,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              alignment: Alignment.center,
+              color: index % 2 == 0 ? GlobalColor.white : GlobalColor.indexBoxColor,
+              child: Row(children: [
+            Container(
+              alignment: Alignment.center,
+              width: 30,
+              child: IndexText(data[index][0]),
+            ),
+            SizedBox(width: 5),
+            Container(
+              width: 100,
+              child: IndexMinText(data[index][1]),
+            ),
+            SizedBox(width: 5),
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 30,
-                    child: IndexText(indexData[0]),
-                  ),
-                  SizedBox(width: 5),
-                  Container(
-                    color: GlobalColor.black,
-                    width: 0.5,
-                    height: 80,
-                  ),
-                  SizedBox(width: 5),
-                  Container(
-                    width: 100,
-                    child: IndexText(indexData[1]),
-                  ),
-                  SizedBox(width: 5),
-                  Container(
-                    color: GlobalColor.black,
-                    height: 80,
-                    width: 0.5,
-                  ),
-                  SizedBox(width: 5),
-                  Flexible(
-                    child: Column(
-                      children: [
-                        IndexText(indexData[2]),
-                      ],
-                    ),
-                  ),
+                  IndexMinText(data[index][2]),
                 ],
               ),
-            ],
-          );
-        }),
-      ],
-    );
+            )
+          ]));
+        },
+        itemCount: data.length);
   }
-  }
+}

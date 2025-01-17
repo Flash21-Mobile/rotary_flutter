@@ -1,92 +1,174 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/fontSize.dart';
 import '../../util/global_color.dart';
 import '../userSearch/list/user_search_list_component.dart';
 
-class IndexText extends StatelessWidget {
-  final String? text;
-  final Color? textColor;
-  final bool? overFlowFade;
-  final TextAlign? textAlign;
-
-  const IndexText(this.text,
-      {super.key, this.textColor, this.overFlowFade, this.textAlign});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text ?? '',
-      textAlign: textAlign,
-      style: TextStyle(
-          fontSize: DynamicFontSize.font21(context),
-          //* MediaQuery.of(context).textScaleFactor,
-          color: textColor ?? GlobalColor.black),
-      overflow: overFlowFade ?? false ? TextOverflow.fade : null,
-      maxLines: overFlowFade ?? false ? 1 : null,
-      softWrap: overFlowFade ?? false ? false : null,
-    );
-  }
-}
-
-class IndexTitle extends StatelessWidget {
-  final String? text;
-  final Color? textColor;
-
-  const IndexTitle(this.text, {super.key, this.textColor});
+class IndexText extends IndexInterface {
+  const IndexText(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
-      text ?? '',
-      style: TextStyle(
-          fontSize: DynamicFontSize.font21(context),
-          // * MediaQuery.of(context).textScaleFactor,,
-          color: textColor ?? GlobalColor.black,
-          fontWeight: FontWeight.bold),
-    );
-  }
-}
-
-class IndexThumbTitle extends StatelessWidget {
-  final String? text;
-  final Color? textColor;
-  final TextAlign? textAlign;
-
-  const IndexThumbTitle(this.text, {super.key, this.textColor, this.textAlign});
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font21(context);
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
-      text ?? '',
-      textAlign: textAlign,
-      style: TextStyle(
-          fontSize: DynamicFontSize.font25(context),
-          // * MediaQuery.of(context).textScaleFactor,
-          color: textColor ?? GlobalColor.black,
-          fontWeight: FontWeight.bold),
-    );
-  }
+  FontWeight get fontWeight => FontWeight.normal;
 }
 
-class IndexMinText extends StatelessWidget {
-  final String? text;
+class IndexTitle extends IndexInterface {
+  const IndexTitle(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font21(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.bold;
+}
+
+class IndexMaxTitle extends IndexInterface {
+  const IndexMaxTitle(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font25(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.bold;
+}
+
+class IndexThumbTitle extends IndexInterface {
+  const IndexThumbTitle(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font30(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.bold;
+}
+
+class IndexMinText extends IndexInterface {
+  const IndexMinText(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font17(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.normal;
+}
+
+class IndexMinTitle extends IndexInterface {
+  const IndexMinTitle(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font17(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.bold;
+}
+
+class IndexMicroText extends IndexInterface {
+  const IndexMicroText(
+    super.data, {
+    super.key,
+    super.textColor,
+    super.overFlowFade,
+    super.maxLength,
+    super.height,
+    super.textAlign,
+  });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font13(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.normal;
+}
+
+abstract class IndexInterface extends StatelessWidget {
+  const IndexInterface(this.data,
+      {super.key,
+      this.textColor,
+      this.overFlowFade,
+      this.maxLength,
+      this.height,
+      this.textAlign});
+
+  final String? data;
   final Color? textColor;
   final bool? overFlowFade;
   final int? maxLength;
+  final double? height;
+  final TextAlign? textAlign;
 
-  const IndexMinText(this.text,
-      {super.key, this.textColor, this.overFlowFade, this.maxLength});
+  double Function(BuildContext) get fontSize;
+
+  FontWeight get fontWeight;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      text ?? '',
+      data ?? '',
+      textAlign: textAlign,
       style: TextStyle(
-          fontSize: DynamicFontSize.font17(context),
-          // * MediaQuery.of(context).textScaleFactor,
+          fontSize: fontSize(context),
+          height: height,
+          fontWeight: fontWeight,
           color: textColor ?? GlobalColor.black),
       overflow: maxLength == null
           ? overFlowFade ?? false
@@ -94,30 +176,6 @@ class IndexMinText extends StatelessWidget {
               : null
           : TextOverflow.ellipsis,
       maxLines: maxLength ?? (overFlowFade ?? false ? 1 : null),
-      softWrap: overFlowFade ?? false ? false : null,
-    );
-  }
-}
-
-class IndexMinTitle extends StatelessWidget {
-  final String? text;
-  final Color? textColor;
-  final bool? overFlowFade;
-
-  const IndexMinTitle(this.text,
-      {super.key, this.textColor, this.overFlowFade});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text ?? '',
-      style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: DynamicFontSize.font17(context),
-          // * MediaQuery.of(context).textScaleFactor,
-          color: textColor ?? GlobalColor.black),
-      overflow: overFlowFade ?? false ? TextOverflow.fade : null,
-      maxLines: overFlowFade ?? false ? 1 : null,
       softWrap: overFlowFade ?? false ? false : null,
     );
   }
@@ -162,10 +220,15 @@ class _ScrollablePinchView extends ConsumerState<ScrollablePinchView> {
 }
 
 class ListPinchView extends ConsumerStatefulWidget {
-  final List<int?>? items;
-  final Function(int) indexNum;
+  final NullableIndexedWidgetBuilder itemBuilder;
+  final int itemCount;
+  final EdgeInsetsGeometry? padding;
 
-  const ListPinchView({super.key, required this.items, required this.indexNum});
+  const ListPinchView(
+      {super.key,
+      required this.itemCount,
+      this.padding,
+      required this.itemBuilder});
 
   @override
   ConsumerState<ListPinchView> createState() => _ListPinchView();
@@ -174,14 +237,12 @@ class ListPinchView extends ConsumerStatefulWidget {
 class _ListPinchView extends ConsumerState<ListPinchView> {
   final List<int> events = [];
   bool _isPinch = false;
-  GlobalKey itemKey = GlobalKey();
 
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
@@ -207,16 +268,13 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                 minScale: 1.0,
                 maxScale: 6.0,
                 child: ListView.separated(
+                  padding: widget.padding,
                   controller: _scrollController,
-                  itemCount: widget.items?.length ?? 0,
+                  itemCount: widget.itemCount,
                   physics: _isPinch
                       ? NeverScrollableScrollPhysics()
                       : ScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return FutureImage(
-                        itemKey: index == 0 ? itemKey : null,
-                        Future.value(widget.items?[index]));
-                  },
+                  itemBuilder: widget.itemBuilder,
                   separatorBuilder: (_, $) {
                     return Container(
                       height: 1,
@@ -225,23 +283,53 @@ class _ListPinchView extends ConsumerState<ListPinchView> {
                   },
                 ))));
   }
+}
 
-  void _scrollListener() {
-    final position = _scrollController.position;
-    final viewportHeight = position.viewportDimension;
+class CustomScrollPinchView extends ConsumerStatefulWidget {
+  final List<Widget> slivers;
+  final EdgeInsetsGeometry? padding;
 
-    // 화면의 중앙 위치
-    final centerPosition = position.pixels + viewportHeight / 2;
+  const CustomScrollPinchView(
+      {super.key, required this.slivers, this.padding});
 
-    // 가장 많이 보이는 아이템 계산
-    final visibleItemIndex = (centerPosition /
-            ((itemKey.currentContext?.findRenderObject()) as RenderBox)
-                .size
-                .height)
-        .floor();
+  @override
+  ConsumerState<CustomScrollPinchView> createState() =>
+      _CustomScrollPinchView();
+}
 
-    // widget.indexNum을 가장 자연스러운 아이템 번호로 호출
-    widget.indexNum(visibleItemIndex);
+class _CustomScrollPinchView extends ConsumerState<CustomScrollPinchView> {
+  final List<int> events = [];
+  bool _isPinch = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+        builder: (context) => Listener(
+            onPointerDown: (PointerEvent event) {
+              events.add(event.pointer);
+              final int pointers = events.length;
+
+              if (pointers >= 2) {
+                print('isPinching');
+                setState(() => _isPinch = true);
+              }
+            },
+            onPointerUp: (event) {
+              events.clear();
+              print('isPinching false');
+              setState(() => _isPinch = false);
+            },
+            child: InteractiveViewer(
+                minScale: 1.0,
+                maxScale: 6.0,
+                child: Padding(
+                    padding: widget.padding ?? const EdgeInsets.all(0),
+                    child: CustomScrollView(
+                      slivers: widget.slivers,
+                      physics: _isPinch
+                          ? const NeverScrollableScrollPhysics()
+                          : const ScrollPhysics(),
+                    )))));
   }
 }
 
@@ -424,65 +512,69 @@ class CustomDropdown extends ConsumerWidget {
                     Future.delayed(Duration.zero, () {
                       Log.d('messaged hello: $selectedValue');
                       scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300
-                          ? 0
-                          : (selectedValue ?? 1) * 51 - 300
-                      ).toDouble());
+                              ? 0
+                              : (selectedValue ?? 1) * 51 - 300)
+                          .toDouble());
                     });
 
                     return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-                          alignment: Alignment.center,
-                            child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                        child: Container(
-                          color: GlobalColor.white,
-                          child: Scrollbar(
-                            thumbVisibility: true, // 항상 보이도록 설정
-                            thickness: 2,
-                            radius: Radius.circular(10),
-                            child: ListView.separated(
-                                controller: scrollController,
-                                separatorBuilder: (context, index) {
-                                  return Container(
-                                    height: 1,
-                                    color: GlobalColor.dividerColor,
-                                  );
-                                },
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                shrinkWrap: true,
-                                // ListView의 크기를 내용에 맞게 조정
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  return Material(
-                                      color: GlobalColor.white,
-                                      child: InkWell(
-                                        child: Container(
-                                          height: 50,
-                                          alignment: Alignment.centerLeft,
-                                          padding: EdgeInsets.only(left: 45),
-                                          child: Text(
-                                            // todo r: 닫기 추가하기
-                                            items[index],
-                                            style: TextStyle(
-                                              fontWeight: selectedValue == index
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              fontSize: DynamicFontSize.font24(
-                                                  context),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                              color: GlobalColor.white,
+                              child: Scrollbar(
+                                thumbVisibility: true, // 항상 보이도록 설정
+                                thickness: 2,
+                                radius: Radius.circular(10),
+                                child: ListView.separated(
+                                    controller: scrollController,
+                                    separatorBuilder: (context, index) {
+                                      return Container(
+                                        height: 1,
+                                        color: GlobalColor.dividerColor,
+                                      );
+                                    },
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shrinkWrap: true,
+                                    // ListView의 크기를 내용에 맞게 조정
+                                    itemCount: items.length,
+                                    itemBuilder: (context, index) {
+                                      return Material(
+                                          color: GlobalColor.white,
+                                          child: InkWell(
+                                            child: Container(
+                                              height: 50,
+                                              alignment: Alignment.centerLeft,
+                                              padding:
+                                                  EdgeInsets.only(left: 45),
+                                              child: Text(
+                                                // todo r: 닫기 추가하기
+                                                items[index],
+                                                style: TextStyle(
+                                                  fontWeight:
+                                                      selectedValue == index
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                  fontSize:
+                                                      DynamicFontSize.font24(
+                                                          context),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          // ref.read(statusProvider.notifier).setStatus(entry.key);
-                                          onChanged(index);
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop();
-                                        },
-                                      ));
-                                }),
-                          ),
-                        )));
+                                            onTap: () {
+                                              // ref.read(statusProvider.notifier).setStatus(entry.key);
+                                              onChanged(index);
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop();
+                                            },
+                                          ));
+                                    }),
+                              ),
+                            )));
                   });
             }
           : () {

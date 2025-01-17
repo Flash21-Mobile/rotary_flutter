@@ -39,7 +39,7 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(MonthlyLetterProvider).getMonthlyFiles(widget.data.id);
       checkAdmin();
     });
@@ -64,35 +64,35 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
           actions: [
             ...?isAdmin
                 ? [
-              Container(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: InkWell(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: GlobalColor.primaryColor),
-                      child: Text(
-                        '삭제',
-                        style: TextStyle(color: GlobalColor.white),
-                      ),
-                    ),
-                    onTap: () async {
-                      var response = await ref
-                          .read(MonthlyLetterProvider)
-                          .deleteMonthlyLetter(widget.data.id ?? 0);
-                      if (response is Success) {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ))
-            ]
+                    Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                        child: InkWell(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: GlobalColor.primaryColor),
+                            child: Text(
+                              '삭제',
+                              style: TextStyle(color: GlobalColor.white),
+                            ),
+                          ),
+                          onTap: () async {
+                            var response = await ref
+                                .read(MonthlyLetterProvider)
+                                .deleteMonthlyLetter(widget.data.id ?? 0);
+                            if (response is Success) {
+                              Navigator.pop(context);
+                            }
+                          },
+                        ))
+                  ]
                 : null
           ],
         ),
-        backgroundColor: GlobalColor.black,
+        backgroundColor: GlobalColor.white,
         successBody: (data) {
           data as List<int?>?;
 
@@ -105,11 +105,22 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
               //       setState(() => _index = index + 1);
               //     }),
               ListPinchView(
-                items: data,
-                indexNum: (index) {
-                  setState(() {
-                    _index = index + 1;
-                  });
+                itemCount: data?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return FutureImage(Future.value(data?[index]),
+                      loadingWidget: Container(
+                          color: GlobalColor.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width / 3 * 4,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          )),onError: Container(
+                  color: GlobalColor.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 3 * 4,
+                  child: Center(
+                  child: CircularProgressIndicator(),
+                  )));
                 },
               ),
 

@@ -111,7 +111,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IndexThumbTitle(
+                                IndexMaxTitle(
                                   '로타리 3700지구',
                                 ),
                                 Text(

@@ -90,7 +90,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                             ),
                             Row(
                               children: [
-                                IndexThumbTitle(account.name),
+                                IndexMaxTitle(account.name),
                                 Spacer(),
                                 InkWell(
                                     onTap: () {

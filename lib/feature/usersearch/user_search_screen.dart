@@ -59,7 +59,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IndexThumbTitle(
+                          IndexMaxTitle(
                             '로타리 3700지구',
                           ),
                           Text(
@@ -122,7 +122,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IndexThumbTitle(
+                            IndexMaxTitle(
                               '지구지도부',
                             ),
                             SizedBox(width: 10),

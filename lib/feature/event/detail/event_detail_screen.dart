@@ -90,7 +90,7 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IndexThumbTitle(widget.event.title),
+                          IndexMaxTitle(widget.event.title),
                           SizedBox(
                             height: 5,
                           ),

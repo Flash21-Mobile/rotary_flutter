@@ -350,7 +350,7 @@ class LoadingWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IndexThumbTitle(
+                        IndexMaxTitle(
                           content,
                           textColor: GlobalColor.white,
                           textAlign: TextAlign.center,

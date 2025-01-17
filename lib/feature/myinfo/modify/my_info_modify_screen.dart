@@ -296,11 +296,11 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      IndexThumbTitle(account.name),
+                                      IndexMaxTitle(account.name),
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      IndexThumbTitle('${account.cellphone}')
+                                      IndexMaxTitle('${account.cellphone}')
                                     ])
                               ],
                             ),
