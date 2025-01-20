@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:rotary_flutter/data/model/account_model.dart';
 import 'package:rotary_flutter/util/logger.dart';
+import 'package:rotary_flutter/util/model/account_grade_model.dart';
 
 import '../../util/fontSize.dart';
 import '../../util/global_color.dart';
@@ -16,6 +19,7 @@ class IndexText extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -35,6 +39,7 @@ class IndexTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -54,6 +59,7 @@ class IndexMaxTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -62,6 +68,26 @@ class IndexMaxTitle extends IndexInterface {
 
   @override
   FontWeight get fontWeight => FontWeight.bold;
+}
+
+class IndexMaxText extends IndexInterface {
+  const IndexMaxText(
+      super.data, {
+        super.key,
+        super.textColor,
+        super.overFlowFade,
+        super.maxLength,
+        super.height,
+        super.textAlign,
+        super.defaultScale,
+      });
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+          (BuildContext context) => DynamicFontSize.font25(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.normal;
 }
 
 class IndexThumbTitle extends IndexInterface {
@@ -73,6 +99,7 @@ class IndexThumbTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -92,6 +119,7 @@ class IndexMinText extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -111,6 +139,7 @@ class IndexMinTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -130,6 +159,7 @@ class IndexMicroText extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
+    super.defaultScale,
   });
 
   @override
@@ -147,7 +177,8 @@ abstract class IndexInterface extends StatelessWidget {
       this.overFlowFade,
       this.maxLength,
       this.height,
-      this.textAlign});
+      this.textAlign,
+      this.defaultScale});
 
   final String? data;
   final Color? textColor;
@@ -155,16 +186,20 @@ abstract class IndexInterface extends StatelessWidget {
   final int? maxLength;
   final double? height;
   final TextAlign? textAlign;
+  final bool? defaultScale;
 
   double Function(BuildContext) get fontSize;
 
   FontWeight get fontWeight;
 
-  @override
+  @override   //todo r: 홈 화면 전체 인원 수정하기
   Widget build(BuildContext context) {
     return Text(
       data ?? '',
       textAlign: textAlign,
+      textScaler: (defaultScale == true)
+          ? TextScaler.noScaling
+          : null,
       style: TextStyle(
           fontSize: fontSize(context),
           height: height,
@@ -289,8 +324,7 @@ class CustomScrollPinchView extends ConsumerStatefulWidget {
   final List<Widget> slivers;
   final EdgeInsetsGeometry? padding;
 
-  const CustomScrollPinchView(
-      {super.key, required this.slivers, this.padding});
+  const CustomScrollPinchView({super.key, required this.slivers, this.padding});
 
   @override
   ConsumerState<CustomScrollPinchView> createState() =>
@@ -524,57 +558,83 @@ class CustomDropdown extends ConsumerWidget {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
                             child: Container(
-                              color: GlobalColor.white,
-                              child: Scrollbar(
-                                thumbVisibility: true, // 항상 보이도록 설정
-                                thickness: 2,
-                                radius: Radius.circular(10),
-                                child: ListView.separated(
-                                    controller: scrollController,
-                                    separatorBuilder: (context, index) {
-                                      return Container(
-                                        height: 1,
-                                        color: GlobalColor.dividerColor,
-                                      );
-                                    },
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    shrinkWrap: true,
-                                    // ListView의 크기를 내용에 맞게 조정
-                                    itemCount: items.length,
-                                    itemBuilder: (context, index) {
-                                      return Material(
-                                          color: GlobalColor.white,
-                                          child: InkWell(
-                                            child: Container(
-                                              height: 50,
-                                              alignment: Alignment.centerLeft,
-                                              padding:
-                                                  EdgeInsets.only(left: 45),
-                                              child: Text(
-                                                // todo r: 닫기 추가하기
-                                                items[index],
-                                                style: TextStyle(
-                                                  fontWeight:
-                                                      selectedValue == index
-                                                          ? FontWeight.bold
-                                                          : FontWeight.normal,
-                                                  fontSize:
-                                                      DynamicFontSize.font24(
-                                                          context),
-                                                ),
-                                              ),
-                                            ),
-                                            onTap: () {
-                                              // ref.read(statusProvider.notifier).setStatus(entry.key);
-                                              onChanged(index);
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pop();
+                                color: GlobalColor.white,
+                                child: Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      Scrollbar(
+                                        thumbVisibility: true, // 항상 보이도록 설정
+                                        thickness: 2,
+                                        radius: Radius.circular(10),
+                                        child: ListView.separated(
+                                            controller: scrollController,
+                                            separatorBuilder: (context, index) {
+                                              return Container(
+                                                height: 1,
+                                                color: GlobalColor.dividerColor,
+                                              );
                                             },
-                                          ));
-                                    }),
-                              ),
-                            )));
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 16),
+                                            shrinkWrap: true,
+                                            // ListView의 크기를 내용에 맞게 조정
+                                            itemCount: items.length,
+                                            itemBuilder: (context, index) {
+                                              return Material(
+                                                  color: GlobalColor.white,
+                                                  child: InkWell(
+                                                    child: Container(
+                                                      height: 50,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      padding: EdgeInsets.only(
+                                                          left: 45),
+                                                      child: Text(
+                                                        // todo r: 닫기 추가하기
+                                                        items[index],
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              selectedValue ==
+                                                                      index
+                                                                  ? FontWeight
+                                                                      .bold
+                                                                  : FontWeight
+                                                                      .normal,
+                                                          fontSize:
+                                                              DynamicFontSize
+                                                                  .font24(
+                                                                      context),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      // ref.read(statusProvider.notifier).setStatus(entry.key);
+                                                      onChanged(index);
+                                                      Navigator.of(context,
+                                                              rootNavigator:
+                                                                  true)
+                                                          .pop();
+                                                    },
+                                                  ));
+                                            }),
+                                      ),
+                                      Material(
+                                          color: GlobalColor.transparent,
+                                          child: InkWell(
+                                              onTap: () {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.all(10),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 24,
+                                                    color: GlobalColor
+                                                        .greyFontColor,
+                                                  )))),
+                                    ]))));
                   });
             }
           : () {
@@ -603,5 +663,193 @@ class CustomDropdown extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class CustomGradeDropdown extends ConsumerWidget {
+  final List<AccountGradeModel> items;
+  final int? selectedValue;
+  final ValueChanged<int?> onChanged;
+  final double? width;
+  final double? height;
+  final Color? bgColor;
+  final String title; // 제목을 추가
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  const CustomGradeDropdown({
+    super.key,
+    required this.items,
+    required this.selectedValue,
+    required this.onChanged,
+    this.width,
+    this.height = 40,
+    this.bgColor,
+    this.title = '',
+    this.onTap,
+    this.isLoading = false,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('isLoading $isLoading');
+    var scrollController = ScrollController();
+
+    return GestureDetector(
+      onTap: !isLoading
+          ? () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    if (onTap != null) {
+                      onTap!();
+                    } //todo r: cach manager vs sqlite
+                    Future.delayed(Duration.zero, () {
+                      Log.d('messaged hello: $selectedValue');
+                      scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300
+                              ? 0
+                              : (selectedValue ?? 1) * 51 - 300)
+                          .toDouble());
+                    });
+
+                    return Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                                color: GlobalColor.white,
+                                child: Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      Scrollbar(
+                                        thumbVisibility: true, // 항상 보이도록 설정
+                                        thickness: 2,
+                                        radius: Radius.circular(10),
+                                        child: ListView.separated(
+                                            controller: scrollController,
+                                            separatorBuilder: (context, index) {
+                                              return Container(
+                                                height: 1,
+                                                color: GlobalColor.dividerColor,
+                                              );
+                                            },
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 16),
+                                            shrinkWrap: true,
+                                            // ListView의 크기를 내용에 맞게 조정
+                                            itemCount: items.length,
+                                            itemBuilder: (context, index) {
+                                              return Material(
+                                                  color: GlobalColor.white,
+                                                  child: InkWell(
+                                                    child: Container(
+                                                      height: 50,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 45),
+                                                      child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            Text(
+                                                              // todo r: 닫기 추가하기
+                                                              items[index]
+                                                                  .grade,
+                                                              style: TextStyle(
+                                                                fontWeight: selectedValue ==
+                                                                        index
+                                                                    ? FontWeight
+                                                                        .bold
+                                                                    : FontWeight
+                                                                        .normal,
+                                                                fontSize:
+                                                                    DynamicFontSize
+                                                                        .font24(
+                                                                            context),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 5),
+                                                            items[index].date !=
+                                                                    null
+                                                                ? selectedValue ==
+                                                                        index
+                                                                    ? IndexMinTitle(formatDate(
+                                                                        items[index]
+                                                                            .date!))
+                                                                    : IndexMicroText(
+                                                                        textColor:
+                                                                            GlobalColor
+                                                                                .greyFontColor,
+                                                                        formatDate(
+                                                                            items[index].date!))
+                                                                : SizedBox()
+                                                          ]),
+                                                    ),
+                                                    onTap: () {
+                                                      // ref.read(statusProvider.notifier).setStatus(entry.key);
+                                                      onChanged(index);
+                                                      Navigator.of(context,
+                                                              rootNavigator:
+                                                                  true)
+                                                          .pop();
+                                                    },
+                                                  ));
+                                            }),
+                                      ),
+                                      Material(
+                                          color: GlobalColor.transparent,
+                                          child: InkWell(
+                                              onTap: () {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.all(10),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    size: 24,
+                                                    color: GlobalColor
+                                                        .greyFontColor,
+                                                  )))),
+                                    ]))));
+                  });
+            }
+          : () {
+              print('you cannot touch');
+            },
+      child: Container(
+        padding: EdgeInsets.only(right: 5, left: 15),
+        height: height,
+        decoration: BoxDecoration(
+          color: GlobalColor.white,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              items[selectedValue ?? 0].grade,
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: DynamicFontSize.font17(context),
+                color: GlobalColor.darkGreyFontColor,
+              ),
+            ),
+            Icon(Icons.arrow_drop_down),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formatDate(DateTime date) {
+    final DateFormat formatter = DateFormat('yyyy. MM. dd');
+    return formatter.format(date);
   }
 }

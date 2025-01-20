@@ -9,6 +9,7 @@ import '../../util/fontSize.dart';
 import '../../util/global_color.dart';
 import '../../util/logger.dart';
 import '../../util/model/loadstate.dart';
+import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 import 'detail/event_detail_screen.dart';
 import 'event_component.dart';
@@ -61,7 +62,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
         });
 
         return AlertDialog(
-          title: const Text('연도를 선택하세요'),
+          title: const IndexMaxTitle('연도를 선택하세요'),
           content: SizedBox(
             height: 300,
             width: 200,
@@ -86,7 +87,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
                               isSelected ? GlobalColor.lightPrimaryColor : null,
                           borderRadius: BorderRadius.circular(15)),
                       // 선택된 항목 배경색
-                      child: Text('$year년'),
+                      child: IndexText('$year년'),
                     ));
               },
             ),
@@ -109,7 +110,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     final selectedMonth = await showDialog<int>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('월을 선택하세요'),
+        title: const IndexMaxTitle('월을 선택하세요'),
         content: SizedBox(
           height: 300,
           width: 200,
@@ -118,7 +119,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
             itemBuilder: (_, index) {
               final month = index + 1;
               return ListTile(
-                title: Text('$month월'),
+                title: IndexText('$month월'),
                 onTap: () => Navigator.of(context).pop(month),
               );
             },
@@ -176,7 +177,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           backgroundColor: GlobalColor.white,
           loadState: eventProvider.eventState,
           appBar: AppBar(
-            title: const Text('행사 일정'),
+            title: const IndexMaxTitle('행사 일정'),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -197,8 +198,10 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           floatingActionButton: isAdmin
               ? FloatingActionButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => EventModifyScreen())).then((value){
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (_) => EventModifyScreen()))
+                        .then((value) {
                       getData();
                     });
                   },
@@ -272,25 +275,18 @@ class _EventScreenState extends ConsumerState<EventScreen> {
               children: [
                 InkWell(
                   onTap: () => _selectYear(context, _selectedDate.year),
-                  child: Text(
+                  child: IndexMaxTitle(
                     '${_selectedDate.year}년',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: DynamicFontSize.font22(context)),
-                  ),
-                )
+                  ))
               ],
             ),
             Container(
                 width: 80,
                 child: InkWell(
                   onTap: () => _selectMonth(context),
-                  child: Text(
+                  child: IndexMaxTitle(
                     textAlign: TextAlign.center,
                     '${_selectedDate.month}월',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: DynamicFontSize.font22(context)),
                   ),
                 )),
             Row(
@@ -330,7 +326,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
   Widget _buildEventList() {
     if (_selectedEvents.isEmpty) {
       return const SliverFillRemaining(
-        child: Center(child: Text('해당 날짜에는 이벤트가 없습니다')),
+        child: Center(child: IndexText('해당 날짜에는 이벤트가 없습니다')),
       );
     }
 
@@ -342,10 +338,11 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           event: event,
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EventDetailScreen(event: event))).then((value){
-                      getData();
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventDetailScreen(event: event)))
+                .then((value) {
+              getData();
             });
           },
         );

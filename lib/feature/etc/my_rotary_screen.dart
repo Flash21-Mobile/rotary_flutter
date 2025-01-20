@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../util/global_color.dart';
+import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 
 class MyRotaryScreen extends ConsumerStatefulWidget {
@@ -46,7 +47,7 @@ class _MyRotaryScreen extends ConsumerState<MyRotaryScreen> {
       child: Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('내 로타리'),
+          title: IndexMaxTitle('내 로타리'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

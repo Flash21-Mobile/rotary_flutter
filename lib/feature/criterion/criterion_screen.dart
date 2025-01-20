@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 import 'package:rotary_flutter/util/global_color.dart';
-import '../../util/criterion/criterion_data.dart';
-import '../../util/criterion/sliver_criterion_table.dart';
+import 'package:rotary_flutter/util/table/sliver_table_table.dart';
+import 'package:rotary_flutter/util/table/table_data.dart';
 import '../home_view_model.dart';
 
 class CriterionScreen extends ConsumerStatefulWidget {
@@ -21,7 +21,7 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
     return Scaffold(
       backgroundColor: GlobalColor.white,
       appBar: AppBar(
-        title: const Text('표창기준'),
+        title: const IndexMaxTitle('표창기준'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -169,7 +169,7 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
           sliverTextTitle(
             '종합표창',
           ),
-          SliverCriterionTable(data: CriterionData.all),
+          SliverTable(data: TableData.all),
           const SliverToBoxAdapter(
             child: SizedBox(height: 10.0),
           ),
@@ -188,10 +188,10 @@ class _CriterionScreen extends ConsumerState<CriterionScreen> {
           ),
 
           sliverTextTitle('클럽표창'),
-          SliverCriterionTable(data: CriterionData.club),
+          SliverTable(data: TableData.club),
 
           sliverTextTitle('개인표창'),
-          SliverCriterionTable(data: CriterionData.personal),
+          SliverTable(data: TableData.personal),
 
           SliverToBoxAdapter(
             child: SizedBox(

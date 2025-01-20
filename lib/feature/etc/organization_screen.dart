@@ -21,7 +21,7 @@ class _OrganizationScreen extends ConsumerState<OrganizationScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('지구임원'),
+          title: IndexMaxTitle('지구임원'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

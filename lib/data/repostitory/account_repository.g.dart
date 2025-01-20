@@ -22,7 +22,7 @@ class _AccountRepository implements AccountRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<Account>> getAccount(
+  Future<List<Account>> getAccount({
     String? cellphone,
     int? id,
     String? name,
@@ -30,7 +30,7 @@ class _AccountRepository implements AccountRepository {
     String? region,
     int? page,
     int? size,
-  ) async {
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'cellphone': cellphone,

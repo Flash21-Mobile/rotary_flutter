@@ -42,7 +42,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('광고협찬'),
+          title: IndexMaxTitle('광고협찬'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -109,7 +109,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                                 padding: EdgeInsets.only(
                                   bottom: 30,
                                 ),
-                                child: Text(
+                                child: IndexText(
                                   '더 이상 검색된 목록이 없습니다',
                                   textAlign: TextAlign.center,
                                 ));

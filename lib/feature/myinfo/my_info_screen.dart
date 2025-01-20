@@ -36,7 +36,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
 
     return LoadStateScaffold(
       appBar: AppBar(
-        title: Text('내 정보'),
+        title: IndexMaxTitle('내 정보'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -89,6 +89,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                               height: 10,
                             ),
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 IndexMaxTitle(account.name),
                                 Spacer(),
@@ -98,16 +99,16 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                                           MyInfoModifyScreen();
                                     },
                                     child: Container(
-                                        decoration: BoxDecoration(
-                                            color: GlobalColor.primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        padding: EdgeInsets.all(5),
-                                        child: Text(
-                                          '수정하기',
-                                          style: TextStyle(
-                                              color: GlobalColor.white),
-                                        )))
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: GlobalColor.primaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 5),
+                                      child: IndexMinText('수정하기',
+                                          textColor: GlobalColor.white),
+                                    ))
                               ],
                             )
                           ],

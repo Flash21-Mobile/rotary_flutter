@@ -20,7 +20,7 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
     return Scaffold(
       backgroundColor: GlobalColor.white,
       appBar: AppBar(
-        title: const Text('편성표'),
+        title: const IndexMaxTitle('편성표'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -110,19 +110,19 @@ class _ProgramingTableScreen extends ConsumerState<ProgramingTableScreen> {
             Container(
               alignment: Alignment.center,
               width: 30,
-              child: IndexText(data[index][0]),
+              child: IndexText(data[index][0], defaultScale: true,),
             ),
             SizedBox(width: 5),
             Container(
               width: 100,
-              child: IndexMinText(data[index][1]),
+              child: IndexMinText(data[index][1], defaultScale: true),
             ),
             SizedBox(width: 5),
             Flexible(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IndexMinText(data[index][2]),
+                  IndexMinText(data[index][2], defaultScale: true),
                 ],
               ),
             )

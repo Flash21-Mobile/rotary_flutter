@@ -52,8 +52,7 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
     return LoadStateScaffold(
         loadState: viewModel.monthlyLetterFilesState,
         appBar: AppBar(
-          title: Text(''
-              '총재월신'),
+          title: IndexMaxTitle('총재월신'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -74,9 +73,9 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: GlobalColor.primaryColor),
-                            child: Text(
+                            child: IndexText(
                               '삭제',
-                              style: TextStyle(color: GlobalColor.white),
+                              textColor: GlobalColor.white,
                             ),
                           ),
                           onTap: () async {
@@ -124,16 +123,16 @@ class _Widget extends ConsumerState<MonthlyLetterDetail> {
                 },
               ),
 
-              Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                      color: GlobalColor.black.withAlpha(100),
-                      borderRadius: BorderRadius.circular(100)),
-                  margin: EdgeInsets.only(bottom: 10, right: 10),
-                  child: IndexMinText(
-                    '$_index / ${data?.length}',
-                    textColor: GlobalColor.white,
-                  ))
+              // Container(
+              //     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              //     decoration: BoxDecoration(
+              //         color: GlobalColor.black.withAlpha(100),
+              //         borderRadius: BorderRadius.circular(100)),
+              //     margin: EdgeInsets.only(bottom: 10, right: 10),
+              //     child: IndexMinText(
+              //       '$_index / ${data?.length}',
+              //       textColor: GlobalColor.white,
+              //     ))
             ],
           );
         });

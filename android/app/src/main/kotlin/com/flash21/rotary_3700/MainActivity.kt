@@ -11,7 +11,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.flash21.rotary_3700/android"
     private val PERMISSIONS_REQUEST_CODE = 22
 
@@ -30,24 +30,34 @@ class MainActivity: FlutterActivity() {
                     Log.d(tag, message) // Android LogCat에 출력
                     result.success(null)
                 }
+
                 "loge" -> {
                     val tag = call.argument<String>("tag") ?: "Flutter"
                     val message = call.argument<String>("message") ?: ""
                     Log.e(tag, message) // Android LogCat에 출력
                     result.success(null)
                 }
+
                 "logw" -> {
                     val tag = call.argument<String>("tag") ?: "Flutter"
                     val message = call.argument<String>("message") ?: ""
                     Log.w(tag, message) // Android LogCat에 출력
                     result.success(null)
                 }
+
                 "logwtf" -> {
                     val tag = call.argument<String>("tag") ?: "Flutter"
                     val message = call.argument<String>("message") ?: ""
                     Log.wtf(tag, message) // Android LogCat에 출력
                     result.success(null)
                 }
+
+                "launchIntentForPackage" -> launchIntentForPackage(
+                    result,
+                    call.argument<String>("packageName") ?: "",
+                    context
+                )
+
                 else -> result.notImplemented()
             }
         }
@@ -57,12 +67,23 @@ class MainActivity: FlutterActivity() {
     private fun getPhoneNumber(result: MethodChannel.Result) {
         val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_PHONE_NUMBERS
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_PHONE_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // 권한 요청
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_PHONE_STATE),
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.READ_PHONE_NUMBERS,
+                    Manifest.permission.READ_PHONE_STATE
+                ),
                 PERMISSIONS_REQUEST_CODE
             )
 
@@ -76,7 +97,11 @@ class MainActivity: FlutterActivity() {
         result.success(phoneNumber)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -91,4 +116,23 @@ class MainActivity: FlutterActivity() {
             }
         }
     }
+
+    private fun launchIntentForPackage(
+        result: MethodChannel.Result,
+        packageName: String,
+        context: Context
+    ) {
+        try {
+            val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                context.startActivity(intent)
+                result.success(null)
+            } else {
+                result.error("CANNOT_OPEN", "Cannot open $packageName: Package not found", null)
+            }
+        } catch (e: Exception) {
+            result.error("CANNOT_OPEN", "Cannot open $packageName: ${e.message}", null)
+        }
+    }
 }
+

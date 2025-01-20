@@ -19,7 +19,7 @@ class _PolicyScreen extends ConsumerState<PolicyScreen> {
     return Scaffold(
       backgroundColor: GlobalColor.white,
       appBar: AppBar(
-        title: const Text('운영방침'),
+        title: const IndexMaxTitle('운영방침'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -29,115 +29,94 @@ class _PolicyScreen extends ConsumerState<PolicyScreen> {
         ),
       ),
       body: ScrollablePinchView(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Circular Image with Shadow
+            SizedBox(
+              height: 30,
+            ),
             Container(
-              width: MediaQuery.of(context).size.width * 0.65,
-              height: MediaQuery.of(context).size.width * 0.65,
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.5,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border: Border.all(color: GlobalColor.dividerColor),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.grey.withAlpha(50),
                     blurRadius: 15,
                     offset: const Offset(0, 15),
                   ),
                 ],
               ),
               child: ClipOval(
+                  child: Container(
+                decoration: BoxDecoration(
+                    color: GlobalColor.white,
+                    borderRadius: BorderRadius.circular(100)),
                 child: Image.network(
                   alignment: Alignment.center,
                   'https://mmate.flash21.com/images/rotary/operation-img.jpg',
-                  fit: BoxFit.fill,
+                  // fit: BoxFit.cover,
                 ),
-              ),
+              )),
             ),
             const SizedBox(height: 30),
-
-            // Title Text
-            const Text(
-              "2024-25년도 지구 운영방침 및 중점목표",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            const IndexTitle("2024-25년도 지구 운영방침 및 중점목표"),
             const SizedBox(height: 30),
-
-            // Main Content
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                IndexText(
+                  height: 1.2,
                   "스테파니 얼칙 국제로타리 차기회장은 2024-25년도 회장 표어로 \"기적을 이루는 로타리\"를 발표하고 회원들에게 생명을 구하는 로타리의 힘을 인식하고 확대할 것을 촉구했다.",
-                  style: TextStyle(fontSize: 16),
                 ),
-                _buildLine(),
-                const Text(
+                SizedBox(
+                  height: 30,
+                ),
+                IndexText(
+                  height: 1.2,
                   "또한 \"우리가 요술 지팡이를 흔들고 주문을 외운다고 해서 소아마비를 종식시키거나 세상에 평화를 가져올 수는 없다\"고 전제하고 \"모든 것이 여러분에게 달려 있다. 완료된 모든 프로젝트, 기부된 모든 액수, 모든 신입회원들로 여러분은 기적을 만들 것\"이라 강조했다.",
-                  style: TextStyle(fontSize: 16),
                 ),
-                _buildLine(),
-                const Text(
-                  "그녀는 현재 미국 내 클럽 및 지구들이 알바니아, 코소보, 우크라이나의 로타리클럽과 파트너십을 맺고 인도주의 및 교육 프로젝트를 추진하도록 지원하고 있다.",
-                  style: TextStyle(fontSize: 16),
-                ),
-
-                _buildLine(),
 
                 // Section Title
-                const Text(
-                  "● 지구 중점 목표",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
+                SizedBox(height: 30),
+                IndexTitle("● 지구 중점 목표"),
+                SizedBox(height: 10),
 
                 // Goals List
-                const Text("1. 회원 3700명 (회원 순증가 500명 이상)",
-                    style: TextStyle(fontSize: 16)),
-                const Text("2. 신생클럽 4개 이상 창립",
-                    style: TextStyle(fontSize: 16)),
-                const Text("(RCC/Rotaract 포함)", style: TextStyle(fontSize: 16)),
-                const Text("3. 로타리 재단 120만불 달성 (지역당 10만불)",
-                    style: TextStyle(fontSize: 16)),
-                const Text("4. 글로벌 봉사사업 확대",
-                    style: TextStyle(fontSize: 16)),
-                const Text("5. 공공이미지 강화", style: TextStyle(fontSize: 16)),
-                const Text("6. 환경보존활동", style: TextStyle(fontSize: 16)),
+                Row(children: [
+                  SizedBox(width: 20, child: IndexMinText('1.', height: 1.2)),
+                  IndexText("회원 3700명 (회원 순증가 500명 이상)", height: 1.2,)
+                ]),
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  SizedBox(width: 20, child: IndexMinText('2.', height: 1.2)),
+                  IndexText("신생클럽 4개 이상 창립\n(RCC/Rotaract 포함)", height: 1.2,),
+                ]),
+                Row(children: [
+                  SizedBox(width: 20, child: IndexMinText('3.', height: 1.2)),
+                  IndexText("로타리 재단 120만불 달성 (지역당 10만불)",height: 1.2,),
+                ]),
+                Row(children: [
+                  SizedBox(width: 20, child: IndexMinText('4.', height: 1.2)),
+                  IndexText("글로벌 봉사사업 확대", height: 1.2,),
+                ]),
+                Row(children: [
+                  SizedBox(width: 20, child: IndexMinText('5.', height: 1.2)),
+                  IndexText("공공이미지 강화", height: 1.2,),
+                ]),
+                Row(children: [
+                  SizedBox(width: 20, child: IndexMinText('6.', height: 1.2)),
+                  IndexText("환경보존활동",height: 1.2,),
+                ]),
               ],
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 100),
           ],
         ),
       )),
     );
   }
-}
-
-Widget _buildLine() {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Divider(
-          thickness: 1.5, // 선 두께
-          color: Colors.grey, // 선 색상
-        ),
-        SizedBox(
-          height: 20,
-        ),
-      ],
-    ),
-  );
 }

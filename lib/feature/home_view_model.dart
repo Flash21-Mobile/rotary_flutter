@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/sign_remote_data.dart';
 import 'package:rotary_flutter/feature/home/home_main_screen.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
@@ -15,15 +16,16 @@ class HomeViewmodel with ChangeNotifier {
   int get navigationIndex => _navigationIndex;
   int setNavigationIndex(int index) => _navigationIndex = index;
 
-  LoadState phoneState = Loading();
+  LoadState loginState = End();
 
-  void postPhone(String phone) async{
-    phoneState  = Loading();
+  void iOSLogin(String phone, String name) async{
+    loginState  = Loading();
     notifyListeners();
 
 
-    phoneState =await SignAPI().postSMS(phone);
-    Log.d('phone State: $phoneState');
+    loginState =await AccountAPI().postIOSLogin(phone, name);
+
+    Log.d('phone State: $loginState');
     notifyListeners();
   }
 

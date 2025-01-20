@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:permission_handler/permission_handler.dart";
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
+import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_screen.dart';
@@ -28,7 +30,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   bool isLogin = false;
 
   late TextEditingController phoneController;
-  late TextEditingController authenticateController;
+  late TextEditingController nameController;
   late TextEditingController idController;
   late TextEditingController passwordController;
 
@@ -42,7 +44,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     }
 
     phoneController = TextEditingController();
-    authenticateController = TextEditingController();
+    nameController = TextEditingController();
     idController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -57,8 +59,6 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           phone as String;
 
           var data = phone.replaceAll('+82', '0');
-
-          //todo r: 검색 문구 변경, 전체 회원수 추가, 전체 회원수 위치 변경 상단으로, 회원에 홍보 추가, dialog 전체 화면
 
           final indexPhone =
               '${data.substring(0, 3)}-${data.substring(3, 7)}-${data.substring(7)}';
@@ -76,7 +76,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   void iOSLogin() async {
     // if ((await globalStorage.read(key: 'phone')) == null) {    //todo r: 수정하기
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showPhoneDialog();
+      showIOSLoginDialog();
     });
     // }
   }
@@ -95,8 +95,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           } else {
             globalStorage.write(key: 'admin', value: null);
           }
-          Log.d(
-              'i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
+          Log.d('i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
 
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
@@ -104,42 +103,34 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         onError: (e) => showLoginDialog());
   }
 
-  void showPhoneDialog() {
+  void showIOSLoginDialog() {
     var homeProvider = ref.read(HomeProvider);
 
     showDismissDialog(context,
         onPopInvokedWithResult: (didPop, result) {
-          if (homeProvider.phoneState is! Success) {
+          if (homeProvider.loginState is! Success) {
             homeProvider.popCurrentWidget();
           }
         },
-        controller: phoneController,
         textInputFormatter: [
           FilteringTextInputFormatter.digitsOnly,
           PhoneInputFormatter()
         ],
+        subTextInputFormatter: null,
         keyboardType: TextInputType.number,
+        subKeyboardType: TextInputType.number,
         hint: '전화번호',
+        subHint: '이름',
+        controller: phoneController,
+        subController: nameController,
         onTap: () {
-          if (phoneController.text.isNotEmpty) {
+          if (phoneController.text.isNotEmpty && nameController.text.isNotEmpty) {
             FocusNode().unfocus();
-            homeProvider.postPhone(phoneController.text);
+            homeProvider.iOSLogin(phoneController.text, nameController.text);
+            Navigator.of(context, rootNavigator: true).pop();
           }
         },
-        buttonText: '인증하기');
-  }
-
-  void showAuthenticateDialog() {
-    var homeProvider = ref.read(HomeProvider);
-
-    showDismissDialog(context, controller: authenticateController, hint: '인증번호',
-        onTap: () {
-      if (authenticateController.text.isNotEmpty) {
-        FocusNode().unfocus();
-        homeProvider.postAuthenticate(
-            phoneController.text, authenticateController.text);
-      }
-    }, keyboardType: TextInputType.number, buttonText: '인증하기');
+        buttonText: '로그인');
   }
 
   void showLoginDialog() {
@@ -148,6 +139,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         controller: idController,
         subHint: '비밀번호',
         subController: passwordController,
+        subObscureText: true,
         buttonText: '로그인', onTap: () {
       if (idController.text == 'flash21' &&
           passwordController.text == 'flash2121') {
@@ -160,7 +152,11 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           content: Text('로그인에 실패하였습니다.'),
         ));
       }
-    });
+    },
+        extraContents: IndexText(
+          '로그인 되지 않은 전화번호입니다.\n\'010-3803-9128\'에 문의하여 계정을 생성한 후 다시 시도해 주세요',
+          textAlign: TextAlign.center,
+        ));
   }
 
   void showErrorDialog() {
@@ -178,41 +174,12 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     var homeProvider = ref.watch(HomeProvider);
 
     loadStateFunction(
-        loadState: homeProvider.phoneState,
+        loadState: homeProvider.loginState,
         onSuccess: (data) {
-          Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-            Navigator.of(context, rootNavigator: true).pop();
-            showAuthenticateDialog();
-
-            homeProvider.phoneState = End();
-          });
-        },
-        onError: (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: Duration(milliseconds: 1500),
-              content: Text('인증에 실패하였습니다.'),
-            ),
-          );
-        });
-
-    loadStateFunction(
-        loadState: homeProvider.authenticateState,
-        onSuccess: (data) {
-          Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-            Navigator.of(context, rootNavigator: true).pop();
-
-            homeProvider.authenticateState = End();
             login(phoneController.text);
-          });
         },
         onError: (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: Duration(milliseconds: 1500),
-              content: Text('인증번호가 잘못되었습니다.'),
-            ),
-          );
+          showLoginDialog();
         });
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

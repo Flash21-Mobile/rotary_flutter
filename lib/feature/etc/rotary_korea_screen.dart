@@ -10,12 +10,13 @@ import '../../../util/global_color.dart';
 import '../home_view_model.dart';
 
 class RotaryKoreaScreen extends ConsumerStatefulWidget {
+  const RotaryKoreaScreen({super.key});
+
   @override
   ConsumerState<RotaryKoreaScreen> createState() => _RotaryKoreaScreen();
 }
 
 class _RotaryKoreaScreen extends ConsumerState<RotaryKoreaScreen> {
-  final androidUrl =Uri.parse('https://play.google.com/store/apps/details?id=kr.co.pksoft.rotarykorea');
   final iOSUrl = Uri.parse('https://apps.apple.com/kr/app/%EB%A1%9C%ED%83%80%EB%A6%AC%EC%BD%94%EB%A6%AC%EC%95%84/id6499181112');
 
   @override
@@ -23,7 +24,7 @@ class _RotaryKoreaScreen extends ConsumerState<RotaryKoreaScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('로타리 코리아 앱'),
+          title: IndexMaxTitle('로타리 코리아 앱'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -35,17 +36,7 @@ class _RotaryKoreaScreen extends ConsumerState<RotaryKoreaScreen> {
         body:Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             Platform.isAndroid
-                ? InkWell(
-                  onTap:()async{
-                    if(await canLaunchUrl(androidUrl)){
-                      await launchUrl(androidUrl);
-                    }else {
-                      Fluttertoast.showToast(msg: '플레이스토어를 설치해주세요');
-                    }
-                  },
-                 child:Image.asset('asset/images/korea_rotary_android_image.png',width: double.infinity,))
-                : InkWell(
+                InkWell(
                  onTap:()async{
                    if(await canLaunchUrl(iOSUrl)){
                      await launchUrl(iOSUrl);

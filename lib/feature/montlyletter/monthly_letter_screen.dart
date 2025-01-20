@@ -108,7 +108,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
     return Scaffold(
       backgroundColor: GlobalColor.white,
       appBar: AppBar(
-        title: Text('총재월신'),
+        title: IndexMaxTitle('총재월신'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -164,7 +164,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
                           padding: EdgeInsets.only(
                             bottom: 30,
                           ),
-                          child: Text(
+                          child: IndexText(
                             '더 이상 검색된 목록이 없습니다',
                             textAlign: TextAlign.center,
                           ));

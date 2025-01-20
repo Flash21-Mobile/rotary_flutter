@@ -41,7 +41,7 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('행사 일정'),
+          title: IndexMaxTitle('행사 일정'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -62,9 +62,9 @@ class _EventDetailScreen extends ConsumerState<EventDetailScreen> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: GlobalColor.primaryColor),
-                            child: Text(
+                            child: IndexText(
                               '삭제',
-                              style: TextStyle(color: GlobalColor.white),
+                              textColor: GlobalColor.white,
                             ),
                           ),
                           onTap: () async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 
 class IntroduceFoundationScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class IntroduceFoundationScreenState extends ConsumerState<IntroduceFoundationSc
       child: Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('총재단소개'),
+          title: IndexMaxTitle('총재단소개'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

@@ -10,7 +10,7 @@ abstract class AccountRepository {
   factory AccountRepository(Dio dio, {String baseUrl}) = _AccountRepository;
 
   @GET("/account")
-  Future<List<Account>> getAccount(
+  Future<List<Account>> getAccount({
     @Query('cellphone') String? cellphone,
     @Query('id') int? id,
     @Query('name') String? name,
@@ -18,7 +18,7 @@ abstract class AccountRepository {
     @Query('region') String? region,
     @Query('page') int? page,
     @Query('size') int? size,
-  );
+  });
 
   @GET("/account/count")
   Future<int> getAccountCount(

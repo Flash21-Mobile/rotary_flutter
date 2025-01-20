@@ -1,26 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_screen.dart';
 import 'package:rotary_flutter/feature/etc/allocation_table_screen.dart';
 import 'package:rotary_flutter/feature/event/event_screen.dart';
-import 'package:rotary_flutter/feature/etc/gallery_screen.dart';
 import 'package:rotary_flutter/feature/etc/homepage_screen.dart';
 import 'package:rotary_flutter/feature/etc/introduce_foundation_screen.dart';
 import 'package:rotary_flutter/feature/etc/k_rotary_screen.dart';
 import 'package:rotary_flutter/feature/etc/my_rotary_screen.dart';
 import 'package:rotary_flutter/feature/etc/organization_screen.dart';
 import 'package:rotary_flutter/feature/etc/policy_screen.dart';
-import 'package:rotary_flutter/feature/etc/president_record_screen.dart';
 import 'package:rotary_flutter/feature/etc/president_screen.dart';
 import 'package:rotary_flutter/feature/etc/rotary_korea_screen.dart';
 import 'package:rotary_flutter/feature/montlyletter/monthly_letter_screen.dart';
 import 'package:rotary_flutter/feature/userSearch/user_search_screen.dart';
 import 'package:rotary_flutter/feature/criterion/criterion_screen.dart';
 import 'package:rotary_flutter/feature/etc/programing_table_screen.dart';
+import 'package:rotary_flutter/util/launch_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../feature/etc/announcement_screen.dart';
 import '../../feature/myInfo/modify/my_info_modify_screen.dart';
-
 
 class MenuItem {
   final String? iconPath;
@@ -43,11 +43,11 @@ final List<MenuItem> menuItems = [
   MenuItem(
       iconPath: 'asset/icons/menu/gallery_icon.svg',
       label: '지구갤러리',
-      onTap: (){
+      onTap: () {
         launchUrl(Uri.parse('https://band.us/band/50079452/album'));
       }),
   MenuItem(
-iconPath: 'asset/icons/menu/my_rotary_icon.svg',
+      iconPath: 'asset/icons/menu/my_rotary_icon.svg',
       label: '내 로타리',
       widget: const MyRotaryScreen()),
   MenuItem(
@@ -87,11 +87,23 @@ iconPath: 'asset/icons/menu/my_rotary_icon.svg',
   MenuItem(
       iconPath: 'asset/icons/menu/k_rotary_icon.svg',
       label: 'K-로타리',
-      widget: KRotaryKoreaScreen()),
+      onTap: () async {
+        if (Platform.isAndroid) {
+          const packageName = 'com.project.rotarysystem';
+          await Launch.intentForPackage(packageName);
+        }
+      },
+      widget: Platform.isIOS ? KRotaryKoreaScreen() : null),
   MenuItem(
       iconPath: 'asset/icons/menu/rotary_korea_icon.svg',
       label: '로타리코리아',
-      widget: RotaryKoreaScreen()),
+      onTap: () async {
+        if (Platform.isAndroid) {
+          const packageName = 'kr.co.pksoft.rotarykorea';
+          await Launch.intentForPackage(packageName);
+        }
+      },
+      widget: Platform.isIOS ? const RotaryKoreaScreen() : null),
   MenuItem(
       iconPath: 'asset/icons/menu/president_icon.svg',
       label: 'RI 회장',
@@ -112,8 +124,6 @@ iconPath: 'asset/icons/menu/my_rotary_icon.svg',
       iconPath: 'asset/icons/menu/programing_table_icon.svg',
       label: '편성표',
       widget: const ProgramingTableScreen()),
-  MenuItem(
-    iconPath: null,
-    label: '',
-  ),
+  MenuItem(iconPath: null, label: ''),
+  MenuItem(iconPath: null, label: ''),
 ];

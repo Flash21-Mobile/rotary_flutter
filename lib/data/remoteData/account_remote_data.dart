@@ -18,11 +18,16 @@ class AccountAPI {
 
   AccountAPI() {
     dio.interceptors.add(LogInterceptor(
-      request: true, // 요청 데이터 로깅
-      requestHeader: true, // 요청 헤더 로깅
-      requestBody: true, // 요청 바디 로깅
-      responseHeader: true, // 응답 헤더 로깅
-      responseBody: true, // 응답 바디 로깅
+      request: true,
+      // 요청 데이터 로깅
+      requestHeader: true,
+      // 요청 헤더 로깅
+      requestBody: true,
+      // 요청 바디 로깅
+      responseHeader: true,
+      // 응답 헤더 로깅
+      responseBody: true,
+      // 응답 바디 로깅
       error: true, // 에러 로깅
     ));
     accountRepository = AccountRepository(dio, baseUrl: serverUrl);
@@ -38,13 +43,31 @@ class AccountAPI {
   }) async {
     try {
       final result = await accountRepository.getAccount(
-          cellphone, id, name, grade, region, page, accountListLength);
+          cellphone: cellphone,
+          id: id,
+          name: name,
+          grade: grade,
+          region: region,
+          page: page,
+          size: accountListLength);
       print('success: $result');
 
       return Success(result);
     } catch (e) {
       print('getAccount error: $e');
       return Error(e);
+    }
+  }
+
+  Future<LoadState<bool?>> postIOSLogin(String cellphone, String name) async {
+    try {
+      final result = await accountRepository.getAccount(cellphone: cellphone);
+      return result.first.name == name
+          ? Success(true)
+          : Error(DioException);
+    } on DioException catch (e) {
+      print('getAccount error: $e');
+      return Success(null);
     }
   }
 

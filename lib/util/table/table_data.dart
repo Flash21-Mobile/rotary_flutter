@@ -1,6 +1,6 @@
-import 'criterion_interfaces.dart';
+import 'table_interfaces.dart';
 
-class CriterionData {
+class TableData {
   static List<CriterionAll> all = [
     const CriterionAll(type: '시상종류', target: '대상', content: '내용'),
     const CriterionAll(type: '최우수클럽', target: '1개 클럽', content: '클럽 종합평가점수 최고점 클럽'),

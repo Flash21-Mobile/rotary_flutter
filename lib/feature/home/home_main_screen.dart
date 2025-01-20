@@ -44,7 +44,6 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     });
   }
 
-
   Future<LoadState> getBanners() async {
     return await ref.read(HomeMainProvider).getAdvertiseRandom();
   }
@@ -92,64 +91,71 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                   alignment: Alignment.center,
                   child: Stack(alignment: Alignment.bottomRight, children: [
                     InkWell(
-                        onTap: (){
-                          ref.read(HomeProvider).pushCurrentWidget = const UserSearchScreen();
+                        onTap: () {
+                          ref.read(HomeProvider).pushCurrentWidget =
+                              const UserSearchScreen();
                         },
-                        child:
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              height: (MediaQuery.of(context).size.width) * 6 / 24,
-                              width: (MediaQuery.of(context).size.width) * 6 / 24,
-                              'asset/icons/logo_star.svg',
-                            ),
-                            SizedBox(width: 15,),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IndexMaxTitle(
-                                  '로타리 3700지구',
-                                ),
-                                Text(
-                                  '전체인원 ${2707}',
-                                  style: TextStyle(
-                                      fontSize: DynamicFontSize.font22(context),
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                SizedBox(
-                                  height: 16,
-                                ),
-                                InkWell(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () {
-                                    homeProvider.pushCurrentWidget =
-                                        UserSearchListScreen(initialRegion: 0);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 15, right: 5, top: 5, bottom: 5),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        color: GlobalColor.indexBoxColor),
-                                    child: Row(
-                                      children: [
-                                        Text('전체보기'),
-                                        Icon(Icons.arrow_right_rounded)
-                                      ],
-                                    ),
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                height: (MediaQuery.of(context).size.width) *
+                                    6 /
+                                    24,
+                                width: (MediaQuery.of(context).size.width) *
+                                    6 /
+                                    24,
+                                'asset/icons/logo_star.svg',
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IndexMaxTitle(
+                                    '로타리 3700지구'
                                   ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      )),
+                                  IndexText(
+                                    '전체인원 ${2707}'
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () {
+                                      homeProvider.pushCurrentWidget =
+                                          UserSearchListScreen(
+                                              initialRegion: 0);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                          left: 15,
+                                          right: 5,
+                                          top: 5,
+                                          bottom: 5),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          color: GlobalColor.indexBoxColor),
+                                      child: Row(
+                                        children: [
+                                          IndexMinText('전체보기'),
+                                          Icon(Icons.arrow_right_rounded)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        )),
                     // PageView.builder(
                     //   onPageChanged: (index) {
                     //     setState(() {
@@ -258,12 +264,9 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                                 height: width * 0.08,
                               ),
                         SizedBox(height: height * 0.01),
-                        Text(
+                        IndexTitle(
                           menuItems[index].label,
-                          style: TextStyle(
-                              color: GlobalColor.indexBoxColor,
-                              fontSize: width * 0.035,
-                              fontWeight: FontWeight.bold),
+                          textColor: GlobalColor.indexBoxColor,
                         )
                       ],
                     ),
@@ -292,40 +295,18 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SvgPicture.asset(
-                        'asset/icons/logo_index.svg',
-                        width: 70,
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Column(
+                      SvgPicture.asset('asset/icons/logo_index.svg', width: 70),
+                      const SizedBox(width: 15),
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '국제로타리 3700지구',
-                            style: TextStyle(
-                                color: GlobalColor.indexColor,
-                                fontSize: DynamicFontSize.font12(context)),
-                          ),
-                          Text(
-                            '대구광역시 중구 동덕로 115 진석타워 5층 501호',
-                            style: TextStyle(
-                                color: GlobalColor.indexColor,
-                                fontSize: DynamicFontSize.font12(context)),
-                          ),
-                          Text(
-                            'TEL 053-473-3700. FAX 053-429-7901~2',
-                            style: TextStyle(
-                                color: GlobalColor.indexColor,
-                                fontSize: DynamicFontSize.font12(context)),
-                          ),
-                          Text(
-                            '',
-                            style: TextStyle(
-                                color: GlobalColor.indexColor,
-                                fontSize: DynamicFontSize.font12(context)),
-                          ),
+                          IndexMicroText('국제로타리 3700지구',defaultScale: true,
+                              textColor: GlobalColor.indexColor),
+                          IndexMicroText('대구광역시 중구 동덕로 115 진석타워 5층 501호',defaultScale: true,
+                              textColor: GlobalColor.indexColor),
+                          IndexMicroText('TEL 053-473-3700. FAX 053-429-7901~2',defaultScale: true,
+                              textColor: GlobalColor.indexColor),
+                          IndexMicroText(''),
                         ],
                       ),
                     ],

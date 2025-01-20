@@ -1,3 +1,4 @@
+import 'package:daum_postcode_search/data_model.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/util/common/common.dart';
+import 'package:rotary_flutter/util/get_address_screen.dart';
 import 'package:rotary_flutter/util/model/menu_items.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -108,7 +110,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
         loadState: myInfoProvider.accountState,
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('내 정보 수정'),
+          title: IndexMaxTitle('내 정보 수정'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -121,6 +123,18 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: InkWell(
                   onTap: () async {
+                    final emailRegex = RegExp(
+                        r'^[a-zA-._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    if (emailController.text.isNotEmpty && !emailRegex.hasMatch(emailController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        backgroundColor: Colors.red,
+                        duration: Duration(milliseconds: 1500),
+                        content: Text('이메일 형식이 올바르지 않습니다.'),
+                      ));
+
+                      return;
+                    }
+
                     var data =
                         (myInfoProvider.accountState as Success).data.first;
                     data as Account;
@@ -158,9 +172,10 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                         content: Text('성공적으로 저장되었습니다.'),
                       ));
 
-                      myInfoProvider.accountState = currentState;
+                      myInfoProvider.accountState =
+                          Success([response.data as Account]);
 
-                      ref.read(HomeProvider).popCurrentWidget();
+                      // ref.read(HomeProvider).popCurrentWidget();
                     } else {
                       myInfoProvider.accountState = currentState;
                     }
@@ -171,9 +186,10 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         color: GlobalColor.primaryColor),
-                    child: Text(
+                    child: IndexText(
                       '저장',
-                      style: TextStyle(color: GlobalColor.white),
+                      defaultScale: true,
+                      textColor: GlobalColor.white,
                     ),
                   ),
                 ))
@@ -336,6 +352,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                             ),
                             MyInfoModifyTextField(
                                 indexTitle: '팩스',
+                                keyboardType: TextInputType.number,
                                 indexController: faxController),
                             SizedBox(
                               height: 15,
@@ -345,6 +362,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                               indexController: memoController,
                               multilineEnable: true,
                             ),
+                            SizedBox(
+                              height: 100,
+                            )
                           ]),
                         ),
                       ),
@@ -361,30 +381,35 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                             MyInfoModifyTextField(
                                 indexTitle: '회사 직책',
                                 indexController: workPositionNameController),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            MyInfoModifyTextField(
-                                indexTitle: '회사 우편번호',
-                                indexController: workAddressZipCodeController),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            MyInfoModifyTextField(
-                                indexTitle: '회사 주소',
-                                indexController: workAddressController),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            const SizedBox(height: 15),
+                            InkWell(
+                                splashColor: GlobalColor.transparent,
+                                highlightColor: GlobalColor.transparent,
+                                onTap: () {
+                                  getAddress();
+                                },
+                                child: AbsorbPointer(
+                                    child: Column(children: [
+                                  MyInfoModifyTextField(
+                                      indexTitle: '회사 우편번호',
+                                      indexController:
+                                          workAddressZipCodeController),
+                                  const SizedBox(height: 15),
+                                  MyInfoModifyTextField(
+                                      indexTitle: '회사 주소',
+                                      indexController: workAddressController),
+                                  const SizedBox(height: 15),
+                                ]))),
                             MyInfoModifyTextField(
                                 indexTitle: '회사 상세주소',
                                 indexController: workAddressSubController),
-                            SizedBox(
-                              height: 15,
-                            ),
+                            const SizedBox(height: 15),
                             MyInfoModifyTextField(
                                 indexTitle: '업종',
                                 indexController: typeController),
+                            SizedBox(
+                              height: 100,
+                            )
                           ]),
                         ),
                       ),
@@ -395,5 +420,17 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
             ),
           );
         });
+  }
+
+  Future getAddress() async {
+    DataModel data =
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return GetAddressScreen();
+    }));
+
+    workAddressController.text = data.address;
+    workAddressZipCodeController.text = data.zonecode;
+
+    Log.d('received data hello: $data');
   }
 }

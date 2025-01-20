@@ -24,7 +24,7 @@ class _Widget extends ConsumerState<AdvertiseDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('광고협찬'),
+          title: IndexMaxTitle('광고협찬'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

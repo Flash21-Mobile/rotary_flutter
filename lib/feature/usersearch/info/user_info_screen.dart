@@ -50,7 +50,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('회원정보'),
+          title: IndexMaxTitle('회원정보'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

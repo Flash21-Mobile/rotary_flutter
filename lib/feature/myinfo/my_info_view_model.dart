@@ -14,12 +14,17 @@ final MyInfoProvider =
 });
 
 class _ViewModel with ChangeNotifier {
-  LoadState accountState = Loading();
+  LoadState _accountState = Loading();
+  LoadState get accountState => _accountState;
+  set accountState(LoadState state) {
+    _accountState = state;
+    notifyListeners();
+  }
 
   Future getMyAccount() async {
     var cellphone = await globalStorage.read(key: 'phone');
 
-    accountState = await AccountAPI().getAccount(cellphone: cellphone);
+    _accountState = await AccountAPI().getAccount(cellphone: cellphone);
     notifyListeners();
   }
 }

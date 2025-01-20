@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 
 class GalleryScreen extends ConsumerStatefulWidget {
@@ -51,7 +52,7 @@ class GalleryScreenState extends ConsumerState<GalleryScreen> {
               ref.read(HomeProvider).popCurrentWidget();
             },
           ),
-          title: Text('지구갤러리'),
+          title: IndexMaxTitle('지구갤러리'),
           centerTitle: true,
         ),
         body: WebViewWidget(controller: _controller),

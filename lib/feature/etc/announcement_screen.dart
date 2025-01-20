@@ -4,6 +4,8 @@ import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../home/home_main_component.dart';
+
 class AnnouncementScreen extends ConsumerStatefulWidget {
   const AnnouncementScreen({super.key});
 
@@ -52,7 +54,7 @@ class _AnnouncementScreen extends ConsumerState<AnnouncementScreen> {
               ref.read(HomeProvider).popCurrentWidget();
             },
           ),
-          title: Text('공지사항'),
+          title: IndexMaxTitle('공지사항'),
           centerTitle: true,
         ),
         body: WebViewWidget(controller: _controller),

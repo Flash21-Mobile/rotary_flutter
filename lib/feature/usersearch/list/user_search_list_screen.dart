@@ -63,18 +63,18 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
 
       var loadState = await userSearchListProvider.getAccountList(
           page: currentPage++,
-          grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].contains('전체')
+          grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade.contains('전체')
               ? null
-              : AccountRegion.regions[_selectedRegion].grades[_selectedGrade],
+              : AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade,
           region: AccountRegion.regions[_selectedRegion].name == '전체'
               ? null
               : AccountRegion.regions[_selectedRegion].name,
           name: query);
 
       accountCount = await userSearchListProvider.getAccountListCount(
-              grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].contains('전체')
+              grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade.contains('전체')
                   ? null
-                  : AccountRegion.regions[_selectedRegion].grades[_selectedGrade],
+                  : AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade,
               region: AccountRegion.regions[_selectedRegion].name == '전체'
                   ? null
                   : AccountRegion.regions[_selectedRegion].name, name: query) ??
@@ -136,7 +136,7 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.indexBoxColor,
         appBar: AppBar(
-          title: Text('회원검색'),
+          title: IndexMaxTitle('회원검색'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -197,11 +197,9 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                   ),
 
                   SizedBox(width: 10),
-                  CustomDropdown(
+                  CustomGradeDropdown(
                       isLoading: viewModel.userListState is Loading,
-                      items: AccountRegion.regions[_selectedRegion].grades
-                          .map((value) => value)
-                          .toList(),
+                      items: AccountRegion.regions[_selectedRegion].grades,
                       selectedValue: _selectedGrade,
                       onChanged: (value) {
                         if (value != null && value != _selectedGrade) {
@@ -257,7 +255,7 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                       padding: EdgeInsets.only(
                         bottom: 30,
                       ),
-                      child: Text(
+                      child: IndexText(
                         '더 이상 검색된 회원이 없습니다',
                         textAlign: TextAlign.center,
                       ));

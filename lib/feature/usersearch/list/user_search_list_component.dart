@@ -127,6 +127,8 @@ class UserSearchListTile extends ConsumerStatefulWidget {
 }
 
 class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
+  final globalKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(UserSearchListProvider);
@@ -150,16 +152,20 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                IndexMaxTitle(widget.account.name),
-                SizedBox(
-                  width: 5,
-                ),
-                IndexMinText(
-                  widget.account.grade?.name,
-                  overFlowFade: true,
-                )
-              ]),
+              Container(
+                  width: 165,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IndexMaxTitle(widget.account.name),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        IndexMinText(
+                          widget.account.grade?.name,
+                          overFlowFade: true,
+                        )
+                      ])),
               SizedBox(
                 height: 5,
               ),
@@ -174,14 +180,11 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                       '직책',
                       textColor: GlobalColor.black,
                     ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Expanded(
-                        child: IndexMinTitle(
+                    SizedBox(width: 5),
+                    IndexMinTitle(
                       widget.account.pastGrade?.name,
                       overFlowFade: true,
-                    ))
+                    )
                   ])),
               SizedBox(
                 height: 5,

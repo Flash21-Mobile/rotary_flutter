@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../util/global_color.dart';
+import '../home/home_main_component.dart';
 import '../home_view_model.dart';
 
 class HomepageScreen extends ConsumerStatefulWidget {
@@ -45,7 +46,7 @@ class _HomepageScreenState extends ConsumerState<HomepageScreen> {
       child: Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('지구홈페이지'),
+          title: IndexMaxTitle('지구홈페이지'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import '../global_color.dart';
-import 'criterion_interfaces.dart';
+import 'table_interfaces.dart';
 
-class SliverCriterionTable extends StatelessWidget {
-  final List<CriterionInterface> data;
+class SliverTable extends StatelessWidget {
+  final List<TableInterface> data;
 
-  const SliverCriterionTable({super.key, required this.data});
+  const SliverTable({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {

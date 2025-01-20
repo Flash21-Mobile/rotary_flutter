@@ -68,7 +68,7 @@ class _Widget extends ConsumerState<EventModifyScreen> {
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: Text('행사 추가'),
+          title: IndexMaxTitle('행사 추가'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -86,9 +86,10 @@ class _Widget extends ConsumerState<EventModifyScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         color: GlobalColor.primaryColor),
-                    child: Text(
+                    child: IndexText(
                       '저장',
-                      style: TextStyle(color: GlobalColor.white),
+                       defaultScale: true,
+                       textColor: GlobalColor.white,
                     ),
                   ),
                   onTap: () async {
@@ -148,14 +149,13 @@ class _Widget extends ConsumerState<EventModifyScreen> {
                         keyboardType: TextInputType.multiline,
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 20
                       ),
-                      Text(
-                        '행사 날짜',
-                        style: TextStyle(color: GlobalColor.darkGreyFontColor),
+                      IndexText(
+                        '행사 날짜'
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 5
                       ),
                       Row(
                         children: [

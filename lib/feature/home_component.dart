@@ -65,7 +65,7 @@ class _LoadStateScaffold extends ConsumerState<LoadStateScaffold> {
 class LoadStateWidget<T> extends StatelessWidget {
   final Widget? Function()? loadingWidget;
   final Widget Function(T) successWidget;
-  final Widget? Function(Object)? errorWidget;
+  final Widget? Function(Object?)? errorWidget;
   final Widget? elseWidget;
 
   final LoadState loadState;
@@ -98,19 +98,21 @@ class LoadStateWidget<T> extends StatelessWidget {
   }
 }
 
-void showDismissDialog(
-  BuildContext context, {
-  String? title,
-  Function(bool, Object?)? onPopInvokedWithResult,
-  TextEditingController? controller,
-  String? hint,
-  TextInputType? keyboardType,
-  List<TextInputFormatter>? textInputFormatter,
-  Function()? onTap,
-  required String buttonText,
-  TextEditingController? subController,
-  String? subHint,
-}) {
+void showDismissDialog(BuildContext context,
+    {String? title,
+    Function(bool, Object?)? onPopInvokedWithResult,
+    TextEditingController? controller,
+    String? hint,
+    Widget? extraContents,
+    TextInputType? keyboardType,
+    TextInputType? subKeyboardType,
+    List<TextInputFormatter>? textInputFormatter,
+    List<TextInputFormatter>? subTextInputFormatter,
+    Function()? onTap,
+    required String buttonText,
+    TextEditingController? subController,
+    String? subHint,
+    bool? subObscureText}) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -123,69 +125,74 @@ void showDismissDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  height: 20,
-                  'asset/icons/logo.svg',
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                ...title != null
-                    ? [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: 15,
-                        )
-                      ]
-                    : [],
-                ...(textInputFormatter != null && hint != null)
-                    ? [
-                        MyInfoModifyTextField(
-                            indexTitle: hint,
-                            indexController: controller,
-                            keyboardType: keyboardType,
-                            inputFormatters: textInputFormatter),
-                        SizedBox(height: 20)
-                      ]
-                    : [],
-                ...(subController != null && subHint != null)
-                    ? [
-                        MyInfoModifyTextField(
-                            indexTitle: subHint,
-                            indexController: subController,
-                            keyboardType: keyboardType,
-                            obscureText: true,
-                            inputFormatters: textInputFormatter),
-                        SizedBox(height: 20),
-                      ]
-                    : [],
-                Row(mainAxisSize: MainAxisSize.max, children: [
-                  Expanded(
-                      child: InkWell(
-                          onTap: onTap,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: GlobalColor.primaryColor,
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            alignment: Alignment.center,
-                            child: IndexTitle(
-                              buttonText,
-                              textColor: GlobalColor.white,
-                            ),
-                          )))
-                ]),
-              ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    height: 20,
+                    'asset/icons/logo.svg',
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ...extraContents != null
+                      ? [extraContents, const SizedBox(height: 20)]
+                      : [],
+                  ...title != null
+                      ? [
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          )
+                        ]
+                      : [],
+                  ...(hint != null)
+                      ? [
+                          MyInfoModifyTextField(
+                              indexTitle: hint,
+                              indexController: controller,
+                              keyboardType: keyboardType,
+                              inputFormatters: textInputFormatter),
+                          SizedBox(height: 20)
+                        ]
+                      : [],
+                  ...(subController != null && subHint != null)
+                      ? [
+                          MyInfoModifyTextField(
+                              indexTitle: subHint,
+                              indexController: subController,
+                              keyboardType: subKeyboardType,
+                              obscureText: subObscureText,
+                              inputFormatters: subTextInputFormatter),
+                          SizedBox(height: 20),
+                        ]
+                      : [],
+                  Row(mainAxisSize: MainAxisSize.max, children: [
+                    Expanded(
+                        child: InkWell(
+                            onTap: onTap,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: GlobalColor.primaryColor,
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              alignment: Alignment.center,
+                              child: IndexTitle(
+                                buttonText,
+                                textColor: GlobalColor.white,
+                              ),
+                            )))
+                  ]),
+                ],
+              ),
             ),
           ),
         ),

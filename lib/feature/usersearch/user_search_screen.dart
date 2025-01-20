@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
+import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import 'list/user_search_list_screen.dart';
-
 
 class UserSearchScreen extends ConsumerStatefulWidget {
   const UserSearchScreen({
@@ -18,18 +18,32 @@ class UserSearchScreen extends ConsumerStatefulWidget {
 }
 
 class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
+  int? accountCount = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getAccountCount();
+    });
+  }
+
+  void getAccountCount() async {
+    var data =await ref.read(UserSearchListProvider).getAccountListCount(name: '');
+    setState(() {
+      accountCount = data;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var homeProvider = ref.read(HomeProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = constraints.maxWidth;
-        final maxHeight = constraints.maxHeight;
-
         return Scaffold(
           appBar: AppBar(
-            title: Text('회원검색'),
+            title: IndexMaxTitle('회원검색'),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -41,7 +55,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(left: 15,right: 15, bottom: 50),
+              padding: EdgeInsets.only(left: 15, right: 15, bottom: 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,11 +76,8 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                           IndexMaxTitle(
                             '로타리 3700지구',
                           ),
-                          Text(
-                            '전체인원 ${2707}',
-                            style: TextStyle(
-                                fontSize: maxWidth * 0.035,
-                                fontWeight: FontWeight.w500),
+                          IndexText(
+                            '전체인원 $accountCount',
                           ),
                           SizedBox(
                             height: 5,
@@ -75,7 +86,8 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: () {
-                              homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: 0);
+                              homeProvider.pushCurrentWidget =
+                                  UserSearchListScreen(initialRegion: 0);
                             },
                             child: Container(
                               padding: EdgeInsets.only(
@@ -85,7 +97,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                                   color: GlobalColor.indexBoxColor),
                               child: Row(
                                 children: [
-                                  Text('전체보기'),
+                                  IndexMinText('전체보기'),
                                   Icon(Icons.arrow_right_rounded)
                                 ],
                               ),
@@ -96,54 +108,53 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                  onTap: (){
-
-                        homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: 1);
-                  },
-                    child: Container(
-                    height: 95,
-                    decoration: BoxDecoration(
-                        color: GlobalColor.indexBoxColor,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30),
-                          child: SvgPicture.asset(
-                            'asset/icons/logo_rotary.svg',
-                            width: 30,
-                            height: 30,
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IndexMaxTitle(
-                              '지구지도부',
-                            ),
-                            SizedBox(width: 10),
-                            IndexText('132명'),
-                          ],)
-                      ],
-                    ))),
-
+                  InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        homeProvider.pushCurrentWidget =
+                            UserSearchListScreen(initialRegion: 1);
+                      },
+                      child: Container(
+                          height: 95,
+                          decoration: BoxDecoration(
+                              color: GlobalColor.indexBoxColor,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 30),
+                                child: SvgPicture.asset(
+                                  'asset/icons/logo_rotary.svg',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IndexMaxTitle(
+                                    '지구지도부',
+                                  ),
+                                  SizedBox(width: 10),
+                                  IndexText('132명'),
+                                ],
+                              )
+                            ],
+                          ))),
                   SizedBox(height: 10),
                   GridView.builder(
                     physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 1.3,
+                        childAspectRatio: 1.3,
                         crossAxisCount: 3,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10),
                     itemCount: 12,
                     itemBuilder: (context, index) {
                       return Container(
-
                           decoration: BoxDecoration(
                               color: GlobalColor.indexBoxColor,
                               borderRadius: BorderRadius.circular(20)),
@@ -151,7 +162,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SvgPicture.asset(
@@ -159,12 +170,18 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                                       width: 30,
                                       height: 30,
                                     ),
-                                    SizedBox(height: 10,),
-                                    IndexText('${index+1}지역',)
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    IndexText(
+                                      '${index + 1}지역',
+                                    )
                                   ]),
                               onTap: () {
-                      homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: index +1);
-                      }));
+                                homeProvider.pushCurrentWidget =
+                                    UserSearchListScreen(
+                                        initialRegion: index + 2);
+                              }));
                     },
                   )
                 ],

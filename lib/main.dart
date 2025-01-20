@@ -40,7 +40,10 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          textScaler: const TextScaler.linear(1.0),
+          textScaler: MediaQuery.textScalerOf(context).clamp(
+            minScaleFactor: 1.0, // 최소 스케일 팩터
+            maxScaleFactor: 1.3, // 최대 스케일 팩터
+          ),
         ),
         child: child!,
       ),
