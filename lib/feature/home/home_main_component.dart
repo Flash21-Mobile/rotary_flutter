@@ -19,7 +19,7 @@ class IndexText extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
-    super.defaultScale,
+    super.defaultScale,super.decoration
   });
 
   @override
@@ -39,7 +39,7 @@ class IndexTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
-    super.defaultScale,
+    super.defaultScale,super.decoration
   });
 
   @override
@@ -59,7 +59,7 @@ class IndexMaxTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
-    super.defaultScale,
+    super.defaultScale,super.decoration
   });
 
   @override
@@ -79,7 +79,7 @@ class IndexMaxText extends IndexInterface {
         super.maxLength,
         super.height,
         super.textAlign,
-        super.defaultScale,
+        super.defaultScale,super.decoration
       });
 
   @override
@@ -99,7 +99,7 @@ class IndexThumbTitle extends IndexInterface {
     super.maxLength,
     super.height,
     super.textAlign,
-    super.defaultScale,
+    super.defaultScale,super.decoration
   });
 
   @override
@@ -120,6 +120,7 @@ class IndexMinText extends IndexInterface {
     super.height,
     super.textAlign,
     super.defaultScale,
+        super.decoration
   });
 
   @override
@@ -140,6 +141,7 @@ class IndexMinTitle extends IndexInterface {
     super.height,
     super.textAlign,
     super.defaultScale,
+        super.decoration
   });
 
   @override
@@ -160,6 +162,7 @@ class IndexMicroText extends IndexInterface {
     super.height,
     super.textAlign,
     super.defaultScale,
+        super.decoration
   });
 
   @override
@@ -173,12 +176,13 @@ class IndexMicroText extends IndexInterface {
 abstract class IndexInterface extends StatelessWidget {
   const IndexInterface(this.data,
       {super.key,
-      this.textColor,
-      this.overFlowFade,
-      this.maxLength,
-      this.height,
-      this.textAlign,
-      this.defaultScale});
+        required this.textColor,
+        required  this.overFlowFade,
+        required  this.maxLength,
+        required this.height,
+        required this.textAlign,
+        required  this.defaultScale,
+        required  this.decoration});
 
   final String? data;
   final Color? textColor;
@@ -187,6 +191,7 @@ abstract class IndexInterface extends StatelessWidget {
   final double? height;
   final TextAlign? textAlign;
   final bool? defaultScale;
+  final TextDecoration? decoration;
 
   double Function(BuildContext) get fontSize;
 
@@ -201,6 +206,7 @@ abstract class IndexInterface extends StatelessWidget {
           ? TextScaler.noScaling
           : null,
       style: TextStyle(
+        decoration: decoration,
           fontSize: fontSize(context),
           height: height,
           fontWeight: fontWeight,

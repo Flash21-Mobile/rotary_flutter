@@ -10,7 +10,7 @@ class Success<T> extends LoadState<T> {
 }
 
 class Error<T> extends LoadState<T> {
-  final Object? exception;
+  final Object exception;
 
   Error(this.exception);
 }

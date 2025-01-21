@@ -95,12 +95,15 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           } else {
             globalStorage.write(key: 'admin', value: null);
           }
-          Log.d('i am permission: ${result.permission} ${await globalStorage.read(key: 'admin')}');
 
           isLogin = true;
           globalStorage.write(key: 'phone', value: phone);
+          dataState = End();
         },
-        onError: (e) => showLoginDialog());
+        onError: (e) {
+          showLoginDialog();
+          dataState = End();
+        });
   }
 
   void showIOSLoginDialog() {
@@ -118,18 +121,28 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         ],
         subTextInputFormatter: null,
         keyboardType: TextInputType.number,
-        subKeyboardType: TextInputType.number,
         hint: '전화번호',
         subHint: '이름',
         controller: phoneController,
         subController: nameController,
         onTap: () {
-          if (phoneController.text.isNotEmpty && nameController.text.isNotEmpty) {
+          if (phoneController.text.isNotEmpty &&
+              nameController.text.isNotEmpty) {
             FocusNode().unfocus();
             homeProvider.iOSLogin(phoneController.text, nameController.text);
-            Navigator.of(context, rootNavigator: true).pop();
+            // Navigator.of(context, rootNavigator: true).pop();
           }
         },
+        subContent: InkWell(
+          onTap: (){
+            Navigator.of(context, rootNavigator: true).pop();
+            showLoginDialog();
+          },
+          child: IndexMinText(
+            '로그인이 안되시나요?',
+            decoration: TextDecoration.underline,
+          ),
+        ),
         buttonText: '로그인');
   }
 
@@ -173,13 +186,22 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     var homeProvider = ref.watch(HomeProvider);
 
+    // iOS 로그인
     loadStateFunction(
         loadState: homeProvider.loginState,
         onSuccess: (data) {
-            login(phoneController.text);
+          Navigator.of(context, rootNavigator: true).pop();
+          login(phoneController.text);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            homeProvider.loginState = End();
+          });
         },
         onError: (e) {
-          showLoginDialog();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            phoneController.text = '';
+            nameController.text = '';
+            Fluttertoast.showToast(msg: '전화번호 또는 이름이 잘못되었습니다');
+          });
         });
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

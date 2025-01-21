@@ -59,15 +59,16 @@ class AccountAPI {
     }
   }
 
-  Future<LoadState<bool?>> postIOSLogin(String cellphone, String name) async {
+  Future<LoadState<bool>> postIOSLogin(String cellphone, String name) async {
     try {
       final result = await accountRepository.getAccount(cellphone: cellphone);
+      Log.d('hello getAccount success');
       return result.first.name == name
           ? Success(true)
           : Error(DioException);
     } on DioException catch (e) {
-      print('getAccount error: $e');
-      return Success(null);
+      Log.e('hello getAccount error: $e');
+      return Error(e);
     }
   }
 

@@ -112,7 +112,8 @@ void showDismissDialog(BuildContext context,
     required String buttonText,
     TextEditingController? subController,
     String? subHint,
-    bool? subObscureText}) {
+    bool? subObscureText,
+    Widget? subContent}) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -191,6 +192,13 @@ void showDismissDialog(BuildContext context,
                               ),
                             )))
                   ]),
+                  ...subContent != null
+                      ? [
+                          const SizedBox(height: 15),
+                          subContent,
+                          const SizedBox(height:5)
+                        ]
+                      : []
                 ],
               ),
             ),

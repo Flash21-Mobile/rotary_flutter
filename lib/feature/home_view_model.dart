@@ -16,17 +16,20 @@ class HomeViewmodel with ChangeNotifier {
   int get navigationIndex => _navigationIndex;
   int setNavigationIndex(int index) => _navigationIndex = index;
 
-  LoadState loginState = End();
+  LoadState _loginState = End();
+  LoadState get loginState => _loginState;
+  set loginState(LoadState state) {
+    _loginState = state;
+    notifyListeners();
+  }
+
 
   void iOSLogin(String phone, String name) async{
     loginState  = Loading();
-    notifyListeners();
 
-
-    loginState =await AccountAPI().postIOSLogin(phone, name);
-
-    Log.d('phone State: $loginState');
-    notifyListeners();
+    final data =await AccountAPI().postIOSLogin(phone, name);
+    Log.w('i am received $data');
+    loginState = data;
   }
 
   LoadState authenticateState = Loading();
