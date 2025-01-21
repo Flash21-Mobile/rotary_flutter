@@ -47,6 +47,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     nameController = TextEditingController();
     idController = TextEditingController();
     passwordController = TextEditingController();
+
+
   }
 
   Future<void> androidLogin() async {
@@ -68,17 +70,17 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         showLoginDialog();
       }
     } else {
-      //todo r: 궈한 거부
+      //todo r: 권한 거부
       showErrorDialog();
     }
   }
 
   void iOSLogin() async {
-    // if ((await globalStorage.read(key: 'phone')) == null) {    //todo r: 수정하기
+    if ((await globalStorage.read(key: 'phone')) == null) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showIOSLoginDialog();
     });
-    // }
+    }
   }
 
   void login(String phone) async {

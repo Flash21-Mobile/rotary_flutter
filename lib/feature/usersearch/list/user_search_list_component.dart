@@ -192,7 +192,6 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               Container(
                   width: 165,
                   child: Row(children: [
-                    //todo r: 직책 배경주고 색상
                     IndexMinText(
                       '입회일',
                       textColor: GlobalColor.black,

@@ -23,7 +23,6 @@ import '../../myInfo/modify/my_info_modify_view_model.dart';
 import '../my_info_view_model.dart';
 
 class MyInfoModifyScreen extends ConsumerStatefulWidget {
-  //todo r: 저장 후 안 넘어감
   const MyInfoModifyScreen({super.key});
 
   @override

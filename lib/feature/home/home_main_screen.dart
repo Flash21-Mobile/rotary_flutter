@@ -18,6 +18,7 @@ import '../advertise/advertise_screen.dart';
 import '../advertise/advertise_view_model.dart';
 import '../userSearch/list/user_search_list_component.dart';
 import '../userSearch/list/user_search_list_screen.dart';
+import '../usersearch/list/user_search_list_view_model.dart';
 import 'home_main_component.dart';
 
 class HomeMainScreen extends ConsumerStatefulWidget {
@@ -40,7 +41,18 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getBanners().then((value) {
         if (value is Success) _startAutoSlider();
+
+        getAccountCount();
       });
+    });
+  }
+
+  int? accountCount = 0;
+
+  void getAccountCount() async {
+    var data =await ref.read(UserSearchListProvider).getAccountListCount(name: '');
+    setState(() {
+      accountCount = data;
     });
   }
 
@@ -120,7 +132,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                                     '로타리 3700지구'
                                   ),
                                   IndexText(
-                                    '전체인원 ${2707}'
+                                    '전체인원 $accountCount'
                                   ),
                                   SizedBox(
                                     height: 16,

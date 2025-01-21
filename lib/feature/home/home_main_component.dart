@@ -197,7 +197,7 @@ abstract class IndexInterface extends StatelessWidget {
 
   FontWeight get fontWeight;
 
-  @override   //todo r: 홈 화면 전체 인원 수정하기
+  @override
   Widget build(BuildContext context) {
     return Text(
       data ?? '',
@@ -548,7 +548,7 @@ class CustomDropdown extends ConsumerWidget {
                   builder: (BuildContext context) {
                     if (onTap != null) {
                       onTap!();
-                    } //todo r: cach manager vs sqlite
+                    } //todo r: cache manager vs sqlite
                     Future.delayed(Duration.zero, () {
                       Log.d('messaged hello: $selectedValue');
                       scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300
@@ -596,7 +596,6 @@ class CustomDropdown extends ConsumerWidget {
                                                       padding: EdgeInsets.only(
                                                           left: 45),
                                                       child: Text(
-                                                        // todo r: 닫기 추가하기
                                                         items[index],
                                                         style: TextStyle(
                                                           fontWeight:
@@ -709,7 +708,7 @@ class CustomGradeDropdown extends ConsumerWidget {
                   builder: (BuildContext context) {
                     if (onTap != null) {
                       onTap!();
-                    } //todo r: cach manager vs sqlite
+                    }
                     Future.delayed(Duration.zero, () {
                       Log.d('messaged hello: $selectedValue');
                       scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300
@@ -763,7 +762,6 @@ class CustomGradeDropdown extends ConsumerWidget {
                                                                   .end,
                                                           children: [
                                                             Text(
-                                                              // todo r: 닫기 추가하기
                                                               items[index]
                                                                   .grade,
                                                               style: TextStyle(

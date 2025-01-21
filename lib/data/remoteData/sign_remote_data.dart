@@ -34,7 +34,7 @@ class SignAPI {
     try {
       repository.postSMS(cellphone);
 
-      return Success("success");  //todo r: 수정
+      return Success("success");
     } on DioException catch (e) {
       Log.e('error post');
       return Error(e);
