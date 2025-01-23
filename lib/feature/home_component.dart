@@ -98,6 +98,29 @@ class LoadStateWidget<T> extends StatelessWidget {
   }
 }
 
+Widget LoadStateWidgetFun<T>(
+    {Widget? Function()? loadingWidget,
+    required Widget Function(T) successWidget,
+    Widget? Function(Object?)? errorWidget,
+    Widget? elseWidget,
+    required LoadState loadState,}) {
+  const placeHolder = Center(
+      child: CircularProgressIndicator(
+    color: GlobalColor.primaryColor,
+  ));
+
+  return switch (loadState) {
+    Loading() => loadingWidget != null ? loadingWidget()! : placeHolder,
+    Success() => successWidget(loadState.data),
+    Error() => errorWidget != null
+        ? errorWidget(loadState.exception)!
+        : loadingWidget != null
+            ? loadingWidget()!
+            : placeHolder,
+    _ => elseWidget ?? SizedBox()
+  };
+}
+
 void showDismissDialog(BuildContext context,
     {String? title,
     Function(bool, Object?)? onPopInvokedWithResult,
@@ -196,7 +219,7 @@ void showDismissDialog(BuildContext context,
                       ? [
                           const SizedBox(height: 15),
                           subContent,
-                          const SizedBox(height:5)
+                          const SizedBox(height: 5)
                         ]
                       : []
                 ],
@@ -214,13 +237,13 @@ void loadStateFunction<T>(
     required Function(T) onSuccess,
     Function()? onLoading,
     Function(Object)? onError}) {
-  if (loadState is Success) {
+  if (loadState is Success<T>) {
     Log.d('success on', isSuper: true);
-    onSuccess(loadState.data as T);
-  } else if (loadState is Loading) {
+    onSuccess(loadState.data);
+  } else if (loadState is Loading<T>) {
     Log.d('loading on', isSuper: true);
     (onLoading ?? () {})();
-  } else if (loadState is Error) {
+  } else if (loadState is Error<T>) {
     Log.e('${loadState.exception}', isSuper: true);
     (onError ?? () {})(loadState.exception);
   }

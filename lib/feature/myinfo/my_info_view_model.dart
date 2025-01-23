@@ -24,7 +24,7 @@ class _ViewModel with ChangeNotifier {
   Future getMyAccount() async {
     var cellphone = await globalStorage.read(key: 'phone');
 
-    _accountState = await AccountAPI().getAccount(cellphone: cellphone);
+    _accountState = await AccountAPI().getAccount(cellphone: cellphone, size: 1, matchType: 'andEquals');
     notifyListeners();
   }
 }

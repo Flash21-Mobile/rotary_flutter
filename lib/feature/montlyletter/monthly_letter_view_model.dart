@@ -13,6 +13,7 @@ import 'dart:math';
 
 import '../../data/model/account_model.dart';
 import '../../data/remoteData/account_remote_data.dart';
+import '../../util/model/pair.dart';
 import '../../util/secure_storage.dart';
 
 final MonthlyLetterProvider = ChangeNotifierProvider<_ViewModel>((ref) {
@@ -21,8 +22,6 @@ final MonthlyLetterProvider = ChangeNotifierProvider<_ViewModel>((ref) {
 
 class _ViewModel with ChangeNotifier {
   LoadState monthlyLetterState = End();
-
-  List<int> banners = [];
 
   Future<int?> getMonthlyFileFirst(int? fileApiPK) async {
     var data = await FileAPI().getMonthlyFile(fileApiPK);
@@ -41,36 +40,63 @@ class _ViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<LoadState> getMonthlyLetterAll({int? page, String? query}) async {
+  List<ArticleModel> allMonthlyLetterList = [];
+  List<ArticleModel> _monthlyLetterList = [];
+
+  List<ArticleModel> get monthlyLetterList => _monthlyLetterList;
+
+  set monthlyLetterList(List<ArticleModel> data) {
+    _monthlyLetterList = data;
+    notifyListeners();
+  }
+
+  Future<LoadState> getMonthlyLetterAll({String? query}) async {
     monthlyLetterState = Loading();
     notifyListeners();
 
-    var temp = await ArticleAPI().getMonthlyLetterAll(page, query, query);
+    var temp = await ArticleAPI().getMonthlyLetterAll(query, query);
 
     if (temp == null) {
-      monthlyLetterState = Error('exception');
+      monthlyLetterState = Error(Exception);
       notifyListeners();
       return monthlyLetterState;
     } else {
-      // 본문과 썸네일 리스트 분리
       final List<ArticleModel> advertiseData = temp;
 
-      // 결과를 상태로 설정
+      allMonthlyLetterList = temp;
+      sortData();
+
       monthlyLetterState = Success(advertiseData);
-      banners = advertiseData.map((value) => value.id ?? 0).toList();
+      monthlyLetterCount = advertiseData.length;
       notifyListeners();
 
       return monthlyLetterState;
     }
   }
 
-  Future<int?> getMonthlyLetterAllCount({String? query}) async {
-    return await ArticleAPI().getMonthlyLetterCount(
-        title: query,
-        content: query,
-        accountName: query,
-        or: true,
-        gradeName: query);
+  void sortData({String? query}) async {
+    var temp = allMonthlyLetterList;
+    monthlyLetterState = Loading();
+    notifyListeners();
+    if (monthlyLetterList.isNotEmpty) monthlyLetterList = [];
+
+    await Future.delayed(Duration(milliseconds: 100));
+
+    if (query != null) {
+      temp = temp.where((value) {
+        return (value.title?.contains(query) ?? false) || // title에 query 포함 여부
+            (value.content?.contains(query) ?? false) || // content에 query 포함 여부
+            (value.account?.name?.contains(query) ?? false) ||
+            (value.account?.grade?.name?.contains(query) ??
+                false); // name에 query 포함 여부
+      }).toList();
+    }
+
+    monthlyLetterCount = temp.length;
+    monthlyLetterList = temp;
+
+    monthlyLetterState = Success([]);
+    notifyListeners();
   }
 
   LoadState monthlyLetterPostState = End();
@@ -85,9 +111,9 @@ class _ViewModel with ChangeNotifier {
 
     loadStateFunction<List<Account>>(
         loadState: accountState,
-        onSuccess: (accounts) async {
+        onSuccess: (data) async {
           var firstResponseState =
-              await ArticleAPI().postMonthlyLetterAll(accounts.first, file);
+              await ArticleAPI().postMonthlyLetterAll(data.first, file);
 
           loadStateFunction<ArticleModel>(
               loadState: firstResponseState,
@@ -107,43 +133,7 @@ class _ViewModel with ChangeNotifier {
     return await ArticleAPI().deleteMonthlyLetter(id);
   }
 
-  bool hasMore = true;
-
-  int currentPage = 0;
-
   String query = '';
 
-  List<ArticleModel> items = [];
-
   int? monthlyLetterCount = 0;
-
-  Future<void> fetchData() async {
-    if (monthlyLetterState is Loading && !hasMore) return;
-
-    var loadState = await getMonthlyLetterAll(page: currentPage++, query: query);
-
-    monthlyLetterCount = await getMonthlyLetterAllCount(query: query) ?? 0;
-
-    if (loadState is Success) {
-      final List<ArticleModel> data = loadState.data;
-      if (data.isNotEmpty) {
-        items.addAll(data);
-      } else {
-        hasMore = false;
-      }
-    } else {
-      hasMore = false;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      notifyListeners();
-    });
-  }
-
-  Future<void> initData() async {
-    monthlyLetterCount = 0;
-    currentPage = 0;
-    items = [];
-    hasMore = true;
-    notifyListeners();
-  }
 }

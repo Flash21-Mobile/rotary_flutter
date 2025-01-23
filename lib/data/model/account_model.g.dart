@@ -8,9 +8,8 @@ part of 'account_model.dart';
 
 Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       id: (json['id'] as num?)?.toInt(),
-      userId: (json['userId'] as num?)?.toInt(),
-      userPassword: (json['userPassword'] as num?)?.toInt(),
-      permission: json['permission'] as bool?,
+      userId: json['userId'] as String?,
+      userPassword: json['userPassword'] as String?,
       name: json['name'] as String?,
       email: json['email'] as String?,
       telephone: json['telephone'] as String?,
@@ -30,30 +29,31 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       grade: json['grade'] == null
           ? null
           : Grade.fromJson(json['grade'] as Map<String, dynamic>),
-      groupGrade: json['groupGrade'] == null
+      firstGrade: json['firstGrade'] == null
           ? null
-          : Grade.fromJson(json['groupGrade'] as Map<String, dynamic>),
-      pastGrade: json['pastGrade'] == null
+          : Grade.fromJson(json['firstGrade'] as Map<String, dynamic>),
+      secondGrade: json['secondGrade'] == null
           ? null
-          : Grade.fromJson(json['pastGrade'] as Map<String, dynamic>),
+          : Grade.fromJson(json['secondGrade'] as Map<String, dynamic>),
+      thirdGrade: json['thirdGrade'] == null
+          ? null
+          : Grade.fromJson(json['thirdGrade'] as Map<String, dynamic>),
+      fourthGrade: json['fourthGrade'] == null
+          ? null
+          : Grade.fromJson(json['fourthGrade'] as Map<String, dynamic>),
+      fifthGrade: json['fifthGrade'] == null
+          ? null
+          : Grade.fromJson(json['fifthGrade'] as Map<String, dynamic>),
       android: json['android'] as bool?,
       ios: json['ios'] as bool?,
       active: json['active'] as bool?,
-      clubRI: (json['clubRI'] as num?)?.toInt(),
-      memberRI: (json['memberRI'] as num?)?.toInt(),
+      permission: json['permission'] as bool?,
+      clubRi: (json['clubRi'] as num?)?.toInt(),
+      memberRi: (json['memberRi'] as num?)?.toInt(),
       nickname: json['nickname'] as String?,
       englishName: json['englishName'] as String?,
       memo: json['memo'] as String?,
       job: json['job'] as String?,
-      region: json['region'] == null
-          ? null
-          : Grade.fromJson(json['region'] as Map<String, dynamic>),
-      team: json['team'] == null
-          ? null
-          : Grade.fromJson(json['team'] as Map<String, dynamic>),
-      childTeam: json['childTeam'] == null
-          ? null
-          : Grade.fromJson(json['childTeam'] as Map<String, dynamic>),
       time: json['time'] as String?,
     );
 
@@ -61,7 +61,6 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,
       'userPassword': instance.userPassword,
-      'permission': instance.permission,
       'name': instance.name,
       'email': instance.email,
       'telephone': instance.telephone,
@@ -79,20 +78,21 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'homeAddressSub': instance.homeAddressSub,
       'homeAddressZipCode': instance.homeAddressZipCode,
       'grade': instance.grade,
-      'groupGrade': instance.groupGrade,
-      'pastGrade': instance.pastGrade,
+      'firstGrade': instance.firstGrade,
+      'secondGrade': instance.secondGrade,
+      'thirdGrade': instance.thirdGrade,
+      'fourthGrade': instance.fourthGrade,
+      'fifthGrade': instance.fifthGrade,
       'android': instance.android,
       'ios': instance.ios,
       'active': instance.active,
-      'clubRI': instance.clubRI,
-      'memberRI': instance.memberRI,
+      'permission': instance.permission,
+      'clubRi': instance.clubRi,
+      'memberRi': instance.memberRi,
       'nickname': instance.nickname,
       'englishName': instance.englishName,
       'memo': instance.memo,
       'job': instance.job,
-      'region': instance.region,
-      'team': instance.team,
-      'childTeam': instance.childTeam,
       'time': instance.time,
     };
 

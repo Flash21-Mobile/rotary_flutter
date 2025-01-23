@@ -19,11 +19,10 @@ abstract class ArticleRepository {
     @Query('account') int? account,
 
     @Query('board') int? board,
-    @Query('page') int? page,
     @Query('size') int? size,
-    @Query('or') bool? or,
+    @Query('matchType') String? matchType,
 
-    @Query('orderBy') String? orderBy
+    // @Query('orderBy') String? orderBy
   });
 
   @POST("/article")

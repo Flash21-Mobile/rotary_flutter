@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_mod
 import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/account_region.dart';
+import 'package:rotary_flutter/util/model/pair.dart';
 
 import '../../../data/model/account_model.dart';
 import '../../../util/global_color.dart';
@@ -28,15 +30,11 @@ class UserSearchListScreen extends ConsumerStatefulWidget {
 }
 
 class _ViewModel extends ConsumerState<UserSearchListScreen> {
-  late int _selectedGrade;
-  late int _selectedRegion;
-
   final TextEditingController _searchController = TextEditingController();
   late GlobalKey itemKey;
 
   late FocusNode focusNode;
 
-  List<Account> items = [];
   String query = '';
   bool hasMore = true;
   int currentPage = 0;
@@ -46,80 +44,16 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedGrade = 0;
-    _selectedRegion = widget.initialRegion ?? 0;
     accountCount = 0;
     focusNode = FocusNode();
 
     itemKey = GlobalKey();
-    initData();
-  }
 
-  // 서버에서 데이터를 페이징으로 받아오는 함수
-  Future<void> fetchData() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var userSearchListProvider = ref.read(UserSearchListProvider);
-      if (userSearchListProvider.userListState is Loading && !hasMore) return;
-
-      var loadState = await userSearchListProvider.getAccountList(
-          page: currentPage++,
-          grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade.contains('전체')
-              ? null
-              : AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade,
-          region: AccountRegion.regions[_selectedRegion].name == '전체'
-              ? null
-              : AccountRegion.regions[_selectedRegion].name,
-          name: query);
-
-      accountCount = await userSearchListProvider.getAccountListCount(
-              grade: AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade.contains('전체')
-                  ? null
-                  : AccountRegion.regions[_selectedRegion].grades[_selectedGrade].grade,
-              region: AccountRegion.regions[_selectedRegion].name == '전체'
-                  ? null
-                  : AccountRegion.regions[_selectedRegion].name, name: query) ??
-          0;
-
-      if (loadState is Success) {
-        final List<Account> data = loadState.data;
-        if (hasMore) {
-          Log.d('helloi: add data: ${data.length}');
-          if (data.isNotEmpty) {
-            setState(() {
-              items.addAll(data);
-            });
-            if (data.length != accountListLength) {
-              setState(() {
-                hasMore = false;
-              });
-            }
-          } else {
-            setState(() {
-              hasMore = false;
-            });
-          }
-        } else {
-          setState(() {
-            hasMore = false;
-          });
-        }
-      } else {
-        setState(() {
-          hasMore = false;
-        });
-      }
-    });
-  }
-
-  Future<void> initData() async {
-    Log.d('hello: initData');
-    var userSearchListProvider = ref.read(UserSearchListProvider);
-    if (userSearchListProvider.userListState is Loading && !hasMore) return;
-
-    setState(() {
-      hasMore = true;
-      currentPage = 0;
-      items = [];
+    ref.read(UserSearchListProvider).userListState = End();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(UserSearchListProvider).selectedRegion = widget.initialRegion ?? 0;
+      ref.read(UserSearchListProvider).selectedGrade = 0;
+      ref.read(UserSearchListProvider).getAccountList();
     });
   }
 
@@ -127,6 +61,13 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void sortAccount() {
+    final viewModel = ref.read(UserSearchListProvider);
+
+    viewModel.sortAccountList(
+        query: query);
   }
 
   @override
@@ -153,7 +94,7 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                 size: 20,
               ),
               IndexMinText(
-                '$accountCount',
+                '${viewModel.accountCount}',
                 textColor: GlobalColor.greyFontColor,
               ),
               SizedBox(
@@ -177,17 +118,15 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                     items: AccountRegion.regions
                         .map((value) => value.name)
                         .toList(),
-                    selectedValue: _selectedRegion,
+                    selectedValue: viewModel.selectedRegion,
                     onChanged: (value) {
-                      if (value != null && value != _selectedRegion) {
-                        setState(() {
-                          if(_selectedRegion != value){
-                            _selectedRegion = value;
-                            _selectedGrade = 0;
-                          }
-                        });
-                        initData();
+                      if (value != null && value != viewModel.selectedRegion) {
+                        if (viewModel.selectedRegion != value) {
+                          viewModel.selectedRegion = value;
+                          viewModel.selectedGrade = 0;
+                        }
                       }
+                      sortAccount();
                     },
                     onTap: () {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -199,12 +138,12 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                   SizedBox(width: 10),
                   CustomGradeDropdown(
                       isLoading: viewModel.userListState is Loading,
-                      items: AccountRegion.regions[_selectedRegion].grades,
-                      selectedValue: _selectedGrade,
+                      items: AccountRegion.regions[viewModel.selectedRegion].grades,
+                      selectedValue: viewModel.selectedGrade,
                       onChanged: (value) {
-                        if (value != null && value != _selectedGrade) {
-                          setState(() => _selectedGrade = value);
-                          initData();
+                        if (value != null && value != viewModel.selectedGrade) {
+                          viewModel.selectedGrade = value;
+                          sortAccount();
                         }
                       },
                       onTap: () {
@@ -223,15 +162,11 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                       hint: '회원검색',
                       borderColor: GlobalColor.transparent,
                       backgroundColor: GlobalColor.white,
-                      onSearch: (queryData) {
-                        viewModel.setUserListState = End();
-                        initData();
+                      onChanged: (queryData) {
                         query = queryData;
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          focusNode.unfocus();
-                        });
+
+                        sortAccount();
                       },
-                      onChanged: (queryData) {},
                     ),
                   )) //
                 ],
@@ -240,54 +175,52 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
             height: 10,
           ),
           Expanded(
-              child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            itemCount: items.length + 1,
-            itemBuilder: (context, index) {
-              if (index == items.length) {
-                if (viewModel.userListState is Loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (hasMore) {
-                  fetchData();
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return Container(
-                      padding: EdgeInsets.only(
-                        bottom: 30,
-                      ),
-                      child: IndexText(
-                        '더 이상 검색된 회원이 없습니다',
-                        textAlign: TextAlign.center,
-                      ));
-                }
-              }
-              return InkWell(
-                  onTap: () {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      focusNode.unfocus();
-                    });
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return UserInfoScreen(account: items[index]);
-                    }));
-                  },
-                  child: UserSearchListTile(
-                      key: index == 0 ? itemKey : null, account: items[index]));
-            },
-            separatorBuilder: (_, $) => const SizedBox(height: 10),
+              child: LoadStateWidget(
+                  loadState: viewModel.userListState,
+                  successWidget: (_) {
+                    return ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      itemCount: viewModel.accountList.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == viewModel.accountList.length) {
+                          return Container(
+                              padding: EdgeInsets.only(
+                                bottom: 30,
+                              ),
+                              child: IndexText(
+                                '더 이상 검색된 회원이 없습니다',
+                                textAlign: TextAlign.center,
+                              ));
+                        }
+                        return InkWell(
+                            onTap: () {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                focusNode.unfocus();
+                              });
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return UserInfoScreen(
+                                    account: viewModel.accountList[index]);
+                              }));
+                            },
+                            child: UserSearchListTile(
+                                account: viewModel.accountList[index]));
+                      },
+                      separatorBuilder: (_, $) => const SizedBox(height: 10),
 
-            // errorWidget: const Expanded(
-            //     child: Column(
-            //   children: [
-            //     SizedBox(height: 150),
-            //     Text(
-            //       'ⓘ',
-            //       style: TextStyle(fontSize: 40),
-            //     ),
-            //     IndexText('조회된 데이터가 없습니다.'),
-            //   ],
-            // ))
-          ))
+                      // errorWidget: const Expanded(
+                      //     child: Column(
+                      //   children: [
+                      //     SizedBox(height: 150),
+                      //     Text(
+                      //       'ⓘ',
+                      //       style: TextStyle(fontSize: 40),
+                      //     ),
+                      //     IndexText('조회된 데이터가 없습니다.'),
+                      //   ],
+                      // ))
+                    );
+                  }))
         ]));
   }
 }

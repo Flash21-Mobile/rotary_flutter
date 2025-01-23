@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:permission_handler/permission_handler.dart";
+import 'package:rotary_flutter/data/model/token.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
@@ -26,9 +27,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreen extends ConsumerState<HomeScreen> {
-  int selectedIndex = 0;
-  bool isLogin = false;
-
   late TextEditingController phoneController;
   late TextEditingController nameController;
   late TextEditingController idController;
@@ -47,8 +45,6 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     nameController = TextEditingController();
     idController = TextEditingController();
     passwordController = TextEditingController();
-
-
   }
 
   Future<void> androidLogin() async {
@@ -64,7 +60,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
           final indexPhone =
               '${data.substring(0, 3)}-${data.substring(3, 7)}-${data.substring(7)}';
-          login(indexPhone);
+          signIn(cellphone: indexPhone);
         }
       } catch (e) {
         showLoginDialog();
@@ -77,35 +73,16 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
   void iOSLogin() async {
     if ((await globalStorage.read(key: 'phone')) == null) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showIOSLoginDialog();
-    });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showIOSLoginDialog();
+      });
     }
   }
 
-  void login(String phone) async {
-    var dataState = await AccountAPI().getAccount(cellphone: phone);
+  void signIn({required String cellphone, String? name}) async {
+    var viewModel = ref.watch(HomeProvider);
 
-    loadStateFunction(
-        loadState: dataState,
-        onSuccess: (data) async {
-          var result = (data as List<Account>)[0];
-          Fluttertoast.showToast(msg: '${result.name}님 로그인에 성공하였습니다.');
-
-          if (result.permission == true) {
-            globalStorage.write(key: 'admin', value: 'admin');
-          } else {
-            globalStorage.write(key: 'admin', value: null);
-          }
-
-          isLogin = true;
-          globalStorage.write(key: 'phone', value: phone);
-          dataState = End();
-        },
-        onError: (e) {
-          showLoginDialog();
-          dataState = End();
-        });
+    viewModel.signIn(cellphone: cellphone, name: name);
   }
 
   void showIOSLoginDialog() {
@@ -136,7 +113,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           }
         },
         subContent: InkWell(
-          onTap: (){
+          onTap: () {
             Navigator.of(context, rootNavigator: true).pop();
             showLoginDialog();
           },
@@ -160,7 +137,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           passwordController.text == 'flash2121') {
         Navigator.of(context, rootNavigator: true).pop();
 
-        login('010-3811-0831');
+        // signIn('010-3811-0831');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(milliseconds: 1500),
@@ -186,16 +163,16 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var homeProvider = ref.watch(HomeProvider);
+    var viewModel = ref.watch(HomeProvider);
 
     // iOS 로그인
     loadStateFunction(
-        loadState: homeProvider.loginState,
+        loadState: viewModel.loginState,
         onSuccess: (data) {
           Navigator.of(context, rootNavigator: true).pop();
-          login(phoneController.text);
+          signIn(cellphone: phoneController.text, name: nameController.text);
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            homeProvider.loginState = End();
+            viewModel.loginState = End();
           });
         },
         onError: (e) {
@@ -206,6 +183,31 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           });
         });
 
+    loadStateFunction(
+        loadState: viewModel.signState,
+        onSuccess: (data) async {
+          data as Account;
+          Fluttertoast.showToast(msg: '${data.name}님 로그인에 성공하였습니다.');
+
+          if (data.permission == true) {
+            globalStorage.write(key: 'admin', value: 'admin');
+          } else {
+            globalStorage.write(key: 'admin', value: null);
+          }
+          globalStorage.write(key: 'phone', value: data.cellphone);
+
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            viewModel.signState = End();
+          });
+        },
+        onError: (e) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showLoginDialog();
+            viewModel.signState = End();
+          });
+        });
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -213,7 +215,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     return PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          var widget = homeProvider.popCurrentWidget();
+          var widget = viewModel.popCurrentWidget();
           if (widget == null) SystemNavigator.pop();
         },
         child: Scaffold(
@@ -223,7 +225,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                 backgroundColor: GlobalColor.white,
                 title: InkWell(
                     onTap: () {
-                      homeProvider.pushCurrentWidget = HomeMainScreen();
+                      viewModel.pushCurrentWidget = HomeMainScreen();
                     },
                     child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -242,7 +244,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                           Spacer(),
                           InkWell(
                             onTap: () {
-                              homeProvider.pushCurrentWidget = MyInfoScreen();
+                              viewModel.pushCurrentWidget = MyInfoScreen();
                             },
                             child: SvgPicture.asset(
                               'asset/icons/my_info_icon.svg',
@@ -251,7 +253,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
                             ),
                           )
                         ])))),
-            body: homeProvider.currentWidget ?? currentWidgetIsNull()));
+            body: viewModel.currentWidget ?? currentWidgetIsNull()));
   }
 
   HomeMainScreen currentWidgetIsNull() {

@@ -29,59 +29,18 @@ class HomeMainScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
-  final PageController _pageController =
-      PageController(initialPage: 0); // 초기 페이지는 0으로 설정
-  Timer? _timer;
-  int _currentPage = 0;
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getBanners().then((value) {
-        if (value is Success) _startAutoSlider();
-
-        getAccountCount();
-      });
+      ref.read(UserSearchListProvider).getAccountList();
     });
-  }
-
-  int? accountCount = 0;
-
-  void getAccountCount() async {
-    var data =await ref.read(UserSearchListProvider).getAccountListCount(name: '');
-    setState(() {
-      accountCount = data;
-    });
-  }
-
-  Future<LoadState> getBanners() async {
-    return await ref.read(HomeMainProvider).getAdvertiseRandom();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
     super.dispose();
-  }
-
-  void _startAutoSlider() {
-    final viewModel = ref.watch(HomeMainProvider);
-
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (_pageController.hasClients) {
-        // 페이지를 한 단계씩 넘기도록 설정
-        int nextPage =
-            (_currentPage + 1) % viewModel.futureBanners.length; // 무한 순환을 위한 계산
-        _pageController.animateToPage(
-          nextPage,
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeIn,
-        );
-      }
-    });
   }
 
   @override
@@ -90,7 +49,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     final width = MediaQuery.of(context).size.width;
 
     final homeProvider = ref.read(HomeProvider);
-    final viewModel = ref.watch(HomeMainProvider);
+    final userSearchListViewModel = ref.watch(UserSearchListProvider);
 
     return Container(
         color: GlobalColor.primaryColor,
@@ -113,12 +72,8 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
-                                height: (MediaQuery.of(context).size.width) *
-                                    6 /
-                                    24,
-                                width: (MediaQuery.of(context).size.width) *
-                                    6 /
-                                    24,
+                                height: width * 6 / 24,
+                                width: width * 6 / 24,
                                 'asset/icons/logo_star.svg',
                               ),
                               SizedBox(
@@ -128,12 +83,8 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  IndexMaxTitle(
-                                    '로타리 3700지구'
-                                  ),
-                                  IndexText(
-                                    '전체인원 $accountCount'
-                                  ),
+                                  IndexMaxTitle('로타리 3700지구'),
+                                  IndexText('전체인원 ${userSearchListViewModel.allAccountCount}'),
                                   SizedBox(
                                     height: 16,
                                   ),
@@ -168,91 +119,12 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                             ],
                           ),
                         )),
-                    // PageView.builder(
-                    //   onPageChanged: (index) {
-                    //     setState(() {
-                    //       _currentPage = index; // 페이지 변경 시 currentPage 갱신
-                    //     });
-                    //   },
-                    //   controller: _pageController,
-                    //   itemCount: viewModel.futureBanners.length,
-                    //   itemBuilder: (context, index) {
-                    //     return InkWell(
-                    //         onTap: () {
-                    //           Log.d('${viewModel.futureBanners[index]}');
-                    //           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                    //             return AdvertiseDetailScreen(data: viewModel.advertises[index]);
-                    //           }));
-                    //         },
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           crossAxisAlignment: CrossAxisAlignment.center,
-                    //           children: [
-                    //             ClipRRect(
-                    //                 borderRadius: BorderRadius.circular(10),
-                    //                 child: FutureImage(
-                    //                     viewModel.futureBanners[index],
-                    //                     width: 100,
-                    //                     height: 100,
-                    //                     onError: SizedBox())),
-                    //             SizedBox(
-                    //               width: 15,
-                    //             ),
-                    //             Container(
-                    //                 width:
-                    //                     MediaQuery.of(context).size.width - 145,
-                    //                 child: Column(
-                    //                   crossAxisAlignment:
-                    //                       CrossAxisAlignment.start,
-                    //                   mainAxisAlignment:
-                    //                       MainAxisAlignment.center,
-                    //                   children: [
-                    //                     IndexTitle(
-                    //                         '${viewModel.advertises[index].title}'),
-                    //                     SizedBox(
-                    //                       height: 8,
-                    //                     ),
-                    //                     ...viewModel.advertises[index]
-                    //                                 .content !=
-                    //                             '설명없음'
-                    //                         ? [
-                    //                             Container(
-                    //                                 child: IndexMinText(
-                    //                               '${viewModel.advertises[index].content}',
-                    //                               maxLength: 2,
-                    //                               textColor:
-                    //                                   GlobalColor.indexColor,
-                    //                             )),
-                    //                             SizedBox(
-                    //                               height: 5,
-                    //                             )
-                    //                           ]
-                    //                         : [SizedBox()],
-                    //                     IndexMinText(
-                    //                         '${viewModel.advertises[index].account?.grade?.name} / ${viewModel.advertises[index].account?.name}')
-                    //                   ],
-                    //                 ))
-                    //           ],
-                    //         ));
-                    //   },
-                    // ),
-                    // Container(
-                    //   margin: EdgeInsets.all(8),
-                    //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    //   decoration: BoxDecoration(
-                    //       color: GlobalColor.black.withAlpha(900),
-                    //       borderRadius: BorderRadius.circular(100)),
-                    //   child: IndexMinText(
-                    //     '${_currentPage + 1} / 5',
-                    //     textColor: GlobalColor.white,
-                    //   ),
-                    // ),
                   ]))),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, childAspectRatio: 1.5),
-            delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+            delegate:
+                SliverChildBuilderDelegate((BuildContext context, int index) {
               // return Container(width: 50, height: 50,color: Colors.black,);
               return InkWell(
                   onTap: () {
@@ -283,15 +155,7 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                       ],
                     ),
                   ));
-            }, childCount: menuItems.length
-                // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                //   crossAxisCount: 3,
-                //   childAspectRatio: 1.2,
-                //   mainAxisSpacing: 1,
-                //   crossAxisSpacing: 1
-                // ),
-
-                ),
+            }, childCount: menuItems.length),
           ),
           SliverToBoxAdapter(
             child: Divider(
@@ -312,11 +176,14 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
                       const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IndexMicroText('국제로타리 3700지구',defaultScale: true,
+                          IndexMicroText('국제로타리 3700지구',
+                              defaultScale: true,
                               textColor: GlobalColor.indexColor),
-                          IndexMicroText('대구광역시 중구 동덕로 115 진석타워 5층 501호',defaultScale: true,
+                          IndexMicroText('대구광역시 중구 동덕로 115 진석타워 5층 501호',
+                              defaultScale: true,
                               textColor: GlobalColor.indexColor),
-                          IndexMicroText('TEL 053-473-3700. FAX 053-429-7901~2',defaultScale: true,
+                          IndexMicroText('TEL 053-473-3700. FAX 053-429-7901~2',
+                              defaultScale: true,
                               textColor: GlobalColor.indexColor),
                           IndexMicroText(''),
                         ],

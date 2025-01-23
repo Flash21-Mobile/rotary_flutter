@@ -16,6 +16,7 @@ ArticleModel _$ArticleModelFromJson(Map<String, dynamic> json) => ArticleModel(
           : Board.fromJson(json['board'] as Map<String, dynamic>),
       title: json['title'] as String?,
       content: json['content'] as String?,
+      time: json['time'] as String?,
     );
 
 Map<String, dynamic> _$ArticleModelToJson(ArticleModel instance) =>
@@ -25,6 +26,7 @@ Map<String, dynamic> _$ArticleModelToJson(ArticleModel instance) =>
       'board': instance.board,
       'title': instance.title,
       'content': instance.content,
+      'time': instance.time,
     };
 
 Board _$BoardFromJson(Map<String, dynamic> json) => Board(

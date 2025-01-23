@@ -53,10 +53,10 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
     super.initState();
     controller = ScrollController();
 
-    ref.read(MonthlyLetterProvider).monthlyLetterPostState = End();
-    ref.read(MonthlyLetterProvider).initData();
+    ref.read(MonthlyLetterProvider).monthlyLetterState = End();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(MonthlyLetterProvider).getMonthlyLetterAll();
       checkAdmin();
     });
   }
@@ -80,7 +80,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
           });
           viewModel.monthlyLetterPostState = End();
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            viewModel.initData();
+            viewModel.getMonthlyLetterAll(query: viewModel.query);
           });
           Navigator.of(context, rootNavigator: true).pop();
         },
@@ -119,12 +119,19 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
         actions: [
           Center(
               child: Row(children: [
-                Icon(Icons.article, color: GlobalColor.greyFontColor,size: 20,),
-                IndexMinText('${viewModel.monthlyLetterCount}', textColor: GlobalColor.greyFontColor,),
-                SizedBox(
-                  width: 15,
-                )
-              ]))
+            Icon(
+              Icons.article,
+              color: GlobalColor.greyFontColor,
+              size: 20,
+            ),
+            IndexMinText(
+              '${viewModel.monthlyLetterCount}',
+              textColor: GlobalColor.greyFontColor,
+            ),
+            SizedBox(
+              width: 15,
+            )
+          ]))
         ],
       ),
       body: Stack(alignment: Alignment.topCenter, children: [
@@ -141,47 +148,45 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
                     color: GlobalColor.white,
                     child: SearchBox(
                         hint: '검색',
-                        onSearch: (data) {
-                          viewModel.query = data;
-                          viewModel.initData();
+                        onChanged: (data) {
+                          viewModel.sortData(query: data);
                         })),
               ),
               SliverToBoxAdapter(
                   child: SizedBox(
                 height: 15,
               )),
-              SliverList.separated(
-                itemCount: viewModel.items.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == viewModel.items.length) {
-                    if (viewModel.monthlyLetterState is Loading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (viewModel.hasMore) {
-                      viewModel.fetchData();
-                      return const Center(child: CircularProgressIndicator());
-                    } else {
-                      return Container(
-                          padding: EdgeInsets.only(
-                            bottom: 30,
-                          ),
-                          child: IndexText(
-                            '더 이상 검색된 목록이 없습니다',
-                            textAlign: TextAlign.center,
-                          ));
-                    }
-                  }
-                  return MonthlyLetterListTile(
-                    data: viewModel.items[index],
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                  );
-                },
-                separatorBuilder: (_, $) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Container(height: 1, color: GlobalColor.dividerColor),
-                ),
-              )
+              LoadStateWidgetFun(
+                  loadState: viewModel.monthlyLetterState,
+                  successWidget: (_) {
+                    return SliverList.separated(
+                      itemCount: viewModel.monthlyLetterList.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == viewModel.monthlyLetterList.length) {
+                          return Container(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              child: const IndexText('더 이상 검색된 목록이 없습니다',
+                                  textAlign: TextAlign.center));
+                        }
+                        return MonthlyLetterListTile(
+                          data: viewModel.monthlyLetterList[index],
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                          },
+                        );
+                      },
+                      separatorBuilder: (_, $) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                            height: 1, color: GlobalColor.dividerColor),
+                      ),
+                    );
+                  },
+                  loadingWidget: () => SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator())),
+                  errorWidget: (e) =>
+                      SliverToBoxAdapter(child: CircularProgressIndicator()),
+                  elseWidget: SliverToBoxAdapter())
             ]),
       ]),
       floatingActionButton: isAdmin

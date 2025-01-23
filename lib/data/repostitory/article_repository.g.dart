@@ -29,10 +29,8 @@ class _ArticleRepository implements ArticleRepository {
     String? gradeName,
     int? account,
     int? board,
-    int? page,
     int? size,
-    bool? or,
-    String? orderBy,
+    String? matchType,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -42,10 +40,8 @@ class _ArticleRepository implements ArticleRepository {
       r'gradeName': gradeName,
       r'account': account,
       r'board': board,
-      r'page': page,
       r'size': size,
-      r'or': or,
-      r'orderBy': orderBy,
+      r'matchType': matchType,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};

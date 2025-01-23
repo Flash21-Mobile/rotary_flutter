@@ -4,6 +4,8 @@ import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/common/common.dart';
 import '../../util/model/loadstate.dart';
+import '../../util/secure_storage.dart';
+import '../interceptor/zstd_interceptor.dart';
 import '../repostitory/event_repository.dart';
 
 class EventAPI {
@@ -29,7 +31,13 @@ class EventAPI {
     repository = EventRepository(dio, baseUrl: serverUrl);
   }
 
+  Future setUpToken() async {
+    var token = await globalStorage.read(key: 'token');
+    dio.options.headers['Authorization'] = 'bearer $token';
+  }
+
   Future<LoadState> getEvent() async {
+    await setUpToken();
     try {
       final result = await repository.getEvent();
       return Success(result);
@@ -40,10 +48,10 @@ class EventAPI {
   }
 
   Future<LoadState> postEvent(String title, String content, String date) async {
+    await setUpToken();
     try {
       final result = await repository.postEvent(
         EventModel(
-          id: null,
           calendar: Calendar(
             id: 1,
             name: 'event'
@@ -60,6 +68,7 @@ class EventAPI {
   }
 
   Future<LoadState> deleteEvent(int id) async {
+    await setUpToken();
     try {
       await repository.deleteEvent(id);
       return Success('success');

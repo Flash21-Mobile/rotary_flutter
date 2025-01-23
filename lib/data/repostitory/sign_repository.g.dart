@@ -22,20 +22,20 @@ class _SignRepository implements SignRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<dynamic> postSMS(String? phone) async {
+  Future<TokenModel> signIn(SignModel data) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'phone': phone};
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<dynamic>(Options(
+    final _data = <String, dynamic>{};
+    _data.addAll(data.toJson());
+    final _options = _setStreamType<TokenModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/sms',
+          '/signin',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -44,18 +44,24 @@ class _SignRepository implements SignRepository {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late TokenModel _value;
+    try {
+      _value = TokenModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 
   @override
-  Future<dynamic> postSMSVerify(SignVerifyModel data) async {
+  Future<dynamic> postSMSVerify(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(data.toJson());
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<dynamic>(Options(
       method: 'POST',
       headers: _headers,

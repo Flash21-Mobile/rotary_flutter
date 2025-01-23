@@ -1,8 +1,11 @@
+import 'package:rotary_flutter/data/interceptor/zstd_interceptor.dart';
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:rotary_flutter/util/logger.dart';
+import 'package:rotary_flutter/util/secure_storage.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
+import '../../util/model/pair.dart';
 import '../model/account_model.dart';
 
 class AccountAPI {
@@ -33,37 +36,30 @@ class AccountAPI {
     accountRepository = AccountRepository(dio, baseUrl: serverUrl);
   }
 
-  Future<LoadState> getAccount({
-    String? cellphone,
-    int? id,
-    String? name,
-    String? grade,
-    String? region,
-    int? page,
-  }) async {
+  Future setUpToken() async {
+    var token = await globalStorage.read(key: 'token');
+    dio.options.headers['Authorization'] = 'bearer $token';
+  }
+
+  Future<LoadState<List<Account>>> getAccount(
+      {String? cellphone, int? size, String? matchType}) async {
+    await setUpToken();
     try {
       final result = await accountRepository.getAccount(
-          cellphone: cellphone,
-          id: id,
-          name: name,
-          grade: grade,
-          region: region,
-          page: page,
-          size: accountListLength);
-      print('success: $result');
-
-      return Success(result);
-    } catch (e) {
-      print('getAccount error: $e');
+          cellphone: cellphone, size: size ?? 10000,matchType: matchType);
+      return Success(result.data);
+    } on DioException catch (e) {
+      Log.d('Hellloioio $e');
       return Error(e);
     }
   }
 
   Future<LoadState<bool>> postIOSLogin(String cellphone, String name) async {
+    await setUpToken();
     try {
       final result = await accountRepository.getAccount(cellphone: cellphone);
       Log.d('hello getAccount success');
-      return result.first.name == name
+      return result.data.first.name == name
           ? Success(true)
           : Error(DioException);
     } on DioException catch (e) {
@@ -77,8 +73,9 @@ class AccountAPI {
     String? grade,
     String? region,
   }) async {
+    await setUpToken();
     try {
-      return await accountRepository.getAccountCount(name, grade, region);
+      return 0;
     } catch (e) {
       Log.d('$e');
       return null;
@@ -86,6 +83,7 @@ class AccountAPI {
   }
 
   Future<LoadState> putAccount(Account account) async {
+    await setUpToken();
     try {
       final result =
           await accountRepository.putAccount(account.id ?? 0, account);

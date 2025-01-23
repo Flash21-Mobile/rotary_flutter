@@ -11,24 +11,5 @@ final HomeMainProvider = ChangeNotifierProvider.autoDispose<_ViewModel>((ref) {
 });
 
 class _ViewModel with ChangeNotifier {
-  List<Future<int?>> futureBanners = [];
-  List<ArticleModel> advertises = [];
 
-  Future<LoadState> getAdvertiseRandom() async {
-    var temp = await ArticleAPI().getAdvertiseRandom();
-
-    futureBanners = temp?.map((value) async {
-          return await getAdvertiseFile(value.id);
-        }).toList() ?? [];
-    advertises = temp??[];
-
-    notifyListeners();
-
-    return Success('success');
-  }
-
-  Future<int?> getAdvertiseFile(int? fileApiPK) async {
-    var data = await FileAPI().getAdvertiseFile(fileApiPK);
-    return data?.id;
-  }
 }

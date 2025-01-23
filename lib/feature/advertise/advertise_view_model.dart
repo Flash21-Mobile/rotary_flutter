@@ -15,14 +15,15 @@ final AdvertiseProvider =
 class AdvertiseViewModel with ChangeNotifier {
   LoadState advertiseState = End();
 
-  List<int> banners = [];
-
   Future<int?> getAdvertiseFile(int? fileApiPK) async {
     var data = await FileAPI().getAdvertiseFile(fileApiPK);
     return data?.id;
   }
 
-  Future<LoadState> getAdvertiseAll({int? page, String? query}) async {
+  Future getAdvertiseAll({int? page, String? query}) async {
+    advertiseState = Loading();
+    notifyListeners();
+
     var temp = await ArticleAPI().getAdvertiseAll(
         page: page,
         title: query,
@@ -34,65 +35,52 @@ class AdvertiseViewModel with ChangeNotifier {
     if (temp == null) {
       advertiseState = Error('exception');
       notifyListeners();
-      return advertiseState;
     } else {
-      // 본문과 썸네일 리스트 분리
       final List<ArticleModel> advertiseData = temp;
 
       // 결과를 상태로 설정
       advertiseState = Success(advertiseData);
-      banners = advertiseData.map((value) => value.id ?? 0).toList();
+      allAdvertiseList = advertiseData;
       notifyListeners();
-
-      return advertiseState;
+      sortData();
     }
   }
 
-  Future<int?> getAdvertiseAllCount({String? query}) async {
-    return await ArticleAPI().getAdvertiseCount(
-        title: query,
-        content: query,
-        accountName: query,
-        or: true,
-        gradeName: query);
+  List<ArticleModel> allAdvertiseList = [];
+  List<ArticleModel> _advertiseList = [];
+
+  List<ArticleModel> get advertiseList => _advertiseList;
+
+  set advertiseList(List<ArticleModel> data) {
+    _advertiseList = data;
+    notifyListeners();
   }
 
-  bool hasMore = true;
+  void sortData({String? query}) async {
+    var temp = allAdvertiseList;
+    advertiseState = Loading();
+    notifyListeners();
+    if (advertiseList.isNotEmpty) advertiseList = [];
 
-  int currentPage = 0;
+    await Future.delayed(Duration(milliseconds: 100));
+
+    if (query != null) {
+      temp = temp.where((value) {
+        return (value.title?.contains(query) ?? false) || // title에 query 포함 여부
+            (value.content?.contains(query) ?? false) || // content에 query 포함 여부
+            (value.account?.name?.contains(query) ?? false) ||
+            (value.account?.grade?.name?.contains(query) ??
+                false); // name에 query 포함 여부
+      }).toList();
+    }
+
+    advertiseCount = temp.length;
+    advertiseList = temp;
+    advertiseState = Success([]);
+    notifyListeners();
+  }
 
   String query = '';
 
-  List<ArticleModel> items = [];
-
   int? advertiseCount = 0;
-
-  Future<void> fetchData() async {
-    if (advertiseState is Loading && !hasMore) return;
-
-    var loadState = await getAdvertiseAll(page: currentPage++, query: query);
-    advertiseCount = await getAdvertiseAllCount(query: query) ?? 0;
-
-    if (loadState is Success) {
-      final List<ArticleModel> data = loadState.data;
-      if (data.isNotEmpty) {
-        items.addAll(data);
-      } else {
-        hasMore = false;
-      }
-    } else {
-      hasMore = false;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      notifyListeners();
-    });
-  }
-
-  Future<void> initData() async {
-    advertiseCount = 0;
-    currentPage = 0;
-    items = [];
-    hasMore = true;
-    notifyListeners();
-  }
 }

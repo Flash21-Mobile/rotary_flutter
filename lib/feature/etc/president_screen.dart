@@ -43,9 +43,9 @@ class _PresidentScreen extends ConsumerState<PresidentScreen> {
                         border: Border.all(color: GlobalColor.dividerColor),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withAlpha(50),
-                            blurRadius: 15,
-                            offset: const Offset(0, 15),
+                            color: Colors.black.withAlpha(70),
+                            blurRadius: 10,
+                            offset: const Offset(0, 0),
                           ),
                         ],
                       ),

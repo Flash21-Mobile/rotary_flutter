@@ -6,6 +6,8 @@ import 'package:pdfx/pdfx.dart';
 
 import '../../util/common/common.dart';
 import '../../util/model/loadstate.dart';
+import '../../util/secure_storage.dart';
+import '../interceptor/zstd_interceptor.dart';
 import '../model/file_model.dart';
 import '../repostitory/event_repository.dart';
 import '../repostitory/file_repository.dart';
@@ -34,7 +36,13 @@ class FileAPI {
     repository = FileRepository(dio, baseUrl: serverUrl);
   }
 
+  Future setUpToken() async {
+    var token = await globalStorage.read(key: 'token');
+    dio.options.headers['Authorization'] = 'bearer $token';
+  }
+
   Future<FileModel?> getAccountFile(int? fileApiPK) async {
+    await setUpToken();
     try {
       final result = await repository.getFile('account', fileApiPK);
       return result?.last;
@@ -44,6 +52,7 @@ class FileAPI {
   }
 
   Future postAccountFile(int? fileApiPK, File image) async {
+    await setUpToken();
     try {
       await repository.postFile(
           'account', fileApiPK, [image]);
@@ -54,6 +63,7 @@ class FileAPI {
   }
 
   Future<FileModel?> getAdvertiseFile(int? fileApiPK) async {
+    await setUpToken();
     try {
       final result = await repository.getFile('advertise', fileApiPK);
       return result?.last;
@@ -63,6 +73,7 @@ class FileAPI {
   }
 
   Future<List<FileModel>?> getMonthlyFile(int? fileApiPK) async {
+    await setUpToken();
     try {
       final result = await repository.getFile('monthlyletter', fileApiPK);
       return result;
@@ -72,6 +83,7 @@ class FileAPI {
   }
 
   Future<LoadState> postMonthlyLetterFile(int? fileApiPK, String file) async {
+    await setUpToken();
     try {
       var convertedFiles = await convertPdfToImages(file);
 

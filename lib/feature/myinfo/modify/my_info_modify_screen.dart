@@ -17,6 +17,7 @@ import '../../../util/logger.dart';
 import '../../../util/model/loadstate.dart';
 import '../../../util/fontSize.dart';
 import '../../../util/global_color.dart';
+import '../../../util/model/pair.dart';
 import '../../home/home_main_component.dart';
 import '../../myInfo/modify/my_info_modify_component.dart';
 import '../../myInfo/modify/my_info_modify_view_model.dart';
@@ -123,8 +124,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                 child: InkWell(
                   onTap: () async {
                     final emailRegex = RegExp(
-                        r'^[a-zA-._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                    if (emailController.text.isNotEmpty && !emailRegex.hasMatch(emailController.text)) {
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    if (emailController.text.isNotEmpty &&
+                        !emailRegex.hasMatch(emailController.text)) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         backgroundColor: Colors.red,
                         duration: Duration(milliseconds: 1500),

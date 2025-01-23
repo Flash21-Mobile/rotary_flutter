@@ -1,8 +1,11 @@
 import 'package:rotary_flutter/data/model/article_model.dart';
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:rotary_flutter/util/logger.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
+import '../../util/secure_storage.dart';
+import '../interceptor/zstd_interceptor.dart';
 import '../model/account_model.dart';
 import '../repostitory/article_repository.dart';
 
@@ -34,6 +37,11 @@ class ArticleAPI {
     repository = ArticleRepository(dio, baseUrl: serverUrl);
   }
 
+  Future setUpToken() async {
+    var token = await globalStorage.read(key: 'token');
+    dio.options.headers['Authorization'] = 'bearer $token';
+  }
+
   Future<List<ArticleModel>?> getAdvertiseAll(
       {int? page,
       String? title,
@@ -43,24 +51,26 @@ class ArticleAPI {
       bool? or,
       int? account}) async {
     try {
-      final result = await repository.getArticle(
-          board: 1,
-          page: page,
-          size: articleListLength,
-          title: title,
-          content: content,
-          accountName: accountName,
-          gradeName: gradeName,
-          account: account,
-          or: or,
-          orderBy: 'date');
-      return result;
+      await setUpToken();
+      return await repository.getArticle(
+        board: 1,
+        size: 100000,
+        title: title,
+        content: content,
+        accountName: accountName,
+        gradeName: gradeName,
+        account: account,
+        matchType: 'orLike',
+        // orderBy: 'date'
+      );
     } catch (e) {
+      Log.e('hello $e');
       return null;
     }
   }
 
   Future<List<ArticleModel>?> getAdvertiseRandom() async {
+    await setUpToken();
     try {
       final result = await repository.getArticleRandom();
       return result;
@@ -76,6 +86,7 @@ class ArticleAPI {
       String? gradeName,
       bool? or}) async {
     try {
+      await setUpToken();
       final result = await repository.getArticleCount(
           board: 1,
           title: title,
@@ -90,16 +101,15 @@ class ArticleAPI {
   }
 
   Future<List<ArticleModel>?> getMonthlyLetterAll(
-      int? page, String? title, String? content) async {
+      String? title, String? content) async {
+    await setUpToken();
     try {
       final result = await repository.getArticle(
           board: 3,
-          page: page,
-          size: articleListLength,
+          size: 10000,
           title: title,
           content: content,
-          or: true,
-          orderBy: 'date');
+          matchType: 'orLike');
       return result;
     } catch (e) {
       return null;
@@ -107,9 +117,9 @@ class ArticleAPI {
   }
 
   Future<LoadState> postMonthlyLetterAll(Account account, String? file) async {
+    await setUpToken();
     try {
       final data = await repository.postArticle(ArticleModel(
-          id: 1,
           account: account,
           board: Board(id: 3, name: 'monthlyletter'),
           title: file?.split('/').last.replaceAll('.pdf', ''),
@@ -127,6 +137,7 @@ class ArticleAPI {
       String? accountName,
       String? gradeName,
       bool? or}) async {
+    await setUpToken();
     try {
       final result = await repository.getArticleCount(
           board: 3,
@@ -147,6 +158,7 @@ class ArticleAPI {
   }
 
   Future<LoadState> deleteMonthlyLetter(int? id) async {
+    await setUpToken();
     try {
       repository.deleteArticle(id);
       return Success('success');

@@ -28,8 +28,8 @@ class _FileRepository implements FileRepository {
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'fileApiName': fileApiName,
-      r'fileApiPK': fileApiPK,
+      r'apiName': fileApiName,
+      r'pk': fileApiPK,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
@@ -72,7 +72,7 @@ class _FileRepository implements FileRepository {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'apiName': fileApiName,
-      r'fileApiPK': fileApiPK,
+      r'pk': fileApiPK,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};

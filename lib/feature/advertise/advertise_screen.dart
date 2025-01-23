@@ -32,17 +32,21 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
     controller = ScrollController();
 
     ref.read(AdvertiseProvider).advertiseState = End();
-    ref.read(AdvertiseProvider).initData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(AdvertiseProvider).getAdvertiseAll();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var viewModel = ref.watch(AdvertiseProvider);
 
+    Log.d('hello ${viewModel.advertiseState}');
     return Scaffold(
         backgroundColor: GlobalColor.white,
         appBar: AppBar(
-          title: IndexMaxTitle('광고협찬'),
+          title: IndexMaxTitle('\광고협찬'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -62,9 +66,7 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                 '${viewModel.advertiseCount}',
                 textColor: GlobalColor.greyFontColor,
               ),
-              SizedBox(
-                width: 15,
-              )
+              SizedBox(width: 15)
             ]))
           ],
         ),
@@ -84,55 +86,61 @@ class _AdvertiseScreen extends ConsumerState<AdvertiseScreen> {
                           color: GlobalColor.white,
                           child: SearchBox(
                               hint: '검색',
-                              onSearch: (data) {
+                              onChanged: (data) {
                                 viewModel.query = data;
-                                viewModel.initData();
+                                viewModel.sortData(query: viewModel.query);
                               })),
                     ),
                     SliverToBoxAdapter(
                         child: SizedBox(
                       height: 15,
                     )),
-                    SliverList.separated(
-                      itemCount: viewModel.items.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == viewModel.items.length) {
-                          if (viewModel.advertiseState is Loading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (viewModel.hasMore) {
-                            viewModel.fetchData();
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else {
-                            return Container(
-                                padding: EdgeInsets.only(
-                                  bottom: 30,
-                                ),
-                                child: IndexText(
-                                  '더 이상 검색된 목록이 없습니다',
-                                  textAlign: TextAlign.center,
-                                ));
-                          }
-                        }
-                        return AdvertiseListTile(
-                          data: viewModel.items[index],
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return AdvertiseDetailScreen(data: viewModel.items[index]);
-                            }));
-                          },
-                        );
-                      },
-                      separatorBuilder: (_, $) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Container(
-                            height: 1, color: GlobalColor.dividerColor),
-                      ),
-                    )
+                    LoadStateWidgetFun(
+                        loadState: viewModel.advertiseState,
+                        successWidget: (_) {
+                          return SliverList.separated(
+                            itemCount: viewModel.advertiseList.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == viewModel.advertiseList.length) {
+                                return Container(
+                                    padding: const EdgeInsets.only(bottom: 30),
+                                    child: const IndexText('더 이상 검색된 목록이 없습니다',
+                                        textAlign: TextAlign.center));
+                              }
+                              return AdvertiseListTile(
+                                data: viewModel.advertiseList[index],
+                                onTap: () {
+                                  FocusScope.of(context).unfocus();
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return AdvertiseDetailScreen(
+                                        data: viewModel.advertiseList[index]);
+                                  }));
+                                },
+                              );
+                            },
+                            separatorBuilder: (_, $) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Container(
+                                  height: 1, color: GlobalColor.dividerColor),
+                            ),
+                          );
+                        },
+                        loadingWidget: () {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                        errorWidget: (e) {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                        elseWidget: SliverToBoxAdapter())
                   ])
             ])));
     // Container(

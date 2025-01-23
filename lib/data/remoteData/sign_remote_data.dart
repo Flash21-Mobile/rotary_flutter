@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:rotary_flutter/data/model/sign_verify_model.dart';
+import 'package:rotary_flutter/data/model/sign_model.dart';
+import 'package:rotary_flutter/data/model/token.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 
 import '../../util/common/common.dart';
 import '../../util/logger.dart';
+import '../../util/secure_storage.dart';
 import '../repostitory/file_repository.dart';
 import '../repostitory/sign_repository.dart';
 
 class SignAPI {
-  String serverUrl = "${BASE_URL}";
+  String serverUrl = BASE_HEADER;
   Dio dio = Dio()
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
@@ -16,37 +18,40 @@ class SignAPI {
     ..options.headers['accept-Type'] = 'application/json'
     ..options.headers['cheat'] = 'showmethemoney';
 
+
   late SignRepository repository;
 
   SignAPI() {
-    // dio.interceptors.add(LogInterceptor(
-    // request: true, // 요청 데이터 로깅
-    // requestHeader: true, // 요청 헤더 로깅
-    // requestBody: true, // 요청 바디 로깅
-    // responseHeader: true, // 응답 헤더 로깅
-    // responseBody: true, // 응답 바디 로깅
-    // error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true,
+      // 요청 데이터 로깅
+      requestHeader: true,
+      // 요청 헤더 로깅
+      requestBody: true,
+      // 요청 바디 로깅
+      responseHeader: true,
+      // 응답 헤더 로깅
+      responseBody: true,
+      // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
     repository = SignRepository(dio, baseUrl: serverUrl);
   }
 
-  Future<LoadState> postSMS(String? cellphone) async {
-    try {
-      repository.postSMS(cellphone);
-
-      return Success("success");
-    } on DioException catch (e) {
-      Log.e('error post');
-      return Error(e);
-    }
+  Future setUpToken() async {
+    var token = await globalStorage.read(key: 'token');
+    dio.options.headers['Authorization'] = 'bearer $token';
   }
 
-  Future<LoadState> postSMSVerify(String cellphone, String code) async {
+  Future<LoadState<TokenModel>> signIn({String? cellphone, String? name}) async {
+    await setUpToken();
     try {
-      repository.postSMSVerify(SignVerifyModel(phone: cellphone, code: code));
-      return Success('success');
+      var response = await repository.signIn(SignModel(cellphone: cellphone, name: name));
+      return Success(response);
     } on DioException catch (e) {
       return Error(e);
     }
   }
+
+
 }

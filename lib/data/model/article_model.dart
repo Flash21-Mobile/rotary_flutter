@@ -11,31 +11,13 @@ class ArticleModel {
   Board? board;
   String? title;
   String? content;
+  String? time;
 
-  ArticleModel({this.id, this.account, this.board, this.title, this.content});
+  ArticleModel({this.id, this.account, this.board, this.title, this.content, this.time});
 
-  ArticleModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    account =
-    json['account'] != null ? new Account.fromJson(json['account']) : null;
-    board = json['board'] != null ? new Board.fromJson(json['board']) : null;
-    title = json['title'];
-    content = json['content'];
-  }
+  factory ArticleModel.fromJson(Map<String, dynamic> json) => _$ArticleModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.account != null) {
-      data['account'] = this.account!.toJson();
-    }
-    if (this.board != null) {
-      data['board'] = this.board!.toJson();
-    }
-    data['title'] = this.title;
-    data['content'] = this.content;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$ArticleModelToJson(this);
 }
 
 @JsonSerializable()
@@ -45,15 +27,6 @@ class Board {
 
   Board({this.id, this.name});
 
-  Board.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    return data;
-  }
+  factory Board.fromJson(Map<String, dynamic> json) => _$BoardFromJson(json);
+  Map<String, dynamic> toJson() => _$BoardToJson(this);
 }

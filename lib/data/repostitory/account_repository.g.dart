@@ -22,29 +22,21 @@ class _AccountRepository implements AccountRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<Account>> getAccount({
+  Future<HttpResponse<List<Account>>> getAccount({
     String? cellphone,
-    int? id,
-    String? name,
-    String? grade,
-    String? region,
-    int? page,
     int? size,
+    String? matchType,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'cellphone': cellphone,
-      r'id': id,
-      r'name': name,
-      r'grade': grade,
-      r'region': region,
-      r'page': page,
       r'size': size,
+      r'matchType': matchType,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<Account>>(Options(
+    final _options = _setStreamType<HttpResponse<List<Account>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -70,49 +62,8 @@ class _AccountRepository implements AccountRepository {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
-    return _value;
-  }
-
-  @override
-  Future<int> getAccountCount(
-    String? name,
-    String? grade,
-    String? region,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'name': name,
-      r'grade': grade,
-      r'region': region,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<int>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/account/count',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<int>(_options);
-    late int _value;
-    try {
-      _value = _result.data!;
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
   }
 
   @override

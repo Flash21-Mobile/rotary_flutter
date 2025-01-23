@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
+import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 
 import 'list/user_search_list_screen.dart';
@@ -18,26 +19,21 @@ class UserSearchScreen extends ConsumerStatefulWidget {
 }
 
 class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
-  int? accountCount = 0;
+  var accountCount = 0;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getAccountCount();
-    });
-  }
+  void initState() {
+    super.initState();
 
-  void getAccountCount() async {
-    var data =await ref.read(UserSearchListProvider).getAccountListCount(name: '');
-    setState(() {
-      accountCount = data;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(UserSearchListProvider).getAccountList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     var homeProvider = ref.read(HomeProvider);
+    final viewModel = ref.watch(UserSearchListProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -77,7 +73,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                             '로타리 3700지구',
                           ),
                           IndexText(
-                            '전체인원 $accountCount',
+                            '전체인원 ${viewModel.allAccountCount}',
                           ),
                           SizedBox(
                             height: 5,
@@ -108,41 +104,41 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        homeProvider.pushCurrentWidget =
-                            UserSearchListScreen(initialRegion: 1);
-                      },
-                      child: Container(
-                          height: 95,
-                          decoration: BoxDecoration(
-                              color: GlobalColor.indexBoxColor,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 30),
-                                child: SvgPicture.asset(
-                                  'asset/icons/logo_rotary.svg',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IndexMaxTitle(
-                                    '지구지도부',
-                                  ),
-                                  SizedBox(width: 10),
-                                  IndexText('132명'),
-                                ],
-                              )
-                            ],
-                          ))),
+                  // InkWell(
+                  //     splashColor: Colors.transparent,
+                  //     highlightColor: Colors.transparent,
+                  //     onTap: () {
+                  //       homeProvider.pushCurrentWidget = UserSearchListScreen(initialRegion: mainDartIndex,);
+                  //     },
+                  //     child: Container(
+                  //         height: 95,
+                  //         decoration: BoxDecoration(
+                  //             color: GlobalColor.indexBoxColor,
+                  //             borderRadius: BorderRadius.circular(20)),
+                  //         child: Row(
+                  //           children: [
+                  //             Container(
+                  //               padding: EdgeInsets.symmetric(horizontal: 30),
+                  //               child: SvgPicture.asset(
+                  //                 'asset/icons/logo_rotary.svg',
+                  //                 width: 30,
+                  //                 height: 30,
+                  //               ),
+                  //             ),
+                  //             // Column(
+                  //             //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //             //   mainAxisAlignment: MainAxisAlignment.center,
+                  //             //   children: [
+                  //             //     IndexMaxTitle(
+                  //             //       '지구지도부',
+                  //             //     ),
+                  //             //     SizedBox(width: 10),
+                  //             //     IndexText('132명'),
+                  //             //   ],
+                  //             // )
+                  //           ],
+                  //         ))
+                  // ),
                   SizedBox(height: 10),
                   GridView.builder(
                     physics: const ClampingScrollPhysics(),
@@ -180,7 +176,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                               onTap: () {
                                 homeProvider.pushCurrentWidget =
                                     UserSearchListScreen(
-                                        initialRegion: index + 2);
+                                        initialRegion: index + 1);
                               }));
                     },
                   )

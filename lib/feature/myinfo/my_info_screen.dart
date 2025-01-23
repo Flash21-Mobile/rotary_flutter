@@ -105,7 +105,7 @@ class _MyInfoScreen extends ConsumerState<MyInfoScreen> {
                                           borderRadius:
                                               BorderRadius.circular(100)),
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 5),
+                                          horizontal: 15, vertical: 8),
                                       child: IndexMinText('수정하기',
                                           textColor: GlobalColor.white),
                                     ))
