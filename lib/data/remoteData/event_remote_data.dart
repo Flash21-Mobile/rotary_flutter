@@ -52,6 +52,7 @@ class EventAPI {
     try {
       final result = await repository.postEvent(
         EventModel(
+          id: null,
           calendar: Calendar(
             id: 1,
             name: 'event'

@@ -120,6 +120,7 @@ class ArticleAPI {
     await setUpToken();
     try {
       final data = await repository.postArticle(ArticleModel(
+          id: 1,
           account: account,
           board: Board(id: 3, name: 'monthlyletter'),
           title: file?.split('/').last.replaceAll('.pdf', ''),
