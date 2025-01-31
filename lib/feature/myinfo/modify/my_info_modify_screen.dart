@@ -62,7 +62,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           enNameController.text = account.englishName ?? '';
           memoController.text = account.memo ?? '';
 
-          emailController.text = account.faxNumber ?? '';
+          emailController.text = account.email ?? '';
           faxController.text = account.faxNumber ?? '';
 
           workNameController.text = account.workName ?? '';
