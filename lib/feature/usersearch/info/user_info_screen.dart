@@ -99,39 +99,43 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                             }));
                           },
                           child: FutureImage(
+                            align: Alignment.topCenter,
                             viewModel.getAccountFile(widget.account.id),
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.width * 1.2,
                           ))),
                   SliverToBoxAdapter(
-                    child: Container(margin: EdgeInsets.symmetric(vertical: 5), child:  TabBar(
-                      tabs: [
-                        Tab(
-                          text: '개인정보',
-                        ),
-                        Tab(
-                          text: '회사정보',
-                        ),
-                      ],
-                      labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: GlobalColor.primaryColor,
-                          fontSize: DynamicFontSize.font20(context)),
-                      unselectedLabelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: DynamicFontSize.font20(context),
-                          color: GlobalColor.indexColor),
-                      indicator: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                              color: GlobalColor.primaryColor, width: 1)),
-                      indicatorPadding: EdgeInsets.symmetric(horizontal: 25),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      child: TabBar(
+                        tabs: [
+                          Tab(
+                            text: '개인정보',
+                          ),
+                          Tab(
+                            text: '회사정보',
+                          ),
+                        ],
+                        labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: GlobalColor.primaryColor,
+                            fontSize: DynamicFontSize.font20(context)),
+                        unselectedLabelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: DynamicFontSize.font20(context),
+                            color: GlobalColor.indexColor),
+                        indicator: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                                color: GlobalColor.primaryColor, width: 1)),
+                        indicatorPadding: EdgeInsets.symmetric(horizontal: 25),
+                      ),
                     ),
-                  ),),
+                  ),
                   SliverToBoxAdapter(
                       child: Container(
-                    height: 290,
+                    height: 40 * 7 + 30,
                     child: TabBarView(
                       children: [
                         Column(
@@ -229,7 +233,7 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                             UserInfoIndex(
                                 assetName: 'asset/icons/phone_icon.svg',
                                 indexName: '전화',
-                                index: widget.account.cellphone),
+                                index: widget.account.telephone),
                             UserInfoIndex(
                                 assetName: 'asset/icons/fax_icon.svg',
                                 indexName: '팩스',
@@ -239,10 +243,15 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                                 indexName: '주소',
                                 index:
                                     '${widget.account.workAddress ?? ''} ${widget.account.workAddressSub ?? ''}'),
-                            UserInfoIndex(
-                                assetName: 'asset/icons/email_icon.svg',
-                                indexName: '이메일',
-                                index: widget.account.email),
+                            InkWell(
+                                onTap:
+                                    widget.account.email != null ? () {
+                                  launchEmail(widget.account.email!);
+                                    } : null,
+                                child: UserInfoIndex(
+                                    assetName: 'asset/icons/email_icon.svg',
+                                    indexName: '이메일',
+                                    index: widget.account.email)),
                           ],
                         ),
                       ],
@@ -257,7 +266,10 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                       ],
                     Success() => [
                         SliverList.separated(
-                          itemCount: (viewModel.accountAdvertiseState as Success).data.length,
+                          itemCount:
+                              (viewModel.accountAdvertiseState as Success)
+                                  .data
+                                  .length,
                           itemBuilder: (context, index) {
                             return Container(
                                 margin: EdgeInsets.symmetric(horizontal: 15),
@@ -268,14 +280,18 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                                 padding: EdgeInsets.all(15),
                                 child: AdvertiseListTile(
                                   indexWidth: 175,
-                                  data: (viewModel.accountAdvertiseState as Success).data[index],
+                                  data: (viewModel.accountAdvertiseState
+                                          as Success)
+                                      .data[index],
                                   onTap: () {
                                     FocusScope.of(context).unfocus();
 
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
                                       return AdvertiseDetailScreen(
-                                          data: (viewModel.accountAdvertiseState as Success).data[index]);
+                                          data: (viewModel.accountAdvertiseState
+                                                  as Success)
+                                              .data[index]);
                                     }));
                                   },
                                 ));
@@ -287,12 +303,29 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                       ],
                     _ => []
                   },
-                      SliverToBoxAdapter(child: SizedBox(height: 100,),)
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 100,
+                    ),
+                  )
                 ])));
   }
 
   String formatDateTime(String? dateTime) {
     DateTime parsedDate = DateTime.parse(dateTime ?? '');
     return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
+  }
+
+  void launchEmail(String email) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      debugPrint("이메일을 열 수 없습니다.");
+    }
   }
 }
