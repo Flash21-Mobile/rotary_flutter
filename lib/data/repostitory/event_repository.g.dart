@@ -57,7 +57,7 @@ class _EventRepository implements EventRepository {
   }
 
   @override
-  Future<dynamic> postEvent(EventModel data) async {
+  Future<dynamic> postEvent(EventRequestDto data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
