@@ -11,16 +11,15 @@ import '../../util/global_color.dart';
 import '../userSearch/list/user_search_list_component.dart';
 
 class IndexText extends IndexInterface {
-  const IndexText(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,super.decoration
-  });
+  const IndexText(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -31,16 +30,15 @@ class IndexText extends IndexInterface {
 }
 
 class IndexTitle extends IndexInterface {
-  const IndexTitle(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,super.decoration
-  });
+  const IndexTitle(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -50,17 +48,35 @@ class IndexTitle extends IndexInterface {
   FontWeight get fontWeight => FontWeight.bold;
 }
 
+class IndexTextTitle extends IndexInterface {
+  const IndexTextTitle(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
+
+  @override
+  double Function(BuildContext context) get fontSize =>
+      (BuildContext context) => DynamicFontSize.font19(context);
+
+  @override
+  FontWeight get fontWeight => FontWeight.bold;
+}
+
 class IndexMaxTitle extends IndexInterface {
-  const IndexMaxTitle(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,super.decoration
-  });
+  const IndexMaxTitle(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -71,36 +87,34 @@ class IndexMaxTitle extends IndexInterface {
 }
 
 class IndexMaxText extends IndexInterface {
-  const IndexMaxText(
-      super.data, {
-        super.key,
-        super.textColor,
-        super.overFlowFade,
-        super.maxLength,
-        super.height,
-        super.textAlign,
-        super.defaultScale,super.decoration
-      });
+  const IndexMaxText(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
-          (BuildContext context) => DynamicFontSize.font25(context);
+      (BuildContext context) => DynamicFontSize.font25(context);
 
   @override
   FontWeight get fontWeight => FontWeight.normal;
 }
 
 class IndexThumbTitle extends IndexInterface {
-  const IndexThumbTitle(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,super.decoration
-  });
+  const IndexThumbTitle(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -111,17 +125,15 @@ class IndexThumbTitle extends IndexInterface {
 }
 
 class IndexMinText extends IndexInterface {
-  const IndexMinText(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,
-        super.decoration
-  });
+  const IndexMinText(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -132,17 +144,15 @@ class IndexMinText extends IndexInterface {
 }
 
 class IndexMinTitle extends IndexInterface {
-  const IndexMinTitle(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,
-        super.decoration
-  });
+  const IndexMinTitle(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -153,17 +163,15 @@ class IndexMinTitle extends IndexInterface {
 }
 
 class IndexMicroText extends IndexInterface {
-  const IndexMicroText(
-    super.data, {
-    super.key,
-    super.textColor,
-    super.overFlowFade,
-    super.maxLength,
-    super.height,
-    super.textAlign,
-    super.defaultScale,
-        super.decoration
-  });
+  const IndexMicroText(super.data,
+      {super.key,
+      super.textColor,
+      super.overFlowFade,
+      super.maxLength,
+      super.height,
+      super.textAlign,
+      super.defaultScale,
+      super.decoration});
 
   @override
   double Function(BuildContext context) get fontSize =>
@@ -176,13 +184,13 @@ class IndexMicroText extends IndexInterface {
 abstract class IndexInterface extends StatelessWidget {
   const IndexInterface(this.data,
       {super.key,
-        required this.textColor,
-        required  this.overFlowFade,
-        required  this.maxLength,
-        required this.height,
-        required this.textAlign,
-        required  this.defaultScale,
-        required  this.decoration});
+      required this.textColor,
+      required this.overFlowFade,
+      required this.maxLength,
+      required this.height,
+      required this.textAlign,
+      required this.defaultScale,
+      required this.decoration});
 
   final String? data;
   final Color? textColor;
@@ -202,11 +210,9 @@ abstract class IndexInterface extends StatelessWidget {
     return Text(
       data ?? '',
       textAlign: textAlign,
-      textScaler: (defaultScale == true)
-          ? TextScaler.noScaling
-          : null,
+      textScaler: (defaultScale == true) ? TextScaler.noScaling : null,
       style: TextStyle(
-        decoration: decoration,
+          decoration: decoration,
           fontSize: fontSize(context),
           height: height,
           fontWeight: fontWeight,
@@ -590,28 +596,33 @@ class CustomDropdown extends ConsumerWidget {
                                                   color: GlobalColor.white,
                                                   child: InkWell(
                                                     child: Container(
-                                                      height: 50,
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      padding: EdgeInsets.only(
-                                                          left: 45),
-                                                      child: Text(
-                                                        items[index],
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              selectedValue ==
-                                                                      index
-                                                                  ? FontWeight
-                                                                      .bold
-                                                                  : FontWeight
-                                                                      .normal,
-                                                          fontSize:
-                                                              DynamicFontSize
-                                                                  .font24(
-                                                                      context),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                        height: 50,
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Row(children: [
+                                                          SizedBox(width: 6,),
+                                                          SizedBox(
+                                                            width: 39,
+                                                            height: 50,
+                                                            child: selectedValue == index ? Icon(Icons.check,size: 33,): null,
+                                                          ),
+                                                          Text(
+                                                            items[index],
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  selectedValue ==
+                                                                          index
+                                                                      ? FontWeight
+                                                                          .bold
+                                                                      : FontWeight
+                                                                          .normal,
+                                                              fontSize:
+                                                                  DynamicFontSize
+                                                                      .font24(
+                                                                          context),
+                                                            ),
+                                                          ),
+                                                        ])),
                                                     onTap: () {
                                                       // ref.read(statusProvider.notifier).setStatus(entry.key);
                                                       onChanged(index);
@@ -753,10 +764,15 @@ class CustomGradeDropdown extends ConsumerWidget {
                                                       height: 50,
                                                       alignment:
                                                           Alignment.centerLeft,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 45),
-                                                      child: Row(
+                                                      child:Row(children: [
+                                                        SizedBox(width: 6,),
+                                                        SizedBox(
+                                                          width: 39,
+                                                          height: 50,
+                                                          child: selectedValue == index ? Icon(Icons.check, size: 33,): null,
+                                                        ),
+
+                                                        Row(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .end,
@@ -792,7 +808,7 @@ class CustomGradeDropdown extends ConsumerWidget {
                                                                         formatDate(
                                                                             items[index].date!))
                                                                 : SizedBox()
-                                                          ]),
+                                                          ])]),
                                                     ),
                                                     onTap: () {
                                                       // ref.read(statusProvider.notifier).setStatus(entry.key);

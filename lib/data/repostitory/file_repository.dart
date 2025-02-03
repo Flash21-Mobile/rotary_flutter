@@ -14,14 +14,14 @@ abstract class FileRepository {
 
   @GET("/file")
   Future<List<FileModel>?> getFile(
-      @Query('apiName') String? fileApiName,
+      @Query('api') String? fileApiName,
       @Query('pk') int? fileApiPK,
   );
 
   @POST("/file")
   @MultiPart()
   Future postFile(
-      @Query('apiName') String? fileApiName,
+      @Query('api') String? fileApiName,
       @Query('pk') int? fileApiPK,
       @Part(name: 'image') List<File> file
       );

@@ -14,6 +14,7 @@ class FutureImage extends ConsumerStatefulWidget {
       {super.key,
         this.width,
         this.height,
+        this.align,
         this.onError,
         this.loadingWidget});
 
@@ -21,6 +22,7 @@ class FutureImage extends ConsumerStatefulWidget {
   final double? width;
   final double? height;
   final Widget? onError;
+  final Alignment? align;
   final Widget? loadingWidget;
 
   @override
@@ -66,6 +68,7 @@ class _NetworkImage extends ConsumerState<FutureImage>
             ));
 
     var image = Image.network(
+      alignment: widget.align??Alignment.center,
         '$BASE_URL/file/$imagePK',
         fit: widget.height == null ? BoxFit.fitWidth : BoxFit.cover,
         headers: const {'cheat': 'showmethemoney'},
@@ -166,16 +169,29 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               SizedBox(
                 height: 5,
               ),
-              IndexMinText(widget.account.firstGrade?.name),
-              SizedBox(
-                height: 5,
-              ),
               Container(
                   width: 165,
                   child: Row(children: [
-                    SizedBox(width: 40, child: IndexMinText(
+                    SizedBox(width: 40, child: IndexMinTitle(
+                      '구분',
+                      textColor: GlobalColor.greyFontColor,
+                    )),
+                    SizedBox(width: 5),
+                    SizedBox(width:120, child:
+                    IndexMinTitle(
+                      widget.account.firstGrade?.name,
+                      overFlowFade: true,
+                    ))
+                  ])),
+              SizedBox(
+                height: 5,
+              ),
+              Container(  //todo 전화번호 없을 시에 로그인 안되게
+                  width: 165,
+                  child: Row(children: [
+                    SizedBox(width: 40, child: IndexMinTitle(
                       '직책',
-                      textColor: GlobalColor.black,
+                        textColor: GlobalColor.greyFontColor,
                     )),
                     SizedBox(width: 5),
                     SizedBox(width:120, child:
@@ -190,9 +206,9 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               Container(
                   width: 165,
                   child: Row(children: [
-                      SizedBox(width: 40, child: IndexMinText(
+                      SizedBox(width: 50, child: IndexMinTitle(
                       '입회일',
-                      textColor: GlobalColor.black,
+                        textColor: GlobalColor.greyFontColor,
                     )),
                     // Container(
                     //     padding: EdgeInsets.symmetric(
@@ -204,7 +220,7 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                     SizedBox(
                       width: 5,
                     ),
-                    SizedBox(width:120, child:IndexMinTitle(
+                    SizedBox(width:110, child:IndexMinTitle(
                         widget.account.time != null
                             ? formatDateTime(widget.account.time)
                             : '',

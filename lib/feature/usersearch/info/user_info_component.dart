@@ -16,6 +16,7 @@ class UserInfoIndex extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
         height: 40,
         alignment: Alignment.center,
@@ -26,11 +27,17 @@ class UserInfoIndex extends StatelessWidget {
           children: [
             Container(
                 width: 90,
-                child: IndexTitle(
+                child: IndexTextTitle(
                   indexName,
                   textColor: GlobalColor.greyFontColor,
                 )),
-            Expanded(child: IndexTitle(index ?? ''))
+            Container(
+              child: IndexTextTitle(
+                index ?? '',
+                height: 1.1,
+              ),
+              width: width - 90 - 60,
+            )
           ],
         ));
   }
