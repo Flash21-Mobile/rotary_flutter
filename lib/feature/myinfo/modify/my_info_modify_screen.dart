@@ -11,7 +11,7 @@ import 'package:rotary_flutter/util/get_address_screen.dart';
 import 'package:rotary_flutter/util/model/menu_items.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:rotary_flutter/data/model/account_model.dart';
+import 'package:rotary_flutter/data/model/account/response/account_model.dart';
 import '../../../util/common/date_input_formatter.dart';
 import '../../../util/logger.dart';
 import '../../../util/model/loadstate.dart';
@@ -136,8 +136,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                       return;
                     }
 
-                    var data =
-                        (myInfoProvider.accountState as Success).data.first;
+                    var data = (myInfoProvider.accountState as Success).data.first;
                     data as Account;
                     data.nickname = nickNameController.text;
 
@@ -163,8 +162,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     var response = await AccountAPI().putAccount(data);
 
                     var imageResponse = viewModel.image != null
-                        ? await FileAPI()
-                            .postAccountFile(data.id, viewModel.image!)
+                        ? await FileAPI().postAccountFile(data.id, viewModel.image!)
                         : Success('');
 
                     if (response is Success && imageResponse is Success) {
@@ -274,7 +272,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                                         )
                                                       : viewModel.imagePath !=
                                                               null
-                                                          ? Image.network(
+                                                          ? Image.network(  //todo r: 여기
                                                               '$BASE_URL/file/${viewModel.imagePath}',
                                                               headers: const {
                                                                 'cheat':

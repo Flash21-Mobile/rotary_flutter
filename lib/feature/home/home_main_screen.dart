@@ -50,7 +50,6 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
 
     final homeProvider = ref.read(HomeProvider);
     final userSearchListViewModel = ref.watch(UserSearchListProvider);
-
     return Container(
         color: GlobalColor.primaryColor,
         child: CustomScrollView(physics: ClampingScrollPhysics(), slivers: [

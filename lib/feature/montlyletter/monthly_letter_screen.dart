@@ -2,7 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/montlyletter/detail/monthly_letter_detail.dart';
@@ -12,7 +12,7 @@ import 'package:rotary_flutter/feature/userSearch/list/user_search_list_componen
 import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 
-import '../../../../data/model/article_model.dart';
+import '../../data/model/article/response/article_model.dart';
 import '../../../../util/global_color.dart';
 import '../../util/logger.dart';
 import '../../util/model/loadstate.dart';
@@ -80,7 +80,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
           });
           viewModel.monthlyLetterPostState = End();
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            viewModel.getMonthlyLetterAll(query: viewModel.query);
+            viewModel.getMonthlyLetterAll();
           });
           Navigator.of(context, rootNavigator: true).pop();
         },
@@ -129,7 +129,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
               textColor: GlobalColor.greyFontColor,
             ),
             SizedBox(
-              width: 15,
+              width: 15
             )
           ]))
         ],
@@ -152,10 +152,7 @@ class _Widget extends ConsumerState<MonthlyLetterScreen> {
                           viewModel.sortData(query: data);
                         })),
               ),
-              SliverToBoxAdapter(
-                  child: SizedBox(
-                height: 15,
-              )),
+              SliverToBoxAdapter(child: SizedBox(height: 15)),
               LoadStateWidgetFun(
                   loadState: viewModel.monthlyLetterState,
                   successWidget: (_) {

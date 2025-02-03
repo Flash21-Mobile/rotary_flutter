@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
 
-import '../../../data/model/account_model.dart';
+import '../../../data/model/account/response/account_model.dart';
 import '../../../util/common/common.dart';
 import '../../../util/global_color.dart';
 import '../../home/home_main_component.dart';

@@ -76,7 +76,7 @@ class _ArticleRepository implements ArticleRepository {
   }
 
   @override
-  Future<ArticleModel> postArticle(ArticleModel data) async {
+  Future<ArticleModel> postArticle(ArticleRequestDto data) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

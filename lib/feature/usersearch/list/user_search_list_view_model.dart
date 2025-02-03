@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/data/remoteData/article_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
-import '../../../data/model/account_model.dart';
+import '../../../data/model/account/response/account_model.dart';
 import '../../../data/remoteData/account_remote_data.dart';
 import '../../../util/model/account_region.dart';
 import '../../../util/model/loadstate.dart';
@@ -84,8 +84,7 @@ class UserSearchListViewModel with ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 100));
 
     final region = AccountRegion.regions[selectedRegion].id;
-    final grade =
-        AccountRegion.regions[selectedRegion].grades[selectedGrade].id;
+    final grade = AccountRegion.regions[selectedRegion].grades[selectedGrade].id;
 
     if (region != null)
       temp = temp.where((value) => value.thirdGrade?.id == region).toList();

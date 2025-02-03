@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:rotary_flutter/data/model/sign_model.dart';
-import 'package:rotary_flutter/data/model/token.dart';
+import 'package:rotary_flutter/data/model/sign/response/sign_model.dart';
+import 'package:rotary_flutter/data/model/token/response/token.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 
 import '../../util/common/common.dart';

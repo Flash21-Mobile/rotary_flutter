@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:rotary_flutter/data/model/event_model.dart';
+import 'package:rotary_flutter/data/model/event/response/event_model.dart';
 import 'package:rotary_flutter/feature/event/event_view_model.dart';
 import 'package:rotary_flutter/feature/myInfo/modify/my_info_modify_component.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';

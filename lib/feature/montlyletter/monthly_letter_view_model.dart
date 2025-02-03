@@ -3,15 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/data/remoteData/article_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
+import 'package:rotary_flutter/util/logger.dart';
 
 import '../../../../util/model/loadstate.dart';
 import 'dart:math';
 
-import '../../data/model/account_model.dart';
+import '../../data/model/account/response/account_model.dart';
 import '../../data/remoteData/account_remote_data.dart';
 import '../../util/model/pair.dart';
 import '../../util/secure_storage.dart';
@@ -25,7 +26,8 @@ class _ViewModel with ChangeNotifier {
 
   Future<int?> getMonthlyFileFirst(int? fileApiPK) async {
     var data = await FileAPI().getMonthlyFile(fileApiPK);
-    return data?.first.id;
+    data?.sort((a, b) => a.order ?? 0.compareTo(b.order ?? 0));
+    return data?.map((value) => value.id).toList().first;
   }
 
   LoadState<List<int?>?> monthlyLetterFilesState = End();
@@ -35,7 +37,7 @@ class _ViewModel with ChangeNotifier {
     notifyListeners();
 
     var data = await FileAPI().getMonthlyFile(fileApiPK);
-
+    data?.sort((a, b) => a.order ?? 0.compareTo(b.order ?? 0));
     monthlyLetterFilesState = Success(data?.map((value) => value.id).toList());
     notifyListeners();
   }
@@ -50,7 +52,7 @@ class _ViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<LoadState> getMonthlyLetterAll({String? query}) async {
+  Future<LoadState> getMonthlyLetterAll() async {
     monthlyLetterState = Loading();
     notifyListeners();
 
@@ -113,11 +115,11 @@ class _ViewModel with ChangeNotifier {
         loadState: accountState,
         onSuccess: (data) async {
           var firstResponseState =
-              await ArticleAPI().postMonthlyLetterAll(data.first, file);
-
+              await ArticleAPI().postMonthlyLetterAll(data.first.id, file);
           loadStateFunction<ArticleModel>(
               loadState: firstResponseState,
               onSuccess: (data) async {
+                Log.d('hello:success $firstResponseState');
                 monthlyLetterPostState =
                     await FileAPI().postMonthlyLetterFile(data.id, file);
                 notifyListeners();
@@ -133,7 +135,10 @@ class _ViewModel with ChangeNotifier {
     return await ArticleAPI().deleteMonthlyLetter(id);
   }
 
-  String query = '';
+  String? get query => _query.isEmpty ? null : _query;
+  String _query = '';
+
+  set query(String? string) => _query = string ?? '';
 
   int? monthlyLetterCount = 0;
 }

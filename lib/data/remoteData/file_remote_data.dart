@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/common/common.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/secure_storage.dart';
 import '../interceptor/zstd_interceptor.dart';
-import '../model/file_model.dart';
+import '../model/file/response/file_model.dart';
 import '../repostitory/event_repository.dart';
 import '../repostitory/file_repository.dart';
 
@@ -25,14 +26,14 @@ class FileAPI {
   late FileRepository repository;
 
   FileAPI() {
-    // dio.interceptors.add(LogInterceptor(
-    //   request: true, // 요청 데이터 로깅
-    //   requestHeader: true, // 요청 헤더 로깅
-    //   requestBody: true, // 요청 바디 로깅
-    //   responseHeader: true, // 응답 헤더 로깅
-    //   responseBody: true, // 응답 바디 로깅
-    //   error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true, // 요청 데이터 로깅
+      requestHeader: true, // 요청 헤더 로깅
+      requestBody: true, // 요청 바디 로깅
+      responseHeader: true, // 응답 헤더 로깅
+      responseBody: true, // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
     repository = FileRepository(dio, baseUrl: serverUrl);
   }
 

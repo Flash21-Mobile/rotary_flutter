@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:rotary_flutter/data/model/account_model.dart';
+import 'package:rotary_flutter/data/model/account/response/account_model.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/account_grade_model.dart';
 

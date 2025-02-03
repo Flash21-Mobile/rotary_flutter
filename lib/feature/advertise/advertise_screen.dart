@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/userSearch/list/user_search_list_component.dart';
 import 'package:rotary_flutter/util/common/common.dart';
 import 'package:rotary_flutter/util/fontSize.dart';
 
-import '../../../../data/model/article_model.dart';
+import '../../data/model/article/response/article_model.dart';
 import '../../../../util/global_color.dart';
 import '../../util/logger.dart';
 import '../../util/model/loadstate.dart';

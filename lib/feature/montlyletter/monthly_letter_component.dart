@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/montlyletter/monthly_letter_view_model.dart';
 import 'package:rotary_flutter/feature/userSearch/list/user_search_list_component.dart';
-import '../../data/model/article_model.dart';
+import '../../data/model/article/response/article_model.dart';
 import '../../util/global_color.dart';
 import '../home/home_main_component.dart';
 import 'detail/monthly_letter_detail.dart';

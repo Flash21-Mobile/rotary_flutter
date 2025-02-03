@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'account_model.dart';
+import '../../account/response/account_model.dart';
 
 part 'article_model.g.dart';
 

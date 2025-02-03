@@ -1,4 +1,5 @@
 import 'package:rotary_flutter/data/interceptor/zstd_interceptor.dart';
+import 'package:rotary_flutter/data/model/account/request/account_request_dto.dart';
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:rotary_flutter/util/logger.dart';
@@ -6,7 +7,7 @@ import 'package:rotary_flutter/util/secure_storage.dart';
 import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
 import '../../util/model/pair.dart';
-import '../model/account_model.dart';
+import '../model/account/response/account_model.dart';
 
 class AccountAPI {
   String serverUrl = "${BASE_URL}";
@@ -46,7 +47,7 @@ class AccountAPI {
     await setUpToken();
     try {
       final result = await accountRepository.getAccount(
-          cellphone: cellphone, size: size ?? 10000,matchType: matchType);
+          cellphone: cellphone, size: size ?? 10000, matchType: matchType);
       return Success(result.data);
     } on DioException catch (e) {
       Log.d('Hellloioio $e');
@@ -85,8 +86,46 @@ class AccountAPI {
   Future<LoadState> putAccount(Account account) async {
     await setUpToken();
     try {
+      AccountRequestModel accountRequestModel = AccountRequestModel(
+        active: account.active,
+        android: account.android,
+        birthDate: account.birthDate,
+        cellphone: account.cellphone,
+        clubRi: account.clubRi,
+        email: account.email,
+        englishName: account.englishName,
+        faxNumber: account.faxNumber,
+        fifthGrade: account.fifthGrade?.id,
+        firstGrade: account.firstGrade?.id,
+        fourthGrade: account.fourthGrade?.id,
+        grade: account.grade?.id,
+        graduationYear: account.graduationYear,
+        homeAddress: account.homeAddress,
+        homeAddressSub: account.homeAddressSub,
+        homeAddressZipCode: account.homeAddressZipCode,
+        ios: account.ios,
+        job: account.job,
+        memberRi: account.memberRi,
+        memo: account.memo,
+        name: account.name,
+        nickname: account.nickname,
+        permission : account.permission,
+        secondGrade: account.secondGrade?.id,
+        signupYear: account.signupYear,
+        telephone: account.telephone,
+        thirdGrade:account.thirdGrade?.id,
+        time: account.time,
+        userId: account.userId,
+        userPassword: account.userPassword,
+        workAddress: account.workAddress,
+        workAddressSub: account.workAddressSub,
+        workAddressZipCode: account.workAddressZipCode,
+        workName: account.workName,
+        workPositionName: account.workPositionName,
+      );
+
       final result =
-          await accountRepository.putAccount(account.id ?? 0, account);
+      await accountRepository.putAccount(account.id ?? 0, accountRequestModel);
       print('success: $result');
       return Success(result);
     } catch (e) {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rotary_flutter/data/model/event_model.dart';
+import 'package:rotary_flutter/data/model/event/response/event_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 

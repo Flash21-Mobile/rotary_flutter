@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/request/article_request_dto.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 
 part 'article_repository.g.dart';
 
@@ -27,7 +28,7 @@ abstract class ArticleRepository {
 
   @POST("/article")
   Future<ArticleModel> postArticle(
-    @Body() ArticleModel data,
+    @Body() ArticleRequestDto data,
   );
 
   @GET("/article/random")

@@ -4,7 +4,7 @@ import 'package:rotary_flutter/feature/event/modify/event_modify_screen.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../data/model/event_model.dart';
+import '../../data/model/event/response/event_model.dart';
 import '../../util/fontSize.dart';
 import '../../util/global_color.dart';
 import '../../util/logger.dart';

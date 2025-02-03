@@ -236,7 +236,9 @@ void loadStateFunction<T>(
     {required LoadState loadState,
     required Function(T) onSuccess,
     Function()? onLoading,
-    Function(Object)? onError}) {
+    Function(Object)? onError,
+    Function()? onElse}) {
+
   if (loadState is Success<T>) {
     Log.d('success on', isSuper: true);
     onSuccess(loadState.data);
@@ -246,6 +248,8 @@ void loadStateFunction<T>(
   } else if (loadState is Error<T>) {
     Log.e('${loadState.exception}', isSuper: true);
     (onError ?? () {})(loadState.exception);
+  }else {
+    (onElse ?? () {})();
   }
 }
 

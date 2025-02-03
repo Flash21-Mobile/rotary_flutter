@@ -1,4 +1,5 @@
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/request/article_request_dto.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/data/repostitory/account_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:rotary_flutter/util/logger.dart';
@@ -6,7 +7,7 @@ import '../../util/model/loadstate.dart';
 import '../../util/common/common.dart';
 import '../../util/secure_storage.dart';
 import '../interceptor/zstd_interceptor.dart';
-import '../model/account_model.dart';
+import '../model/account/response/account_model.dart';
 import '../repostitory/article_repository.dart';
 
 class ArticleAPI {
@@ -116,15 +117,19 @@ class ArticleAPI {
     }
   }
 
-  Future<LoadState> postMonthlyLetterAll(Account account, String? file) async {
+  Future<LoadState<ArticleModel>> postMonthlyLetterAll(int? accountId, String? file) async {
     await setUpToken();
     try {
-      final data = await repository.postArticle(ArticleModel(
-          id: 1,
-          account: account,
-          board: Board(id: 3, name: 'monthlyletter'),
-          title: file?.split('/').last.replaceAll('.pdf', ''),
-          content: formatDataToDTO()));
+      final date = DateTime.now().toIso8601String();
+      final dto = ArticleRequestDto(
+        account: accountId,
+        board: 3,
+        title: file?.split('/').last.replaceAll('.pdf', ''),
+        content: formatDataToDTO(),
+        time: date
+      );
+
+      final data = await repository.postArticle(dto);
 
       return Success(data);
     } on DioException catch (e) {
@@ -161,7 +166,7 @@ class ArticleAPI {
   Future<LoadState> deleteMonthlyLetter(int? id) async {
     await setUpToken();
     try {
-      repository.deleteArticle(id);
+      await repository.deleteArticle(id);
       return Success('success');
     } on DioException catch (e) {
       return Error(e);

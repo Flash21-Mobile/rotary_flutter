@@ -3,7 +3,7 @@ library;
 import 'package:rotary_flutter/util/model/account_grade_model.dart';
 import 'package:rotary_flutter/util/model/region_model.dart';
 
-import '../../data/model/account_model.dart';
+import '../../data/model/account/response/account_model.dart';
 
 part 'account_grade.dart';
 

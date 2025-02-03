@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:rotary_flutter/data/model/event_model.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:rotary_flutter/data/model/event/request/event_request_dto.dart';
+import 'package:rotary_flutter/data/model/event/response/event_model.dart';
 import 'package:rotary_flutter/util/logger.dart';
 
 import '../../util/common/common.dart';
@@ -50,18 +52,8 @@ class EventAPI {
   Future<LoadState> postEvent(String title, String content, String date) async {
     await setUpToken();
     try {
-      final result = await repository.postEvent(
-        EventModel(
-          id: null,
-          calendar: Calendar(
-            id: 1,
-            name: 'event'
-          ),
-          time: date,
-          title: title,
-          content: content
-        )
-      );
+      final dto = EventRequestDto(calendar: 1, time: date, title: title, content: content);
+      final result = await repository.postEvent(dto);
       return Success(result);
     } catch (e) {
       return Error(e);

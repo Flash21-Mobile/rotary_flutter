@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rotary_flutter/data/model/article_model.dart';
+import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_component.dart';
 import 'package:rotary_flutter/feature/advertise/advertise_view_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
@@ -16,7 +16,7 @@ import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../data/model/account_model.dart';
+import '../../../data/model/account/response/account_model.dart';
 import '../../../util/model/loadstate.dart';
 import '../../home/home_main_screen.dart';
 import '../../home_view_model.dart';

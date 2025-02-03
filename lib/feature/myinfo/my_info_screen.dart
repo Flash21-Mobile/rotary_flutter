@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:rotary_flutter/data/model/account_model.dart';
+import 'package:rotary_flutter/data/model/account/response/account_model.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';

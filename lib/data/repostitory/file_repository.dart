@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:rotary_flutter/data/model/file_model.dart';
+import 'package:rotary_flutter/data/model/file/response/file_model.dart';
 
-import '../model/account_model.dart';
+import '../model/account/response/account_model.dart';
 
 part 'file_repository.g.dart';
 

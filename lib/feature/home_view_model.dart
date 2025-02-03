@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rotary_flutter/data/model/token.dart';
+import 'package:rotary_flutter/data/model/token/response/token.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/sign_remote_data.dart';
 import 'package:rotary_flutter/feature/home/home_main_screen.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
 
-import '../data/model/account_model.dart';
+import '../data/model/account/response/account_model.dart';
 import '../util/logger.dart';
 
 final HomeProvider = ChangeNotifierProvider.autoDispose<HomeViewmodel>((ref) {

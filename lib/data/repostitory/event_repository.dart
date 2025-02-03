@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
+import 'package:rotary_flutter/data/model/event/request/event_request_dto.dart';
 
-import '../model/event_model.dart';
+import '../model/event/response/event_model.dart';
 
 part 'event_repository.g.dart';
 
@@ -14,7 +15,7 @@ abstract class EventRepository {
   Future<List<EventModel>> getEvent();
 
   @POST("/schedule")
-  Future postEvent(@Body() EventModel data);
+  Future postEvent(@Body() EventRequestDto data);
 
   @DELETE("/schedule/{id}")
   Future deleteEvent(@Path("id") int id);

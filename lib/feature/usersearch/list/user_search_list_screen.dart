@@ -13,7 +13,7 @@ import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/account_region.dart';
 import 'package:rotary_flutter/util/model/pair.dart';
 
-import '../../../data/model/account_model.dart';
+import '../../../data/model/account/response/account_model.dart';
 import '../../../util/global_color.dart';
 import '../../../util/model/loadstate.dart';
 import '../../home/home_main_component.dart';

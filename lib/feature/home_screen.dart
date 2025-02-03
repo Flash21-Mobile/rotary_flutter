@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:permission_handler/permission_handler.dart";
-import 'package:rotary_flutter/data/model/token.dart';
+import 'package:rotary_flutter/data/model/token/response/token.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
 import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
@@ -18,7 +18,7 @@ import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
-import '../data/model/account_model.dart';
+import '../data/model/account/response/account_model.dart';
 import 'home/home_main_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {

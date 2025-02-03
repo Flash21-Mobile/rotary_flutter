@@ -69,7 +69,7 @@ class _AccountRepository implements AccountRepository {
   @override
   Future<Account> putAccount(
     int id,
-    Account account,
+    AccountRequestModel account,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
