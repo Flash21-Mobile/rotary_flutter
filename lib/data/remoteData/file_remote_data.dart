@@ -20,7 +20,8 @@ class FileAPI {
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
-    ..options.headers['accept-Type'] = 'application/json'
+    ..options.headers['Accept-Encoding'] = 'zstd'
+    ..options.responseType = ResponseType.bytes
     ..options.headers['cheat'] = 'showmethemoney';
 
   late FileRepository repository;
@@ -34,6 +35,7 @@ class FileAPI {
       responseBody: true, // 응답 바디 로깅
       error: true, // 에러 로깅
     ));
+    dio.interceptors.add(ZstdInterceptor());
     repository = FileRepository(dio, baseUrl: serverUrl);
   }
 
@@ -56,7 +58,7 @@ class FileAPI {
     await setUpToken();
     try {
       await repository.postFile(
-          'account', fileApiPK, [image]);
+          'account', fileApiPK, convertFilesToMultipart([image]));
       return Success('success');
     } catch (e) {
       return Error(e);
@@ -88,11 +90,17 @@ class FileAPI {
     try {
       var convertedFiles = await convertPdfToImages(file);
 
-      await repository.postFile('monthlyletter', fileApiPK, convertedFiles);
+      await repository.postFile('monthlyletter', fileApiPK, convertFilesToMultipart(convertedFiles));
       return Success('success');
     } catch (e) {
       return Error(e);
     }
+  }
+
+  List<MultipartFile> convertFilesToMultipart(List<File> files) {
+    return files.map((file) {
+      return MultipartFile.fromFileSync(file.path);
+    }).toList();
   }
 
   Future<List<File>> convertPdfToImages(String pdfPath) async {

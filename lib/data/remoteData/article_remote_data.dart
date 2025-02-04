@@ -16,7 +16,8 @@ class ArticleAPI {
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
-    ..options.headers['accept-Type'] = 'application/json'
+    ..options.headers['Accept-Encoding'] = 'zstd'
+    ..options.responseType = ResponseType.bytes
     ..options.headers['cheat'] = 'showmethemoney';
 
   late ArticleRepository repository;
@@ -35,6 +36,7 @@ class ArticleAPI {
       // 응답 바디 로깅
       error: true, // 에러 로깅
     ));
+    dio.interceptors.add(ZstdInterceptor());
     repository = ArticleRepository(dio, baseUrl: serverUrl);
   }
 

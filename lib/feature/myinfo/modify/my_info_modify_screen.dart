@@ -1,5 +1,6 @@
 import 'package:daum_postcode_search/data_model.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -269,10 +270,10 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                                           fit: BoxFit.cover,
                                                           alignment: Alignment
                                                               .topCenter,
-                                                        )
+                                                        ) // todo r: 총재월신 삭제 컨펌하기
                                                       : viewModel.imagePath !=
                                                               null
-                                                          ? Image.network(  //todo r: 여기
+                                                          ? AvifImage.network(  //todo r: 여기
                                                               '$BASE_URL/file/${viewModel.imagePath}',
                                                               headers: const {
                                                                 'cheat':

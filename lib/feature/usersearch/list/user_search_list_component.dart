@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
 
@@ -67,7 +68,7 @@ class _NetworkImage extends ConsumerState<FutureImage>
               size: 60,
             ));
 
-    var image = Image.network(
+    var image = AvifImage.network(
       alignment: widget.align??Alignment.center,
         '$BASE_URL/file/$imagePK',
         fit: widget.height == null ? BoxFit.fitWidth : BoxFit.cover,

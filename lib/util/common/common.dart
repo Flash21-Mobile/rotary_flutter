@@ -8,3 +8,5 @@ const articleListLength = 10;
 const accountListLength = 10;
 const textScale = TextScaler.linear(1.3);
 const mainDartIndex = 10101;
+
+const eventPK = 2;

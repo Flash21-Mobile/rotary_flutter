@@ -23,6 +23,6 @@ abstract class FileRepository {
   Future postFile(
       @Query('api') String? fileApiName,
       @Query('pk') int? fileApiPK,
-      @Part(name: 'image') List<File> file
+      @Part(name: 'image') List<MultipartFile> file
       );
 }

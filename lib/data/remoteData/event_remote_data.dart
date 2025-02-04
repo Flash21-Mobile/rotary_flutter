@@ -16,20 +16,22 @@ class EventAPI {
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
-    ..options.headers['accept-Type'] = 'application/json'
+    ..options.headers['Accept-Encoding'] = 'zstd'
+    ..options.responseType = ResponseType.bytes
     ..options.headers['cheat'] = 'showmethemoney';
 
   late EventRepository repository;
 
   EventAPI() {
-    // dio.interceptors.add(LogInterceptor(
-    //   request: true, // 요청 데이터 로깅
-    //   requestHeader: true, // 요청 헤더 로깅
-    //   requestBody: true, // 요청 바디 로깅
-    //   responseHeader: true, // 응답 헤더 로깅
-    //   responseBody: true, // 응답 바디 로깅
-    //   error: true, // 에러 로깅
-    // ));
+    dio.interceptors.add(LogInterceptor(
+      request: true, // 요청 데이터 로깅
+      requestHeader: true, // 요청 헤더 로깅
+      requestBody: true, // 요청 바디 로깅
+      responseHeader: true, // 응답 헤더 로깅
+      responseBody: true, // 응답 바디 로깅
+      error: true, // 에러 로깅
+    ));
+    dio.interceptors.add(ZstdInterceptor());
     repository = EventRepository(dio, baseUrl: serverUrl);
   }
 
@@ -52,7 +54,7 @@ class EventAPI {
   Future<LoadState> postEvent(String title, String content, String date) async {
     await setUpToken();
     try {
-      final dto = EventRequestDto(calendar: 1, time: date, title: title, content: content);
+      final dto = EventRequestDto(calendar: eventPK, time: date, title: title, content: content);
       final result = await repository.postEvent(dto);
       return Success(result);
     } catch (e) {

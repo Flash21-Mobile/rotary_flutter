@@ -6,6 +6,7 @@ import 'package:rotary_flutter/util/model/loadstate.dart';
 import '../../util/common/common.dart';
 import '../../util/logger.dart';
 import '../../util/secure_storage.dart';
+import '../interceptor/zstd_interceptor.dart';
 import '../repostitory/file_repository.dart';
 import '../repostitory/sign_repository.dart';
 
@@ -15,7 +16,8 @@ class SignAPI {
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
-    ..options.headers['accept-Type'] = 'application/json'
+    ..options.headers['Accept-Encoding'] = 'zstd'
+    ..options.responseType = ResponseType.bytes
     ..options.headers['cheat'] = 'showmethemoney';
 
 
@@ -35,6 +37,7 @@ class SignAPI {
       // 응답 바디 로깅
       error: true, // 에러 로깅
     ));
+    dio.interceptors.add(ZstdInterceptor());
     repository = SignRepository(dio, baseUrl: serverUrl);
   }
 

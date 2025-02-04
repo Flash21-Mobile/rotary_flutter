@@ -66,7 +66,6 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
         showLoginDialog();
       }
     } else {
-      //todo r: 권한 거부
       showErrorDialog();
     }
   }

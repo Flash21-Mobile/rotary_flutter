@@ -15,7 +15,8 @@ class AccountAPI {
     ..options.connectTimeout = const Duration(seconds: 60)
     ..options.receiveTimeout = const Duration(seconds: 60)
     ..options.headers['Content-Type'] = 'application/json'
-    ..options.headers['accept-Type'] = 'application/json'
+    ..options.headers['Accept-Encoding'] = 'zstd'
+    ..options.responseType = ResponseType.bytes
     ..options.headers['cheat'] = 'showmethemoney';
 
   late AccountRepository accountRepository;
@@ -34,6 +35,7 @@ class AccountAPI {
       // 응답 바디 로깅
       error: true, // 에러 로깅
     ));
+    dio.interceptors.add(ZstdInterceptor());
     accountRepository = AccountRepository(dio, baseUrl: serverUrl);
   }
 
@@ -48,7 +50,7 @@ class AccountAPI {
     try {
       final result = await accountRepository.getAccount(
           cellphone: cellphone, size: size ?? 10000, matchType: matchType);
-      return Success(result.data);
+      return Success(result);
     } on DioException catch (e) {
       Log.d('Hellloioio $e');
       return Error(e);
@@ -60,7 +62,7 @@ class AccountAPI {
     try {
       final result = await accountRepository.getAccount(cellphone: cellphone);
       Log.d('hello getAccount success');
-      return result.data.first.name == name
+      return result.first.name == name
           ? Success(true)
           : Error(DioException);
     } on DioException catch (e) {

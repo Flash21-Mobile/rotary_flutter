@@ -11,7 +11,7 @@ abstract class AccountRepository {
   factory AccountRepository(Dio dio, {String baseUrl}) = _AccountRepository;
 
   @GET("/account")
-  Future<HttpResponse<List<Account>>> getAccount({
+  Future<List<Account>> getAccount({
     @Query('cellphone') String? cellphone,
     @Query('size') int? size,
     @Query('matchType') String? matchType

@@ -1,21 +1,33 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:rotary_flutter/util/logger.dart';
-import 'package:zstandard/zstandard.dart';
+import 'package:flutter/services.dart';
+
+import '../zstandard/android_decompress.dart';
+import '../zstandard/ios_decompress.dart';
 
 class ZstdInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     try {
-      final zstandard = Zstandard();
+      if (response.headers.value('content-encoding') == 'zstd') {
+        late Uint8List? result;
 
-      Log.d('message: ${response.data}');
+        if (Platform.isAndroid) {
+          result = await androidDecompress(response.data);
+        } else if (Platform.isIOS) {
+          result = await iOSDecompress(response.data);
+        } else {
+          return;
+        }
 
-      final decompressedData = await zstandard.decompress(response.data);
-
-      response.data = decompressedData;
+        var decodeData = utf8.decode(result ?? []);
+        response.data = json.decode(decodeData);
+      }
     } catch (e) {
-      print('Zstd Decompression Error: $e');
+      print('Failed Zstd Decompress: $e');
     }
-    super.onResponse(response, handler);
+    return handler.next(response);
   }
 }

@@ -22,7 +22,7 @@ class _AccountRepository implements AccountRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<List<Account>>> getAccount({
+  Future<List<Account>> getAccount({
     String? cellphone,
     int? size,
     String? matchType,
@@ -36,7 +36,7 @@ class _AccountRepository implements AccountRepository {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<HttpResponse<List<Account>>>(Options(
+    final _options = _setStreamType<List<Account>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -62,8 +62,7 @@ class _AccountRepository implements AccountRepository {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
-    final httpResponse = HttpResponse(_value, _result);
-    return httpResponse;
+    return _value;
   }
 
   @override
