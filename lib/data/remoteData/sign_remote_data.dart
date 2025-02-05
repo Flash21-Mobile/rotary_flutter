@@ -41,13 +41,7 @@ class SignAPI {
     repository = SignRepository(dio, baseUrl: serverUrl);
   }
 
-  Future setUpToken() async {
-    var token = await globalStorage.read(key: 'token');
-    dio.options.headers['Authorization'] = 'bearer $token';
-  }
-
   Future<LoadState<TokenModel>> signIn({String? cellphone, String? name}) async {
-    await setUpToken();
     try {
       var response = await repository.signIn(SignModel(cellphone: cellphone, name: name));
       return Success(response);
@@ -55,6 +49,4 @@ class SignAPI {
       return Error(e);
     }
   }
-
-
 }
