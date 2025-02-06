@@ -71,11 +71,11 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    if ((await globalStorage.read(key: 'phone')) == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showIOSLoginDialog();
-      });
-    }
+    // if ((await globalStorage.read(key: 'phone')) == null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showIOSLoginDialog();
+    });
+    // }
   }
 
   void signIn({required String cellphone, String? name}) async {
@@ -107,7 +107,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           if (phoneController.text.isNotEmpty &&
               nameController.text.isNotEmpty) {
             FocusNode().unfocus();
-            homeProvider.iOSLogin(phoneController.text, nameController.text);
+            // homeProvider.iOSLogin(phoneController.text, nameController.text);
+            signIn(cellphone: phoneController.text, name: nameController.text);
             // Navigator.of(context, rootNavigator: true).pop();
           }
         },
@@ -164,29 +165,18 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     var viewModel = ref.watch(HomeProvider);
 
-    // iOS 로그인
-    loadStateFunction(
-        loadState: viewModel.loginState,
-        onSuccess: (data) {
-          Navigator.of(context, rootNavigator: true).pop();
-          signIn(cellphone: phoneController.text, name: nameController.text);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            viewModel.loginState = End();
-          });
-        },
-        onError: (e) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            phoneController.text = '';
-            nameController.text = '';
-            Fluttertoast.showToast(msg: '전화번호 또는 이름이 잘못되었습니다');
-          });
-        });
-
     loadStateFunction(
         loadState: viewModel.signState,
         onSuccess: (data) async {
           data as Account;
-          Fluttertoast.showToast(msg: '${data.name}님 로그인에 성공하였습니다.');
+
+          if (data.cellphone == phoneController.text && Platform.isIOS) {
+            Navigator.of(context, rootNavigator: true).pop();
+            Fluttertoast.showToast(msg: '${data.name}님 로그인에 성공하였습니다.');
+          }
+          if (Platform.isAndroid) {
+            Fluttertoast.showToast(msg: '${data.name}님 로그인에 성공하였습니다.');
+          }
 
           if (data.permission == true) {
             globalStorage.write(key: 'admin', value: 'admin');
@@ -194,7 +184,6 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
             globalStorage.write(key: 'admin', value: null);
           }
           globalStorage.write(key: 'phone', value: data.cellphone);
-
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             viewModel.signState = End();
@@ -257,12 +246,14 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
   HomeMainScreen currentWidgetIsNull() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(milliseconds: 1500),
-          content: Text('뒤로 가기 버튼을 한 번 더 누르면 앱이 종료됩니다.'),
-        ),
-      );
+      if (Platform.isAndroid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(milliseconds: 1500),
+            content: Text('뒤로 가기 버튼을 한 번 더 누르면 앱이 종료됩니다.'),
+          ),
+        );
+      }
     });
     addHomeScreen();
     return const HomeMainScreen();

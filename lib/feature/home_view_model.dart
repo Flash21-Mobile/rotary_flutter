@@ -33,7 +33,7 @@ class HomeViewmodel with ChangeNotifier {
   void iOSLogin(String phone, String name) async {
     loginState = Loading();
 
-    final data = await AccountAPI().postIOSLogin(phone, name);
+    final data = await SignAPI().signIn(cellphone: phone, name: name);
     Log.w('i am received $data');
     loginState = data;
   }
@@ -52,9 +52,11 @@ class HomeViewmodel with ChangeNotifier {
     var response = await SignAPI().signIn(cellphone: cellphone, name: name);
 
     if (response is Success<TokenModel>) {
+
       await globalStorage.write(key: 'token', value: response.data.token);
 
-      var data = await AccountAPI().getAccount(cellphone: cellphone, size: 1, matchType: 'andEquals');
+      var data = await AccountAPI()
+          .getAccount(cellphone: cellphone, size: 1, matchType: 'andEquals');
       if (data is Success<List<Account>>) {
         Log.w('data: [[: ${data}');
 
