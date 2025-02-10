@@ -71,17 +71,17 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    // if ((await globalStorage.read(key: 'phone')) == null) {
+    if ((await globalStorage.read(key: 'phone')) == null) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showIOSLoginDialog();
     });
-    // }
+    }
   }
 
   void signIn({required String cellphone, String? name}) async {
     var viewModel = ref.watch(HomeProvider);
 
-    viewModel.signIn(cellphone: cellphone, name: name);
+    viewModel.signIn(cellphone: cellphone, name: name);   // todo r: 첫 로그인 시에도 회원 불러오기
   }
 
   void showIOSLoginDialog() {
