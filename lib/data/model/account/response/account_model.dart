@@ -33,8 +33,8 @@ class Account {
   bool? ios;
   bool? active;
   bool? permission;
-  int? clubRi;
-  int? memberRi;
+  String? clubRi;
+  String? memberRi;
   String? nickname;
   String? englishName;
   String? memo;

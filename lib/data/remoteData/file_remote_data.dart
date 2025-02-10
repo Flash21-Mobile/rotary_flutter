@@ -17,8 +17,8 @@ class FileAPI {
 
   String serverUrl = "${BASE_URL}";
   Dio dio = Dio()
-    ..options.connectTimeout = const Duration(seconds: 60)
-    ..options.receiveTimeout = const Duration(seconds: 60)
+    ..options.connectTimeout = const Duration(seconds: 600)
+    ..options.receiveTimeout = const Duration(seconds: 600)
     ..options.headers['Content-Type'] = 'application/json'
     ..options.headers['Accept-Encoding'] = 'zstd'
     ..options.responseType = ResponseType.bytes

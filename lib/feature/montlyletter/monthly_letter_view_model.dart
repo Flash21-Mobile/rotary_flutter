@@ -26,7 +26,13 @@ class _ViewModel with ChangeNotifier {
 
   Future<int?> getMonthlyFileFirst(int? fileApiPK) async {
     var data = await FileAPI().getMonthlyFile(fileApiPK);
-    data?.sort((a, b) => a.order ?? 0.compareTo(b.order ?? 0));
+    data?.sort((a, b) {
+      final orderA = a.order ?? 0;  // null일 경우 0 처리
+      final orderB = b.order ?? 0;  // null일 경우 0 처리
+      return orderA.compareTo(orderB);
+    });
+
+    print ('hellohe: ${data?.map((value)=> value.order)}');
     return data?.map((value) => value.id).toList().first;
   }
 
@@ -37,7 +43,11 @@ class _ViewModel with ChangeNotifier {
     notifyListeners();
 
     var data = await FileAPI().getMonthlyFile(fileApiPK);
-    data?.sort((a, b) => a.order ?? 0.compareTo(b.order ?? 0));
+    data?.sort((a, b) {
+      final orderA = a.order ?? 0;  // null일 경우 0 처리
+      final orderB = b.order ?? 0;  // null일 경우 0 처리
+      return orderA.compareTo(orderB);
+    });
     monthlyLetterFilesState = Success(data?.map((value) => value.id).toList());
     notifyListeners();
   }

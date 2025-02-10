@@ -8,7 +8,7 @@ class AccountRequestModel {
   bool? android;
   String? birthDate;
   String? cellphone;
-  int? clubRi;
+  String? clubRi;
   String? email;
   String? englishName;
   String? faxNumber;
@@ -22,7 +22,7 @@ class AccountRequestModel {
   String? homeAddressZipCode;
   bool? ios;
   String? job;
-  int? memberRi;
+  String? memberRi;
   String? memo;
   String? name;
   String? nickname;
