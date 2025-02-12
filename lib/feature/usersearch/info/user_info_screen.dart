@@ -145,6 +145,10 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
                                 indexName: '성명',
                                 index: widget.account.name),
                             UserInfoIndex(
+                                assetName: 'asset/icons/name_icon.svg',
+                                indexName: '아호',
+                                index: widget.account.nickname),
+                            UserInfoIndex(
                                 assetName: 'asset/icons/position_icon.svg',
                                 indexName: '직책',
                                 index: widget.account.secondGrade?.name),

@@ -554,7 +554,7 @@ class CustomDropdown extends ConsumerWidget {
                   builder: (BuildContext context) {
                     if (onTap != null) {
                       onTap!();
-                    } //todo r: cache manager vs sqlite
+                    }
                     Future.delayed(Duration.zero, () {
                       Log.d('messaged hello: $selectedValue');
                       scrollController.jumpTo((((selectedValue ?? 1) * 51) < 300

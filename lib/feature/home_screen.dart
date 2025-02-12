@@ -13,6 +13,7 @@ import 'package:rotary_flutter/feature/home/home_main_component.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_screen.dart';
+import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
 import 'package:rotary_flutter/util/common/phone_input_formatter.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
@@ -62,7 +63,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
               '${data.substring(0, 3)}-${data.substring(3, 7)}-${data.substring(7)}';
           signIn(cellphone: indexPhone);
         }
-      } catch (e) {
+      } catch (e) { // todo r: 타임아웃 처리하기
         showLoginDialog();
       }
     } else {
@@ -71,11 +72,11 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    if ((await globalStorage.read(key: 'phone')) == null) {
+    // if ((await globalStorage.read(key: 'phone')) == null) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showIOSLoginDialog();
     });
-    }
+    // }
   }
 
   void signIn({required String cellphone, String? name}) async {
@@ -186,6 +187,7 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
           globalStorage.write(key: 'phone', value: data.cellphone);
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(UserSearchListProvider).getAccountList();
             viewModel.signState = End();
           });
         },

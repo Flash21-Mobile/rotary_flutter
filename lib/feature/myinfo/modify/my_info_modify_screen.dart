@@ -273,7 +273,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                                         ) // todo r: 총재월신 삭제 컨펌하기
                                                       : viewModel.imagePath !=
                                                               null
-                                                          ? AvifImage.network(  //todo r: 여기
+                                                          ? AvifImage.network(
                                                               '$BASE_URL/file/${viewModel.imagePath}',
                                                               headers: const {
                                                                 'cheat':

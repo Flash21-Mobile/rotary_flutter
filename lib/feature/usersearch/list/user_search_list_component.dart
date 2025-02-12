@@ -13,11 +13,11 @@ import '../../userSearch/info/user_info_screen.dart';
 class FutureImage extends ConsumerStatefulWidget {
   const FutureImage(this.futureId,
       {super.key,
-        this.width,
-        this.height,
-        this.align,
-        this.onError,
-        this.loadingWidget});
+      this.width,
+      this.height,
+      this.align,
+      this.onError,
+      this.loadingWidget});
 
   final Future<int?> futureId;
   final double? width;
@@ -69,7 +69,7 @@ class _NetworkImage extends ConsumerState<FutureImage>
             ));
 
     var image = AvifImage.network(
-      alignment: widget.align??Alignment.center,
+        alignment: widget.align ?? Alignment.center,
         '$BASE_URL/file/$imagePK',
         fit: widget.height == null ? BoxFit.fitWidth : BoxFit.cover,
         headers: const {'cheat': 'showmethemoney'},
@@ -89,33 +89,32 @@ class _NetworkImage extends ConsumerState<FutureImage>
           }
         },
         errorBuilder: (context, error, stackTrace) =>
-        widget.onError ??
+            widget.onError ??
             Container(
                 width: widget.width,
                 height: widget.height,
                 child: Center(
                   child: CircularProgressIndicator(),
-                ))
-    );
+                )));
 
     return imagePK != -3999021222202
         ? imagePK != null
-        ? Container(
-      width: widget.width,
-      height: widget.height,
-      alignment: Alignment.center,
-      child: widget.height == null
-          ? LayoutBuilder(builder: (context, constrains) => image)
-          : image,
-    )
-        : placeHolder
+            ? Container(
+                width: widget.width,
+                height: widget.height,
+                alignment: Alignment.center,
+                child: widget.height == null
+                    ? LayoutBuilder(builder: (context, constrains) => image)
+                    : image,
+              )
+            : placeHolder
         : widget.loadingWidget ??
-        Container(
-            width: widget.width,
-            height: widget.height,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ));
+            Container(
+                width: widget.width,
+                height: widget.height,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ));
   }
 }
 
@@ -129,7 +128,6 @@ class UserSearchListTile extends ConsumerStatefulWidget {
 }
 
 class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
-
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(UserSearchListProvider);
@@ -170,36 +168,68 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               SizedBox(
                 height: 5,
               ),
+              ...widget.account.nickname != null &&
+                      widget.account.nickname!.isNotEmpty
+                  ? [
+                      Container(
+                          width: 165,
+                          child: Row(children: [
+                            SizedBox(
+                                width: 40,
+                                child: IndexMinTitle(
+                                  '아호',
+                                  textColor: GlobalColor.greyFontColor,
+                                )),
+                            SizedBox(width: 5),
+                            SizedBox(
+                                width: 120,
+                                child: IndexMinTitle(
+                                  widget.account.nickname,
+                                  overFlowFade: true,
+                                ))
+                          ])),
+                      SizedBox(
+                        height: 5,
+                      )
+                    ]
+                  : [],
               Container(
                   width: 165,
                   child: Row(children: [
-                    SizedBox(width: 40, child: IndexMinTitle(
-                      '구분',
-                      textColor: GlobalColor.greyFontColor,
-                    )),
+                    SizedBox(
+                        width: 40,
+                        child: IndexMinTitle(
+                          '구분',
+                          textColor: GlobalColor.greyFontColor,
+                        )),
                     SizedBox(width: 5),
-                    SizedBox(width:120, child:
-                    IndexMinTitle(
-                      widget.account.firstGrade?.name,
-                      overFlowFade: true,
-                    ))
+                    SizedBox(
+                        width: 120,
+                        child: IndexMinTitle(
+                          widget.account.firstGrade?.name,
+                          overFlowFade: true,
+                        ))
                   ])),
               SizedBox(
                 height: 5,
               ),
-              Container(  //todo 전화번호 없을 시에 로그인 안되게
+              Container(
+                  //todo 전화번호 없을 시에 로그인 안되게
                   width: 165,
                   child: Row(children: [
-                    SizedBox(width: 40, child: IndexMinTitle(
-                      '직책',
-                        textColor: GlobalColor.greyFontColor,
-                    )),
+                    SizedBox(
+                        width: 40,
+                        child: IndexMinTitle(
+                          '직책',
+                          textColor: GlobalColor.greyFontColor,
+                        )),
                     SizedBox(width: 5),
-                    SizedBox(width:120, child:
-                    IndexMinTitle(
-                      widget.account.secondGrade?.name,
-                      overFlowFade: true,
-                    ))
+                    SizedBox(
+                        width: 120,
+                        child: IndexMinTitle(
+                          widget.account.secondGrade?.name,
+                          overFlowFade: true,
+                        ))
                   ])),
               SizedBox(
                 height: 5,
@@ -207,10 +237,12 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
               Container(
                   width: 165,
                   child: Row(children: [
-                      SizedBox(width: 50, child: IndexMinTitle(
-                      '입회일',
-                        textColor: GlobalColor.greyFontColor,
-                    )),
+                    SizedBox(
+                        width: 50,
+                        child: IndexMinTitle(
+                          '입회일',
+                          textColor: GlobalColor.greyFontColor,
+                        )),
                     // Container(
                     //     padding: EdgeInsets.symmetric(
                     //         horizontal: 6, vertical: 3),
@@ -221,7 +253,9 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                     SizedBox(
                       width: 5,
                     ),
-                    SizedBox(width:110, child:IndexMinTitle(
+                    SizedBox(
+                      width: 110,
+                      child: IndexMinTitle(
                         widget.account.time != null
                             ? formatDateTime(widget.account.time)
                             : '',
@@ -241,7 +275,6 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
 
   String formatDateTime(String? dateTime) {
     DateTime parsedDate = DateTime.parse(dateTime ?? '');
-    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(
-        2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
+    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
   }
 }

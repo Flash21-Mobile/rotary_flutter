@@ -93,7 +93,8 @@ class UserSearchListViewModel with ChangeNotifier {
     if (query != null && query.isNotEmpty)
       temp =
           temp.where((value) => value.name?.contains(query) ?? false).toList();
-
+    temp = temp.where((value) => value.name != '개발자').toList();
+    // todo 초성 검색
     accountCount = temp.length;
     accountList = temp;
 
