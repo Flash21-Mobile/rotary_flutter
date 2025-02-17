@@ -47,6 +47,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   var workAddressSubController = TextEditingController();
   var typeController = TextEditingController();
 
+  var timeController = TextEditingController();
+
   void getMyData() async {
     var myInfoProvider = ref.read(MyInfoProvider);
     var myInfoModifyProvider = ref.read(MyInfoModifyProvider);
@@ -72,6 +74,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           workAddressController.text = account.workAddress ?? '';
           workAddressSubController.text = account.workAddressSub ?? '';
           typeController.text = account.job ?? '';
+          timeController.text =
+              formatDateToFeature(formatStringToDateTime(account.time));
 
           await myInfoModifyProvider.getAccountFile(account.id);
         });
@@ -137,7 +141,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                       return;
                     }
 
-                    var data = (myInfoProvider.accountState as Success).data.first;
+                    var data =
+                        (myInfoProvider.accountState as Success).data.first;
                     data as Account;
                     data.nickname = nickNameController.text;
 
@@ -154,6 +159,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data.workAddress = workAddressController.text;
                     data.workAddressSub = workAddressSubController.text;
                     data.job = typeController.text;
+                  final temp = formatServerToDateTime(timeController.text);
+
+                    data.time = (temp == '') ? null : temp;
 
                     var currentState = myInfoProvider.accountState;
 
@@ -163,7 +171,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     var response = await AccountAPI().putAccount(data);
 
                     var imageResponse = viewModel.image != null
-                        ? await FileAPI().postAccountFile(data.id, viewModel.image!)
+                        ? await FileAPI()
+                            .postAccountFile(data.id, viewModel.image!)
                         : Success('');
 
                     if (response is Success && imageResponse is Success) {
@@ -316,7 +325,11 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      IndexMaxTitle('${account.cellphone}')
+                                      IndexMaxTitle('${account.cellphone}'),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      IndexText('${account.memberRi ?? ''}')
                                     ])
                               ],
                             ),
@@ -361,6 +374,15 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                               indexTitle: '메모',
                               indexController: memoController,
                               multilineEnable: true,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            MyInfoModifyTextField(
+                              indexTitle: '입회일',
+                              keyboardType: TextInputType.number,
+                              indexController: timeController,
+                              inputFormatters: [DateInputFormatter()],
                             ),
                             SizedBox(
                               height: 100,
@@ -432,5 +454,32 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     workAddressZipCodeController.text = data.zonecode;
 
     Log.d('received data hello: $data');
+  }
+
+  static String formatDateToFeature(DateTime? dateTime) {
+    if (dateTime == null) {
+      return '';
+    }
+    var result =
+        "${dateTime.year}. ${dateTime.month.toString().padLeft(2, '0')}. ${dateTime.day.toString().padLeft(2, '0')}";
+    return result;
+  }
+
+  static DateTime? formatStringToDateTime(String? dateTime) {
+    try {
+      return DateTime.parse(dateTime ?? '');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static String? formatServerToDateTime(String date) {
+    try {
+
+    final dateTime = DateTime.parse(date); // 문자열을 DateTime으로 변환
+    return dateTime.toIso8601String().split('Z').first; // UTC 표시(Z) 제거
+    }catch(e){
+      return null;
+    }
   }
 }

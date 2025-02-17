@@ -55,7 +55,10 @@ class UserSearchListViewModel with ChangeNotifier {
         userListState = await AccountAPI().getAccount();
 
         if (userListState is Success<List<Account>>) {
-          allAccount = (userListState as Success<List<Account>>).data;
+          var temp = (userListState as Success<List<Account>>).data;
+          temp = temp.where((value) => value.name != '개발자').toList();
+
+          allAccount = temp;
           allAccountCount = allAccount.length;
           _accountCount = allAccount.length;
         }

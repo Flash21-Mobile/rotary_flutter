@@ -118,12 +118,12 @@ final List<MenuItem> menuItems = [
       widget: const AllocationTableScreen()),
   MenuItem(
       iconPath: 'asset/icons/menu/criterion_icon.svg',
-      label: '표장기준',
+      label: '표창기준',
       widget: const CriterionScreen()),
   MenuItem(
       iconPath: 'asset/icons/menu/programing_table_icon.svg',
       label: '편성표',
-      widget: const ProgramingTableScreen()),
+      widget: const ProgramingTableScreen()),   // todo d: 입회일 수정, ri 회원 수정
   MenuItem(iconPath: null, label: ''),
   MenuItem(iconPath: null, label: ''),
 ];

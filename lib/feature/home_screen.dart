@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import "package:permission_handler/permission_handler.dart";
 import 'package:rotary_flutter/data/model/token/response/token.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
@@ -14,11 +15,14 @@ import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
 import 'package:rotary_flutter/feature/myInfo/my_info_screen.dart';
 import 'package:rotary_flutter/feature/usersearch/list/user_search_list_view_model.dart';
+import 'package:rotary_flutter/util/checkPackageVersion.dart';
 import 'package:rotary_flutter/util/common/phone_input_formatter.dart';
 import 'package:rotary_flutter/util/global_color.dart';
 import 'package:rotary_flutter/util/logger.dart';
 import 'package:rotary_flutter/util/model/loadstate.dart';
 import 'package:rotary_flutter/util/secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../data/model/account/response/account_model.dart';
 import 'home/home_main_screen.dart';
 
@@ -36,16 +40,53 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      androidLogin();
-    } else if (Platform.isIOS) {
-      iOSLogin();
-    }
+
+    init();
 
     phoneController = TextEditingController();
     nameController = TextEditingController();
     idController = TextEditingController();
     passwordController = TextEditingController();
+  }
+
+  Future init() async {
+    final checkedData = await AppVersionCheck().checkUpdate();
+
+    print('''
+    앱 업데이트 체크
+    canUpdate : ${checkedData.canUpdate}
+    currentVersion : ${checkedData.currentVersion}
+    newVersion : ${checkedData.newVersion}
+    appURL : ${checkedData.appURL}
+    errorMessage : ${checkedData.errorMessage}''');
+
+    if (checkedData.canUpdate) {
+      showDismissDialog(context,
+          title: '새로운 버전이 출시되었습니다 \n앱을 업데이트합니다',
+          buttonText: ('업데이트'), onTap: () async {
+        if (Platform.isAndroid) {
+          final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+          final androidUrl = Uri.parse('https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
+          if (await canLaunchUrl(androidUrl)) launchUrl(androidUrl);
+        } else if (Platform.isIOS) {
+          final iOSUrl = Uri.parse(
+              'https://apps.apple.com/kr/app/%EB%A1%9C%ED%83%80%EB%A6%AC%EC%BD%94%EB%A6%AC%EC%95%84/id6499181112');
+
+          if (await canLaunchUrl(iOSUrl)) {
+            await launchUrl(iOSUrl);
+          } else {
+            Fluttertoast.showToast(msg: '앱 스토어를 열 수 없습니다');
+          }
+        }
+      });
+    } else {
+      if (Platform.isAndroid) {
+        androidLogin();
+      } else if (Platform.isIOS) {
+        iOSLogin();
+      }
+    }
   }
 
   Future<void> androidLogin() async {
@@ -63,7 +104,8 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
               '${data.substring(0, 3)}-${data.substring(3, 7)}-${data.substring(7)}';
           signIn(cellphone: indexPhone);
         }
-      } catch (e) { // todo r: 타임아웃 처리하기
+      } catch (e) {
+        // todo r: 타임아웃 처리하기
         showLoginDialog();
       }
     } else {
@@ -72,17 +114,21 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
   }
 
   void iOSLogin() async {
-    // if ((await globalStorage.read(key: 'phone')) == null) {
+    final i =await SharedPreferences.getInstance();
+    bool isInit = i.getBool('isInit')??false;
+
+
+    if ((await globalStorage.read(key: 'phone')) == null || !isInit) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showIOSLoginDialog();
     });
-    // }
+    }
   }
-
   void signIn({required String cellphone, String? name}) async {
     var viewModel = ref.watch(HomeProvider);
 
-    viewModel.signIn(cellphone: cellphone, name: name);   // todo r: 첫 로그인 시에도 회원 불러오기
+    viewModel.signIn(
+        cellphone: cellphone, name: name); // todo r: 첫 로그인 시에도 회원 불러오기
   }
 
   void showIOSLoginDialog() {
@@ -91,7 +137,10 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     showDismissDialog(context,
         onPopInvokedWithResult: (didPop, result) {
           if (homeProvider.loginState is! Success) {
-            homeProvider.popCurrentWidget();
+            WidgetsBinding.instance.addPostFrameCallback((_){
+
+            // homeProvider.popCurrentWidget();
+            });
           }
         },
         textInputFormatter: [
@@ -173,6 +222,9 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
 
           if (data.cellphone == phoneController.text && Platform.isIOS) {
             Navigator.of(context, rootNavigator: true).pop();
+            final i =await SharedPreferences.getInstance();
+            i.setBool('isInit', true);
+
             Fluttertoast.showToast(msg: '${data.name}님 로그인에 성공하였습니다.');
           }
           if (Platform.isAndroid) {
