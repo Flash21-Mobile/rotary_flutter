@@ -329,7 +329,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      IndexText('${account.memberRi ?? ''}')
+                                      IndexText('RI회원번호: ${account.memberRi ?? ''}')
                                     ])
                               ],
                             ),
