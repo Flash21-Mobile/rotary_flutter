@@ -43,6 +43,7 @@ AccountRequestModel _$AccountRequestModelFromJson(Map<String, dynamic> json) =>
       workAddressZipCode: json['workAddressZipCode'] as String?,
       workName: json['workName'] as String?,
       workPositionName: json['workPositionName'] as String?,
+      hidden: json['hidden'] as bool?,
     );
 
 Map<String, dynamic> _$AccountRequestModelToJson(
@@ -83,4 +84,5 @@ Map<String, dynamic> _$AccountRequestModelToJson(
       'workAddressZipCode': instance.workAddressZipCode,
       'workName': instance.workName,
       'workPositionName': instance.workPositionName,
+      'hidden': instance.hidden,
     };

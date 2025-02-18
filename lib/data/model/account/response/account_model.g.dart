@@ -55,6 +55,7 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       memo: json['memo'] as String?,
       job: json['job'] as String?,
       time: json['time'] as String?,
+      hidden: json['hidden'] as bool?,
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
@@ -94,6 +95,7 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'memo': instance.memo,
       'job': instance.job,
       'time': instance.time,
+      'hidden': instance.hidden,
     };
 
 Grade _$GradeFromJson(Map<String, dynamic> json) => Grade(

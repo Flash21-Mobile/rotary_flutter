@@ -124,6 +124,7 @@ class AccountAPI {
         workAddressZipCode: account.workAddressZipCode,
         workName: account.workName,
         workPositionName: account.workPositionName,
+        hidden: account.hidden
       );
 
       final result =

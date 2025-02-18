@@ -74,8 +74,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           workAddressController.text = account.workAddress ?? '';
           workAddressSubController.text = account.workAddressSub ?? '';
           typeController.text = account.job ?? '';
-          timeController.text =
-              formatDateToFeature(formatStringToDateTime(account.time));
+          timeController.text = account.time??'';
 
           await myInfoModifyProvider.getAccountFile(account.id);
         });
@@ -94,6 +93,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     workAddressController.dispose();
     workAddressSubController.dispose();
     typeController.dispose();
+
+    timeController.dispose();
 
     super.dispose();
   }
@@ -159,9 +160,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data.workAddress = workAddressController.text;
                     data.workAddressSub = workAddressSubController.text;
                     data.job = typeController.text;
-                  final temp = formatServerToDateTime(timeController.text);
 
-                    data.time = (temp == '') ? null : temp;
+                    data.time = timeController.text;
 
                     var currentState = myInfoProvider.accountState;
 
@@ -454,32 +454,5 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     workAddressZipCodeController.text = data.zonecode;
 
     Log.d('received data hello: $data');
-  }
-
-  static String formatDateToFeature(DateTime? dateTime) {
-    if (dateTime == null) {
-      return '';
-    }
-    var result =
-        "${dateTime.year}. ${dateTime.month.toString().padLeft(2, '0')}. ${dateTime.day.toString().padLeft(2, '0')}";
-    return result;
-  }
-
-  static DateTime? formatStringToDateTime(String? dateTime) {
-    try {
-      return DateTime.parse(dateTime ?? '');
-    } catch (e) {
-      return null;
-    }
-  }
-
-  static String? formatServerToDateTime(String date) {
-    try {
-
-    final dateTime = DateTime.parse(date); // 문자열을 DateTime으로 변환
-    return dateTime.toIso8601String().split('Z').first; // UTC 표시(Z) 제거
-    }catch(e){
-      return null;
-    }
   }
 }

@@ -40,6 +40,7 @@ class Account {
   String? memo;
   String? job;
   String? time;
+  bool? hidden;
 
   Account(
       {this.id,
@@ -77,7 +78,8 @@ class Account {
       this.englishName,
       this.memo,
       this.job,
-      this.time});
+      this.time,
+      this.hidden});
 
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);

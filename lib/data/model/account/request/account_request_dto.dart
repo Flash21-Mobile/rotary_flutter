@@ -39,6 +39,7 @@ class AccountRequestModel {
   String? workAddressZipCode;
   String? workName;
   String? workPositionName;
+  bool? hidden;
 
   AccountRequestModel(
       {required this.active,
@@ -75,7 +76,8 @@ class AccountRequestModel {
       required this.workAddressSub,
       required this.workAddressZipCode,
       required this.workName,
-      required this.workPositionName});
+      required this.workPositionName,
+      required this.hidden});
 
   factory AccountRequestModel.fromJson(Map<String, dynamic> json) =>
       _$AccountRequestModelFromJson(json);
