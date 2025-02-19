@@ -237,7 +237,7 @@ class _Widget extends ConsumerState<EventModifyScreen> {
 
   String formatDateTime(String? dateTime) {
     DateTime parsedDate = DateTime.parse(dateTime ?? '');
-    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
+    return "${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}";
   }
 
   Widget timePicker() {

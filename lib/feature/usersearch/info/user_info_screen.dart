@@ -316,8 +316,12 @@ class _UserInfoScreen extends ConsumerState<UserInfoScreen> {
   }
 
   String formatDateTime(String? dateTime) {
-    DateTime parsedDate = DateTime.parse(dateTime ?? '');
-    return "${parsedDate.year}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.day.toString().padLeft(2, '0')}";
+    try {
+      DateTime parsedDate = DateTime.parse(dateTime ?? '');
+      return "${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}";
+    } catch (e) {
+      return dateTime ?? '';
+    }
   }
 
   void launchEmail(String email) async {
