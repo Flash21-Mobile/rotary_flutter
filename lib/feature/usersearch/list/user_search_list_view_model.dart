@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:rotary_flutter/data/model/article/response/article_model.dart';
 import 'package:rotary_flutter/data/remoteData/article_remote_data.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
@@ -87,7 +88,8 @@ class UserSearchListViewModel with ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 100));
 
     final region = AccountRegion.regions[selectedRegion].id;
-    final grade = AccountRegion.regions[selectedRegion].grades[selectedGrade].id;
+    final grade =
+        AccountRegion.regions[selectedRegion].grades[selectedGrade].id;
 
     if (region != null)
       temp = temp.where((value) => value.thirdGrade?.id == region).toList();
@@ -97,12 +99,37 @@ class UserSearchListViewModel with ChangeNotifier {
       temp =
           temp.where((value) => value.name?.contains(query) ?? false).toList();
     temp = temp.where((value) => value.name != '개발자').toList();
+
+    // temp.sort((a, b) {
+    //   final aTime = formatToDateTime(a.time);
+    //   final bTime = formatToDateTime(b.time);
+    //
+    //   if (aTime == null) return 1; // a가 null이면 뒤로
+    //   if (bTime == null) return -1; // b가 null이면 앞으로
+    //
+    //   return aTime.compareTo(bTime);
+    // });
+
     // todo 초성 검색
     accountCount = temp.length;
     accountList = temp;
 
     userListState = Success([]);
     notifyListeners();
+  }
+
+  DateTime? formatToDateTime(String? time) {
+    try {
+      return DateTime.parse(time ?? '');
+    } catch (e) {
+      try {
+        time?.replaceAll('-', '.');
+        DateTime dateTime = DateFormat('yyyy.MM.dd').parse(time ?? '');
+        return dateTime;
+      } catch (e) {
+        return null;
+      }
+    }
   }
 
   int _accountCount = 0;

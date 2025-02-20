@@ -4,6 +4,7 @@ import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
@@ -61,7 +62,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           var account = (data as List<Account>).first;
 
           nickNameController.text = account.nickname ?? '';
-          birthDateController.text = account.birthDate ?? '';
+          birthDateController.text =formatDateTimeToFeature(formatToDateTime( account.birthDate ?? ''));
           enNameController.text = account.englishName ?? '';
           memoController.text = account.memo ?? '';
 
@@ -74,7 +75,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           workAddressController.text = account.workAddress ?? '';
           workAddressSubController.text = account.workAddressSub ?? '';
           typeController.text = account.job ?? '';
-          timeController.text = account.time??'';
+          timeController.text = formatDateTimeToFeature(formatToDateTime(account.time ?? ''));
 
           await myInfoModifyProvider.getAccountFile(account.id);
         });
@@ -147,7 +148,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data as Account;
                     data.nickname = nickNameController.text;
 
-                    data.birthDate = birthDateController.text;
+                    data.birthDate =formatToServer( birthDateController.text);
                     data.englishName = enNameController.text;
                     data.memo = memoController.text;
 
@@ -161,7 +162,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data.workAddressSub = workAddressSubController.text;
                     data.job = typeController.text;
 
-                    data.time = timeController.text;
+                    data.time = formatToServer(timeController.text);
 
                     var currentState = myInfoProvider.accountState;
 
@@ -329,7 +330,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      IndexText('RI회원번호: ${account.memberRi ?? ''}')
+                                      IndexText(
+                                          'RI회원번호: ${account.memberRi ?? ''}')
                                     ])
                               ],
                             ),
@@ -454,5 +456,36 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     workAddressZipCodeController.text = data.zonecode;
 
     Log.d('received data hello: $data');
+  }
+
+  DateTime? formatToDateTime(String time) {
+    try {
+      return DateTime.parse(time);
+    } catch (e) {
+      try {
+        time.replaceAll('-', '.');
+        DateTime dateTime = DateFormat('yyyy.MM.dd').parse(time);
+        return dateTime;
+      } catch (e) {
+        return null;
+      }
+    }
+  }
+
+  static String formatToServer(String time) {
+    if (time == '') return '';
+    try {
+      DateTime dateTime = DateFormat('yyyy.MM.dd').parse(time);
+      return dateTime.toIso8601String().split('Z').first;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  static String formatDateTimeToFeature(DateTime? dateTime) {
+    if (dateTime == null) return '';
+    var result =
+        "${dateTime?.year}.${dateTime?.month.toString().padLeft(2, '0')}.${dateTime?.day.toString().padLeft(2, '0')}";
+    return result;
   }
 }

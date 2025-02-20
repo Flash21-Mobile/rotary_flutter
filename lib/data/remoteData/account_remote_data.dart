@@ -124,7 +124,8 @@ class AccountAPI {
         workAddressZipCode: account.workAddressZipCode,
         workName: account.workName,
         workPositionName: account.workPositionName,
-        hidden: account.hidden
+        hidden: account.hidden,
+        fcmToken: null
       );
 
       final result =

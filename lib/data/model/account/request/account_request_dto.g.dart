@@ -44,6 +44,9 @@ AccountRequestModel _$AccountRequestModelFromJson(Map<String, dynamic> json) =>
       workName: json['workName'] as String?,
       workPositionName: json['workPositionName'] as String?,
       hidden: json['hidden'] as bool?,
+      fcmToken: (json['fcmToken'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$AccountRequestModelToJson(
@@ -85,4 +88,5 @@ Map<String, dynamic> _$AccountRequestModelToJson(
       'workName': instance.workName,
       'workPositionName': instance.workPositionName,
       'hidden': instance.hidden,
+      'fcmToken': instance.fcmToken,
     };

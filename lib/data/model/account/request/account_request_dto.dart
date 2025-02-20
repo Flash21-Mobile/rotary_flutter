@@ -40,6 +40,7 @@ class AccountRequestModel {
   String? workName;
   String? workPositionName;
   bool? hidden;
+  List<String>? fcmToken;
 
   AccountRequestModel(
       {required this.active,
@@ -77,7 +78,8 @@ class AccountRequestModel {
       required this.workAddressZipCode,
       required this.workName,
       required this.workPositionName,
-      required this.hidden});
+      required this.hidden,
+      required this.fcmToken});
 
   factory AccountRequestModel.fromJson(Map<String, dynamic> json) =>
       _$AccountRequestModelFromJson(json);
