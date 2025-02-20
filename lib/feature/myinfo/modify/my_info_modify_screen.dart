@@ -463,8 +463,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
       return DateTime.parse(time);
     } catch (e) {
       try {
-        time.replaceAll('-', '.');
-        DateTime dateTime = DateFormat('yyyy.MM.dd').parse(time);
+        time.replaceAll('.', '-');
+        DateTime dateTime = DateFormat('yyyy-MM-dd').parse(time);
         return dateTime;
       } catch (e) {
         return null;
@@ -475,7 +475,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   static String formatToServer(String time) {
     if (time == '') return '';
     try {
-      DateTime dateTime = DateFormat('yyyy.MM.dd').parse(time);
+      DateTime dateTime = DateFormat('yyyy-MM-dd').parse(time);
       return dateTime.toIso8601String().split('Z').first;
     } catch (e) {
       return '';

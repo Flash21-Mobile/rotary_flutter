@@ -18,7 +18,7 @@ class DateInputFormatter extends TextInputFormatter {
     // 포맷 적용 (YYYY-MM-DD 형식)
     final buffer = StringBuffer();
     for (int i = 0; i < digitsOnly.length; i++) {
-      if (i == 4 || i == 6) buffer.write('.');
+      if (i == 4 || i == 6) buffer.write('-');
       buffer.write(digitsOnly[i]);
     }
 

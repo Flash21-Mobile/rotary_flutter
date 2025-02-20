@@ -100,15 +100,13 @@ class UserSearchListViewModel with ChangeNotifier {
           temp.where((value) => value.name?.contains(query) ?? false).toList();
     temp = temp.where((value) => value.name != '개발자').toList();
 
-    // temp.sort((a, b) {
-    //   final aTime = formatToDateTime(a.time);
-    //   final bTime = formatToDateTime(b.time);
-    //
-    //   if (aTime == null) return 1; // a가 null이면 뒤로
-    //   if (bTime == null) return -1; // b가 null이면 앞으로
-    //
-    //   return aTime.compareTo(bTime);
-    // });
+    temp.sort((a, b) {
+
+      if (a.time == '미입력' || a.time == null) return 1; // a가 null이면 뒤로
+      if (b.time == '미입력' || b.time == null) return -1; // b가 null이면 앞으로
+
+      return a.time!.compareTo(b.time!);
+    });
 
     // todo 초성 검색
     accountCount = temp.length;
