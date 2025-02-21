@@ -102,8 +102,8 @@ class UserSearchListViewModel with ChangeNotifier {
 
     temp.sort((a, b) {
 
-      if (a.time == '미입력' || a.time == null) return 1; // a가 null이면 뒤로
-      if (b.time == '미입력' || b.time == null) return -1; // b가 null이면 앞으로
+      if (a.time == null) return 1; // a가 null이면 뒤로
+      if (b.time == null) return -1; // b가 null이면 앞으로
 
       return a.time!.compareTo(b.time!);
     });
