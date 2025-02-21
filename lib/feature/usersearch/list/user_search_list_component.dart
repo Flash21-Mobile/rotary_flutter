@@ -175,14 +175,14 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                           width: 165,
                           child: Row(children: [
                             SizedBox(
-                                width: 40,
+                                width: 50,
                                 child: IndexMinTitle(
                                   '아호',
                                   textColor: GlobalColor.greyFontColor,
                                 )),
                             SizedBox(width: 5),
                             SizedBox(
-                                width: 120,
+                                width: 110,
                                 child: IndexMinTitle(
                                   widget.account.nickname,
                                   overFlowFade: true,
@@ -197,14 +197,14 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   width: 165,
                   child: Row(children: [
                     SizedBox(
-                        width: 40,
+                        width: 50,
                         child: IndexMinTitle(
                           '구분',
                           textColor: GlobalColor.greyFontColor,
                         )),
                     SizedBox(width: 5),
                     SizedBox(
-                        width: 120,
+                        width: 110,
                         child: IndexMinTitle(
                           widget.account.firstGrade?.name,
                           overFlowFade: true,
@@ -218,14 +218,14 @@ class _UserSearchListTile extends ConsumerState<UserSearchListTile> {
                   width: 165,
                   child: Row(children: [
                     SizedBox(
-                        width: 40,
+                        width: 50,
                         child: IndexMinTitle(
                           '직책',
                           textColor: GlobalColor.greyFontColor,
                         )),
                     SizedBox(width: 5),
                     SizedBox(
-                        width: 120,
+                        width: 110,
                         child: IndexMinTitle(
                           widget.account.secondGrade?.name,
                           overFlowFade: true,

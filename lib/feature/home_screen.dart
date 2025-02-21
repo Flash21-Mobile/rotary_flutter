@@ -117,11 +117,13 @@ class _HomeScreen extends ConsumerState<HomeScreen> {
     final i =await SharedPreferences.getInstance();
     bool isInit = i.getBool('isInit')??false;
 
-
-    if ((await globalStorage.read(key: 'phone')) == null || !isInit) {
+    final cellphone = await globalStorage.read(key: 'phone');
+    if (cellphone == null || !isInit) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showIOSLoginDialog();
     });
+    } else {
+     signIn(cellphone: cellphone);
     }
   }
   void signIn({required String cellphone, String? name}) async {

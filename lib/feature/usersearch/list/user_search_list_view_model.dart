@@ -49,7 +49,7 @@ class UserSearchListViewModel with ChangeNotifier {
 
   void getAccountList() async {
     if (userListState is! Loading) {
-      if (allAccount.isEmpty || allAccountCount == 0) {
+      // if (allAccount.isEmpty || allAccountCount == 0) {
         userListState = Loading();
         notifyListeners();
 
@@ -57,7 +57,7 @@ class UserSearchListViewModel with ChangeNotifier {
 
         if (userListState is Success<List<Account>>) {
           var temp = (userListState as Success<List<Account>>).data;
-          temp = temp.where((value) => value.name != '개발자').toList();
+          // temp = temp.where((value) => value.name != '개발자').toList();
 
           allAccount = temp;
           allAccountCount = allAccount.length;
@@ -67,7 +67,7 @@ class UserSearchListViewModel with ChangeNotifier {
       userListState = Success([]);
       notifyListeners();
       sortAccountList();
-    }
+    // }
   }
 
   List<Account> _accountList = [];
@@ -98,7 +98,7 @@ class UserSearchListViewModel with ChangeNotifier {
     if (query != null && query.isNotEmpty)
       temp =
           temp.where((value) => value.name?.contains(query) ?? false).toList();
-    temp = temp.where((value) => value.name != '개발자').toList();
+    // temp = temp.where((value) => value.name != '개발자').toList();
 
     temp.sort((a, b) {
 

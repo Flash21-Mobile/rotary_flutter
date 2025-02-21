@@ -1,4 +1,5 @@
 import 'package:daum_postcode_search/data_model.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,10 +9,14 @@ import 'package:intl/intl.dart';
 import 'package:rotary_flutter/data/remoteData/file_remote_data.dart';
 import 'package:rotary_flutter/feature/home_component.dart';
 import 'package:rotary_flutter/feature/home_view_model.dart';
+import 'package:rotary_flutter/feature/myinfo/modify/my_info_modify_dialog.dart';
 import 'package:rotary_flutter/util/common/common.dart';
+import 'package:rotary_flutter/util/common/second_grade.dart';
 import 'package:rotary_flutter/util/get_address_screen.dart';
+import 'package:rotary_flutter/util/model/account_grade_model.dart';
 import 'package:rotary_flutter/util/model/menu_items.dart';
 import 'package:rotary_flutter/data/remoteData/account_remote_data.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rotary_flutter/data/model/account/response/account_model.dart';
 import '../../../util/common/date_input_formatter.dart';
@@ -33,6 +38,7 @@ class MyInfoModifyScreen extends ConsumerStatefulWidget {
 }
 
 class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
+  int? secondGradeIndex;
   var nickNameController = TextEditingController();
   var birthDateController = TextEditingController();
   var enNameController = TextEditingController();
@@ -49,6 +55,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   var typeController = TextEditingController();
 
   var timeController = TextEditingController();
+  var positionController = TextEditingController();
+  var workCellphoneController = TextEditingController();
+  final dummyFocusNode = FocusNode();
 
   void getMyData() async {
     var myInfoProvider = ref.read(MyInfoProvider);
@@ -62,7 +71,8 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           var account = (data as List<Account>).first;
 
           nickNameController.text = account.nickname ?? '';
-          birthDateController.text =formatDateTimeToFeature(formatToDateTime( account.birthDate ?? ''));
+          birthDateController.text = formatDateTimeToFeature(
+              formatToDateTime(account.birthDate ?? ''));
           enNameController.text = account.englishName ?? '';
           memoController.text = account.memo ?? '';
 
@@ -75,7 +85,21 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
           workAddressController.text = account.workAddress ?? '';
           workAddressSubController.text = account.workAddressSub ?? '';
           typeController.text = account.job ?? '';
-          timeController.text = formatDateTimeToFeature(formatToDateTime(account.time ?? ''));
+          timeController.text =
+              formatDateTimeToFeature(formatToDateTime(account.time ?? ''));
+
+          if (account.secondGrade?.id != null) {
+            secondGradeIndex =
+                SecondGradeEntity.getValidId(account.secondGrade!.id!)
+                    ? account.secondGrade!.id
+                    : null;
+          } else {
+            secondGradeIndex = null;
+          }
+          workCellphoneController.text = account.telephone ?? '';
+
+          positionController.text =
+              SecondGradeEntity.getNameById(secondGradeIndex);
 
           await myInfoModifyProvider.getAccountFile(account.id);
         });
@@ -96,6 +120,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     typeController.dispose();
 
     timeController.dispose();
+
+    workCellphoneController.dispose();
+    positionController.dispose();
 
     super.dispose();
   }
@@ -148,7 +175,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data as Account;
                     data.nickname = nickNameController.text;
 
-                    data.birthDate =formatToServer( birthDateController.text);
+                    data.birthDate = formatToServer(birthDateController.text);
                     data.englishName = enNameController.text;
                     data.memo = memoController.text;
 
@@ -163,6 +190,9 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                     data.job = typeController.text;
 
                     data.time = formatToServer(timeController.text);
+
+                    data.secondGrade = Grade(id: secondGradeIndex);
+                    data.telephone = workCellphoneController.text;
 
                     var currentState = myInfoProvider.accountState;
 
@@ -377,18 +407,67 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                               indexController: memoController,
                               multilineEnable: true,
                             ),
+                            const SizedBox(height: 15),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IndexText(
+                                    '직책',
+                                    textColor: GlobalColor.darkGreyFontColor,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomDropdown(
+                                    canSearch: true,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 17,
+                                      textColor: GlobalColor.black,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20.0, vertical: 15.0),
+                                      bgColor: GlobalColor.boxColor,
+                                      items: SecondGradeEntity.list()
+                                          .map((e) => e.name)
+                                          .toList(),
+                                      selectedValue:
+                                          SecondGradeEntity.getIndexById(
+                                              secondGradeIndex),
+                                      onChangedString: (e) {
+                                        FocusScope.of(context)
+                                            .requestFocus(dummyFocusNode);
+
+                                        setState(() {
+                                          secondGradeIndex = e != null
+                                              ? SecondGradeEntity.getIdByName(e)
+                                              : null;
+                                        });
+                                      })
+                                ]),
                             SizedBox(
                               height: 15,
                             ),
-                            MyInfoModifyTextField(
-                              indexTitle: '입회일',
-                              keyboardType: TextInputType.number,
-                              indexController: timeController,
-                              inputFormatters: [DateInputFormatter()],
-                            ),
-                            SizedBox(
-                              height: 100,
-                            )
+                            InkWell(
+                                onTap: () async {
+                                  FocusScope.of(context)
+                                      .requestFocus(dummyFocusNode);
+
+                                  timeController.text = formatDateTimeToFeature(
+                                      await MyInfoModifyDialog(
+                                    context,
+                                    '입회일',
+                                    selectedDate: formatToDateTime(
+                                        formatToServer(timeController.text)),
+                                  ).show());
+                                },
+                                child: IgnorePointer(
+                                    ignoring: true,
+                                    child: MyInfoModifyTextField(
+                                      indexTitle: '입회일',
+                                      keyboardType: TextInputType.number,
+                                      indexController: timeController,
+                                      inputFormatters: [DateInputFormatter()],
+                                    ))),
+                            SizedBox(height: 100)
                           ]),
                         ),
                       ),
@@ -405,6 +484,10 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                             MyInfoModifyTextField(
                                 indexTitle: '회사 직책',
                                 indexController: workPositionNameController),
+                            const SizedBox(height: 15),
+                            MyInfoModifyTextField(
+                                indexTitle: '회사 전화번호',
+                                indexController: workCellphoneController),
                             const SizedBox(height: 15),
                             InkWell(
                                 splashColor: GlobalColor.transparent,
@@ -458,6 +541,18 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
     Log.d('received data hello: $data');
   }
 
+  Future getWorkAddress() async {
+    DataModel data =
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return GetAddressScreen();
+    }));
+
+    workAddressController.text = data.address;
+    workAddressZipCodeController.text = data.zonecode;
+
+    Log.d('received data hello: $data');
+  }
+
   DateTime? formatToDateTime(String time) {
     try {
       return DateTime.parse(time);
@@ -465,6 +560,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
       try {
         time.replaceAll('.', '-');
         DateTime dateTime = DateFormat('yyyy-MM-dd').parse(time);
+
         return dateTime;
       } catch (e) {
         return null;
@@ -485,7 +581,7 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
   static String formatDateTimeToFeature(DateTime? dateTime) {
     if (dateTime == null) return '';
     var result =
-        "${dateTime?.year}.${dateTime?.month.toString().padLeft(2, '0')}.${dateTime?.day.toString().padLeft(2, '0')}";
+        "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
     return result;
   }
 }

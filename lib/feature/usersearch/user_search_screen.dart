@@ -26,7 +26,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(UserSearchListProvider).getAccountList();
+        // ref.read(UserSearchListProvider).getAccountList();
     });
   }
 

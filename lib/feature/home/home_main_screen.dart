@@ -34,7 +34,6 @@ class _HomeMainScreenState extends ConsumerState<HomeMainScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(UserSearchListProvider).getAccountList();
     });
   }
 
