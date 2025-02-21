@@ -71,7 +71,7 @@ class _Widget extends ConsumerState<MyInfoModifyDialog> {
     return InkWell(
         onTap: () {},
         child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+            padding: EdgeInsets.only(left: 15,right: 15, bottom: 30,top: 15),
             decoration: BoxDecoration(
                 color: GlobalColor.white,
                 borderRadius: BorderRadius.circular(15)),

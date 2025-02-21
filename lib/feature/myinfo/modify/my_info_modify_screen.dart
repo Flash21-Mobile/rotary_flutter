@@ -374,12 +374,28 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                             SizedBox(
                               height: 15,
                             ),
-                            MyInfoModifyTextField(
-                              indexTitle: '생년월일',
-                              indexController: birthDateController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [DateInputFormatter()],
-                            ),
+
+                            InkWell(
+                                onTap: () async {
+                                  FocusScope.of(context)
+                                      .requestFocus(dummyFocusNode);
+
+                                  birthDateController.text = formatDateTimeToFeature(
+                                      await MyInfoModifyDialog(
+                                        context,
+                                        '생년월일',
+                                        selectedDate: formatToDateTime(
+                                            formatToServer(birthDateController.text)),
+                                      ).show());
+                                },
+                                child: IgnorePointer(
+                                    ignoring: true,
+                                    child: MyInfoModifyTextField(
+                                      indexTitle: '생년월일',
+                                      keyboardType: TextInputType.number,
+                                      indexController: birthDateController,
+                                      inputFormatters: [DateInputFormatter()],
+                                    ))),
                             SizedBox(
                               height: 15,
                             ),
