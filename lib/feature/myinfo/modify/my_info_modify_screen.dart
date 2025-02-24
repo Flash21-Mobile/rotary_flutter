@@ -424,44 +424,44 @@ class _MyInfoModifyScreen extends ConsumerState<MyInfoModifyScreen> {
                               multilineEnable: true,
                             ),
                             const SizedBox(height: 15),
-                            // Column(// todo d: 직책
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       IndexText(
-                            //         '직책',
-                            //         textColor: GlobalColor.darkGreyFontColor,
-                            //       ),
-                            //       SizedBox(
-                            //         height: 5,
-                            //       ),
-                            //       CustomDropdown(
-                            //         canSearch: true,
-                            //           fontWeight: FontWeight.normal,
-                            //           fontSize: 17,
-                            //           textColor: GlobalColor.black,
-                            //           padding: EdgeInsets.symmetric(
-                            //               horizontal: 20.0, vertical: 15.0),
-                            //           bgColor: GlobalColor.boxColor,
-                            //           items: SecondGradeEntity.list()
-                            //               .map((e) => e.name)
-                            //               .toList(),
-                            //           selectedValue:
-                            //               SecondGradeEntity.getIndexById(
-                            //                   secondGradeIndex),
-                            //           onChangedString: (e) {
-                            //             FocusScope.of(context)
-                            //                 .requestFocus(dummyFocusNode);
-                            //
-                            //             setState(() {
-                            //               secondGradeIndex = e != null
-                            //                   ? SecondGradeEntity.getIdByName(e)
-                            //                   : null;
-                            //             });
-                            //           })
-                            //     ]),
-                            // SizedBox(
-                            //   height: 15,
-                            // ),
+                            Column(// todo d: 직책
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IndexText(
+                                    '직책',
+                                    textColor: GlobalColor.darkGreyFontColor,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomDropdown(
+                                    canSearch: true,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 17,
+                                      textColor: GlobalColor.black,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20.0, vertical: 15.0),
+                                      bgColor: GlobalColor.boxColor,
+                                      items: SecondGradeEntity.list()
+                                          .map((e) => e.name)
+                                          .toList(),
+                                      selectedValue:
+                                          SecondGradeEntity.getIndexById(
+                                              secondGradeIndex),
+                                      onChangedString: (e) {
+                                        FocusScope.of(context)
+                                            .requestFocus(dummyFocusNode);
+
+                                        setState(() {
+                                          secondGradeIndex = e != null
+                                              ? SecondGradeEntity.getIdByName(e)
+                                              : null;
+                                        });
+                                      })
+                                ]),
+                            SizedBox(
+                              height: 15,
+                            ),
                             InkWell(
                                 onTap: () async {
                                   FocusScope.of(context)
