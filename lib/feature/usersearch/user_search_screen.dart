@@ -26,7 +26,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        // ref.read(UserSearchListProvider).getAccountList();
+      // ref.read(UserSearchListProvider).getAccountList();
     });
   }
 
@@ -148,7 +148,7 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                         crossAxisCount: 3,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10),
-                    itemCount: 12,
+                    itemCount: 13,
                     itemBuilder: (context, index) {
                       return Container(
                           decoration: BoxDecoration(
@@ -169,9 +169,9 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    IndexText(
-                                      '${index + 1}지역',
-                                    )
+                                    (index == 12)
+                                        ? IndexText('사무장')
+                                        : IndexText('${index + 1}지역'),
                                   ]),
                               onTap: () {
                                 homeProvider.pushCurrentWidget =

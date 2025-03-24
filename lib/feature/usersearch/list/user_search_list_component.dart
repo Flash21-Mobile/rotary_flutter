@@ -83,7 +83,7 @@ class _NetworkImage extends ConsumerState<FutureImage>
                 Container(
                     width: widget.width,
                     height: widget.height,
-                    child: Center(
+                    child: const Center(
                       child: CircularProgressIndicator(),
                     ));
           }

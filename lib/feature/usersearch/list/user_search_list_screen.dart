@@ -51,9 +51,11 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
 
     ref.read(UserSearchListProvider).userListState = End();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(UserSearchListProvider).selectedRegion = widget.initialRegion ?? 0;
+      ref.read(UserSearchListProvider).selectedRegion =
+          widget.initialRegion ?? 0;
       ref.read(UserSearchListProvider).selectedGrade = 0;
       ref.read(UserSearchListProvider).getAccountList();
+
     });
   }
 
@@ -66,8 +68,7 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
   void sortAccount() {
     final viewModel = ref.read(UserSearchListProvider);
 
-    viewModel.sortAccountList(
-        query: query);
+    viewModel.sortAccountList(query: query);
   }
 
   @override
@@ -134,23 +135,25 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
                       });
                     },
                   ),
-
-                  SizedBox(width: 10),
-                  CustomGradeDropdown(
-                      isLoading: viewModel.userListState is Loading,
-                      items: AccountRegion.regions[viewModel.selectedRegion].grades,
-                      selectedValue: viewModel.selectedGrade,
-                      onChanged: (value) {
-                        if (value != null && value != viewModel.selectedGrade) {
-                          viewModel.selectedGrade = value;
-                          sortAccount();
-                        }
-                      },
-                      onTap: () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          focusNode.unfocus();
-                        });
-                      }),
+                  if (viewModel.selectedRegion != 13) SizedBox(width: 10),
+                  if (viewModel.selectedRegion != 13)
+                    CustomGradeDropdown(
+                        isLoading: viewModel.userListState is Loading,
+                        items: AccountRegion
+                            .regions[viewModel.selectedRegion].grades,
+                        selectedValue: viewModel.selectedGrade,
+                        onChanged: (value) {
+                          if (value != null &&
+                              value != viewModel.selectedGrade) {
+                            viewModel.selectedGrade = value;
+                            sortAccount();
+                          }
+                        },
+                        onTap: () {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            focusNode.unfocus();
+                          });
+                        }),
 
                   SizedBox(width: 10),
                   // 검색 텍스트필드

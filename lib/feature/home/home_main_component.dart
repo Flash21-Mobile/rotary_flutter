@@ -532,7 +532,7 @@ class CustomDropdown extends ConsumerWidget {
   final FontWeight? fontWeight;
   final EdgeInsets? padding;
   final Color? textColor;
-  final bool? canSearch;
+  final bool canSearch;
 
   const CustomDropdown(
       {super.key,
@@ -550,7 +550,7 @@ class CustomDropdown extends ConsumerWidget {
       this.fontWeight,
       this.padding,
       this.textColor,
-      this.canSearch});
+      this.canSearch = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -602,7 +602,7 @@ class CustomDropdown extends ConsumerWidget {
 }
 
 class _DialogList extends ConsumerStatefulWidget {
-  final bool? canSearch;
+  final bool canSearch;
   final VoidCallback? onTap;
   final int? selectedValue;
   final List<String> items;
@@ -669,22 +669,24 @@ class _DialogListState extends ConsumerState<_DialogList> {
                           controller: scrollController,
                           shrinkWrap: widget.canSearch == true ? false : true,
                           slivers: [
-                            SliverPersistentHeader(
-                              pinned: true, // 고정
-                              floating: false, // 스크롤 시 나타나도록 설정할지 여부
-                              delegate: SearchBoxHeaderDelegate(
-                                  height: 50,
-                                  onChanged: (query) {
-                                    final resultList = widget.items
-                                        .where((e) => e.contains(query))
-                                        .toList();
-                                    setState(() {
-                                      currentList = resultList;
-                                      print(
-                                          'hello  이거 왜 안돼 $query ${resultList}');
-                                    });
-                                  }),
-                            ),
+                            ...widget.canSearch?
+                               [ SliverPersistentHeader(
+                                  pinned: true, // 고정
+                                  floating: false, // 스크롤 시 나타나도록 설정할지 여부
+                                  delegate: SearchBoxHeaderDelegate(
+                                      height: 50,
+                                      onChanged: (query) {
+                                        final resultList = widget.items
+                                            .where((e) => e.contains(query))
+                                            .toList();
+                                        setState(() {
+                                          currentList = resultList;
+                                          print(
+                                              'hello  이거 왜 안돼 $query ${resultList}');
+                                        });
+                                      }),
+                                )]:[]
+                              ,
                             SliverList.separated(
                                 separatorBuilder: (context, index) {
                                   return Container(
@@ -747,7 +749,8 @@ class _DialogListState extends ConsumerState<_DialogList> {
                                               (widget.onChanged ??
                                                   (int d) {})(index);
                                               (widget.onChangedString ??
-                                                  (String d) {})(currentList[index]);
+                                                      (String d) {})(
+                                                  currentList[index]);
                                               Navigator.of(context,
                                                       rootNavigator: true)
                                                   .pop();
@@ -755,7 +758,7 @@ class _DialogListState extends ConsumerState<_DialogList> {
                                           )));
                                 })
                           ]),
-                    ),    // todo r: 회원리스트 렉 걸림
+                    ), // todo r: 회원리스트 렉 걸림
                     Material(
                         color: GlobalColor.transparent,
                         child: InkWell(

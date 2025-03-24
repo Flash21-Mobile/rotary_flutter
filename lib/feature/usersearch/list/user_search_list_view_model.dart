@@ -50,23 +50,23 @@ class UserSearchListViewModel with ChangeNotifier {
   void getAccountList() async {
     if (userListState is! Loading) {
       // if (allAccount.isEmpty || allAccountCount == 0) {
-        userListState = Loading();
-        notifyListeners();
-
-        userListState = await AccountAPI().getAccount();
-
-        if (userListState is Success<List<Account>>) {
-          var temp = (userListState as Success<List<Account>>).data;
-          // temp = temp.where((value) => value.name != '개발자').toList();
-
-          allAccount = temp;
-          allAccountCount = allAccount.length;
-          _accountCount = allAccount.length;
-        }
-      }
-      userListState = Success([]);
+      userListState = Loading();
       notifyListeners();
-      sortAccountList();
+
+      userListState = await AccountAPI().getAccount();
+
+      if (userListState is Success<List<Account>>) {
+        var temp = (userListState as Success<List<Account>>).data;
+        // temp = temp.where((value) => value.name != '개발자').toList();
+
+        allAccount = temp;
+        allAccountCount = allAccount.length;
+        _accountCount = allAccount.length;
+      }
+    }
+    userListState = Success([]);
+    notifyListeners();
+    sortAccountList();
     // }
   }
 
@@ -88,10 +88,12 @@ class UserSearchListViewModel with ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 100));
 
     final region = AccountRegion.regions[selectedRegion].id;
-    final grade =
-        AccountRegion.regions[selectedRegion].grades[selectedGrade].id;
+    print('hello zitto ${region}');
+    final grade = region != 15
+        ? AccountRegion.regions[selectedRegion].grades[selectedGrade].id
+        : null;
 
-    if (region != null)
+    if (region != null && region != 15)
       temp = temp.where((value) => value.thirdGrade?.id == region).toList();
     if (grade != null)
       temp = temp.where((value) => value.grade?.id == grade).toList();
@@ -101,14 +103,18 @@ class UserSearchListViewModel with ChangeNotifier {
     // temp = temp.where((value) => value.name != '개발자').toList();
 
     temp.sort((a, b) {
-
       if (a.time == null) return 1; // a가 null이면 뒤로
       if (b.time == null) return -1; // b가 null이면 앞으로
 
       return a.time!.compareTo(b.time!);
     });
 
-    // todo 초성 검색
+    if (region == 15) {
+      temp = temp.where((e) {
+        return e.secondGrade?.name?.contains('사무장') ?? false;
+      }).toList();
+    }
+
     accountCount = temp.length;
     accountList = temp;
 

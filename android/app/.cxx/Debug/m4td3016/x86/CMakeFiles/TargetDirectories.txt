@@ -1,0 +1,2 @@
+/Users/syngchulchu/StudioProjects/rotary_flutter/android/app/.cxx/Debug/m4td3016/x86/CMakeFiles/edit_cache.dir
+/Users/syngchulchu/StudioProjects/rotary_flutter/android/app/.cxx/Debug/m4td3016/x86/CMakeFiles/rebuild_cache.dir

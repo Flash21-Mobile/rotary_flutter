@@ -88,5 +88,10 @@ class AccountRegion {
       if (b.date == null) return 1;  // b가 null이면 뒤로 보냄
       return a.date!.compareTo(b.date!); // 날짜 기준 오름차순 정렬
     })),
+    RegionModel(id: 15,name: "사무장", grades: []..sort((a, b) {
+      if (a.date == null) return -1; // a가 null이면 앞으로 보냄
+      if (b.date == null) return 1;  // b가 null이면 뒤로 보냄
+      return a.date!.compareTo(b.date!); // 날짜 기준 오름차순 정렬
+    })),
   ];
 }
