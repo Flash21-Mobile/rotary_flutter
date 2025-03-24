@@ -54,7 +54,7 @@ class _ViewModel extends ConsumerState<UserSearchListScreen> {
       ref.read(UserSearchListProvider).selectedRegion =
           widget.initialRegion ?? 0;
       ref.read(UserSearchListProvider).selectedGrade = 0;
-      ref.read(UserSearchListProvider).getAccountList();
+      ref.read(UserSearchListProvider).sortAccountList();
 
     });
   }
