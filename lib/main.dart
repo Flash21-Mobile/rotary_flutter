@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   initializeDateFormatting()
-      .then((_) => runApp(ProviderScope(child: const MyApp())));
+      .then((_) => runApp(const ProviderScope(child: MyApp())));
 }
 
 class MyApp extends StatelessWidget {
