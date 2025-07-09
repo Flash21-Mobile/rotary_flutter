@@ -1,0 +1,1 @@
+enum UiType { origin, modern }
